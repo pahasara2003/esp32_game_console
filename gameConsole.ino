@@ -13,8 +13,6 @@ Preferences preferences;
 #include "tetris.h"
 #include "breakout.h"
 #include "galaga.h"
-#include "greet.h"
-
 
 
 void setup() {
@@ -30,7 +28,7 @@ void setup() {
     app = "menu";
   }
   else
-  app = preferences.getString("app", "menu");
+    app = preferences.getString("app", "menu");
   preferences.putBool("getApp", false);
 
 
@@ -48,27 +46,26 @@ void setup() {
   else if (app == "tetris") setupTetris();
   else if (app == "breakout") breakout_setup();
   else if (app == "galaga") galaga_setup();
-  else if (app == "about") setupBirthday();
 
   else menu_setup();
 }
 
 void loop() {
   unsigned long now = millis();
-   if (now - last_action >= 80000) {
+  
+  // Single sleep check - removed duplicate
+  if (now - last_action >= 60000) {
     goToSleep();
   }
-
- 
 
   if (now - lastUpdate >= UPDATE_INTERVAL) {
     lastUpdate = now;
 
     if(now - lastSound >= 150){
         if(app != "about")
-        noTone(BUZZER_PIN);
+          noTone(BUZZER_PIN);
         lastSound = now;
-    };
+    }
 
     for (int i = 0; i < NUM_BUTTONS; i++) {
       int16_t raw = ads.readADC_SingleEnded(i);
@@ -81,15 +78,14 @@ void loop() {
         tone(BUZZER_PIN, 300);
       } else {
         UPDATE_INTERVAL = 30;
-      };
+      }
     }
+    
     if (digitalRead(5) == HIGH) {
       command = 4;
       UPDATE_INTERVAL = 180;
       tone(BUZZER_PIN, 600);
       last_action = now;
-
-
     } else {
       UPDATE_INTERVAL = 50;
     }
@@ -102,6 +98,5 @@ void loop() {
   if (app == "menu") menu_loop();
   if (app == "breakout") breakout_loop();
   if (app == "galaga") galaga_loop();
-  if (app == "about") loopBirthday();
 
 }

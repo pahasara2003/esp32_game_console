@@ -35,6 +35,8 @@ int command = -1;
 const int NUM_BUTTONS = sizeof(buttons) / sizeof(buttons[0]);
 unsigned long lastUpdate = 0;
 unsigned long UPDATE_INTERVAL = 50; // ms
+unsigned long last_action = 0;
+unsigned long lastSound = 0;
 
 
 void beginKeyboard(){
@@ -199,6 +201,3 @@ void goToSleep() {
   digitalWrite(DISPLAY_PIN, LOW);
   esp_deep_sleep_start();
 }
-
-
-

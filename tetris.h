@@ -14,6 +14,7 @@ enum gameStatus {
   END
 };
 
+
 gameStatus game = MENU;
 Direction joystick = IDLE;
 
@@ -32,9 +33,8 @@ unsigned long Shift_previousMillis = 0;
 unsigned long rotation_previousMillis = 0;
 
 bool rotation = false;
-unsigned long last_action = 0;
 
-long Game_interval = 200;
+long Game_interval = 500;
 int tetrisHighScore = 0;
 int linesCleared = 0;
 
@@ -541,68 +541,53 @@ void updateScore() {
 }
 
 void gamePlayLoop() {
-  // Process joystick input for movement and rotation
-  switch (joystick) {
-    case LEFT:
-      {
-        direction[0] = -1;
-        break;
-      }
-    case RIGHT:
-      {
-        direction[0] = 1;
-        break;
-      }
-    case UP:  // Hard drop
-      {
-        direction[0] = 0;
-        direction[1] = 1;
-
-        while (!Collide(&aliveBlock, direction)) {
-          aliveBlock.pos[1] += 1;
-        }
-
-        aliveBlock.bottom = drawBlock(aliveBlock);
-        Game_previousMillis = 0;
-        joystick = IDLE;  // Clear after hard drop
-        break;
-      }
-    case DOWN:  // Rotation
-      {
-        unsigned long currentMillis = millis();
-        if (currentMillis - rotation_previousMillis >= 50) {  // Reduced debounce
-          rotateBlock(&aliveBlock);
-          rotation_previousMillis = currentMillis;
-          direction[1] = 0;
-          updateBody(&aliveBlock, direction);
-          aliveBlock.bottom = drawBlock(aliveBlock);
-          direction[1] = 1;
-          joystick = IDLE;  // Clear after rotation
-        }
-        break;
-      }
-    default:
-      direction[0] = 0;
-      Game_interval = 500;
-      break;
-  }
-
   unsigned long currentMillis = millis();
-
-  // Handle horizontal movement with debounce
-  if (currentMillis - Shift_previousMillis >= 80 && direction[0] != 0) {  // Reduced debounce
-    Shift_previousMillis = currentMillis;
-    direction[1] = 0;
-    updateBody(&aliveBlock, direction);
-    aliveBlock.bottom = drawBlock(aliveBlock);
-    direction[1] = 1;
-    joystick = IDLE;  // Clear after movement
+  
+  // Handle horizontal movement (LEFT/RIGHT)
+  if (joystick == LEFT || joystick == RIGHT) {
+    if (currentMillis - Shift_previousMillis >= 120) {  // Debounce for smooth movement
+      direction[0] = (joystick == RIGHT) ? 1 : -1;
+      direction[1] = 0;
+      
+      if (!Collide(&aliveBlock, direction)) {
+        aliveBlock.pos[0] += direction[0];
+        drawBlock(aliveBlock);
+      }
+      
+      Shift_previousMillis = currentMillis;
+      joystick = IDLE;  // Clear after processing
+    }
+  }
+  
+  // Handle rotation (DOWN)
+  if (joystick == DOWN) {
+    if (currentMillis - rotation_previousMillis >= 200) {  // Increased debounce for rotation
+      rotateBlock(&aliveBlock);
+      drawBlock(aliveBlock);
+      rotation_previousMillis = currentMillis;
+      joystick = IDLE;  // Clear after processing
+    }
+  }
+  
+  // Handle hard drop (UP)
+  if (joystick == UP) {
+    // Drop piece all the way down
+    while (!Collide(&aliveBlock, {0, 1})) {
+      aliveBlock.pos[1] += 1;
+    }
+    
+    // Lock the piece immediately
+    newBlock(&aliveBlock);
+    drawBlock(aliveBlock);
+    Game_previousMillis = currentMillis;  // Reset drop timer
+    joystick = IDLE;  // Clear after processing
   }
 
-
-  // Main game loop - drop piece
+  // Automatic downward movement (gravity)
   if (currentMillis - Game_previousMillis >= Game_interval) {
-    // Check for completed lines
+    Game_previousMillis = currentMillis;
+    
+    // Check for completed lines FIRST
     for (int j = 0; j < HEIGHT / SIZE; j++) {
       int count = 0;
       for (int i = 0; i < WIDTH / SIZE; i++) {
@@ -622,6 +607,7 @@ void gamePlayLoop() {
         
         updateScore();
         
+        // Shift all rows down
         for (int J = j; J >= 0; J--) {
           for (int i = 0; i < WIDTH / SIZE; i++) {
             if (J > 0)
@@ -632,14 +618,16 @@ void gamePlayLoop() {
         }
       }
     }
-
-    Game_previousMillis = currentMillis;
+    
+    // Then move piece down
+    direction[0] = 0;
+    direction[1] = 1;
     updateBody(&aliveBlock, direction);
     aliveBlock.bottom = drawBlock(aliveBlock);
-
-    direction[1] = 1;
-    rotation = false;
   }
+  
+  // Update particle effects
+  updateTetrisParticles();
 }
 
 void showTetrisGameOver() {
@@ -696,8 +684,6 @@ void showTetrisGameOver() {
     gameOverDrawn = true;
   }
   
-  playNokiaTone();
-  
   // Handle input
   if (command == 4) { // SHOOT - Retry
     command = -1;
@@ -708,7 +694,7 @@ void showTetrisGameOver() {
     game = START;
   }
   
-  if (command == 1) { // UP - Main menu (changed from 0)
+  if (command == 1) { // UP - Main menu
     command = -1;
     joystick = IDLE;
     esp_restart();
@@ -809,7 +795,7 @@ void loopTetris() {
         }
         
         // Check for menu return
-        if (command == 1) { // UP - Main menu (changed from 0)
+        if (command == 1) { // UP - Main menu
           Serial.println("Returning to menu from pause");
           command = -1;
           joystick = IDLE;
@@ -839,32 +825,31 @@ void loopTetris() {
           break;  // Don't process game loop this frame
         }
         
-        // Map commands to joystick directions
-        // Only process if we don't already have a pending joystick action
-    
+        // Map commands to joystick directions ONLY if no joystick action is pending
+        if (command >= 0 && joystick == IDLE) {
           switch (command) {
-            case 0:  // RIGHT
+            case 0:  // UP button - mapped to RIGHT movement
               joystick = RIGHT;
               Serial.println("RIGHT");
               break;
-            case 1:  // UP - Hard drop
+            case 1:  // RIGHT button - mapped to UP (Hard drop)
               joystick = UP;
               Serial.println("UP (Hard Drop)");
               break;
-            case 2:  // LEFT
+            case 2:  // DOWN button - mapped to LEFT movement
               joystick = LEFT;
               Serial.println("LEFT");
               break;
-            case 3:  // DOWN - Rotate
+            case 3:  // LEFT button - mapped to DOWN (Rotate)
               joystick = DOWN;
               Serial.println("DOWN (Rotate)");
               break;
             default:
-              Serial.println("Unknown");
+              Serial.println("Unknown command");
               break;
           }
-          command = -1;  // Consume command immediately after mapping
-        
+          command = -1;  // Consume command after mapping
+        }
         
         // Run the game loop
         gamePlayLoop();

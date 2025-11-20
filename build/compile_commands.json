@@ -228,11 +228,11 @@
    "-I/home/pahasara/Arduino/libraries/Adafruit_BusIO",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/build_opt.h",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/file_opts",
-   "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/vfs_api.cpp",
+   "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/FS.cpp",
    "-o",
-   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/FS/vfs_api.cpp.o"
+   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/FS/FS.cpp.o"
   ],
-  "file": "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/vfs_api.cpp"
+  "file": "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/FS.cpp"
  },
  {
   "directory": "/home/pahasara",
@@ -275,11 +275,11 @@
    "-I/home/pahasara/Arduino/libraries/Adafruit_BusIO",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/build_opt.h",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/file_opts",
-   "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/FS.cpp",
+   "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/vfs_api.cpp",
    "-o",
-   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/FS/FS.cpp.o"
+   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/FS/vfs_api.cpp.o"
   ],
-  "file": "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/FS.cpp"
+  "file": "/home/pahasara/.arduino15/packages/esp32/hardware/esp32/3.3.4/libraries/FS/src/vfs_api.cpp"
  },
  {
   "directory": "/home/pahasara",
@@ -463,11 +463,11 @@
    "-I/home/pahasara/Arduino/libraries/Adafruit_BusIO",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/build_opt.h",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/file_opts",
-   "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp",
+   "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp",
    "-o",
-   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp.o"
+   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp.o"
   ],
-  "file": "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp"
+  "file": "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp"
  },
  {
   "directory": "/home/pahasara",
@@ -557,11 +557,11 @@
    "-I/home/pahasara/Arduino/libraries/Adafruit_BusIO",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/build_opt.h",
    "@/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/file_opts",
-   "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp",
+   "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp",
    "-o",
-   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp.o"
+   "/home/pahasara/.cache/arduino/sketches/5783DE06A435B25204C2D82F465EC616/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp.o"
   ],
-  "file": "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp"
+  "file": "/home/pahasara/Arduino/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp"
  },
  {
   "directory": "/home/pahasara",

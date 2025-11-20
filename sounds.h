@@ -1,5 +1,4 @@
 
-unsigned long lastSound = 0;
 
 // Musical note frequencies (in Hz)
 #define NOTE_C4  262
