@@ -55,20 +55,11 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
-   if (now - last_action >= 20000) {
+   if (now - last_action >= 80000) {
     goToSleep();
   }
 
-  if(now - last_action >= 20000){
-      tft.setRotation(3);
-      tft.fillScreen(BG_COLOR);
-      tft.setTextFont(1);
-      tft.setTextColor(TEXT_COLOR);
-      tft.drawString("Going to deep sleep", 120, 120);
-      delay(1500);
-      digitalWrite(DISPLAY_PIN,LOW);
-      esp_deep_sleep_start();
-  }
+ 
 
   if (now - lastUpdate >= UPDATE_INTERVAL) {
     lastUpdate = now;
