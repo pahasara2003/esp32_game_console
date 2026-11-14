@@ -8,87 +8,71 @@ namespace {
 // An 8-bit framebuffer keeps heap usage modest on the C3.
 TFT_eSprite frame(&tft);
 constexpr float length = 24000.f;
-float position = 0, speed = 0, lateral = 0;
+float position = 0, speed = 0, lateral = 0, heading = 0;
 uint32_t lastFrame = 0;
 int lap = 1;
 bool paused = false, ready = false;
-float elevation(float z) {
-  return 170 * sinf(z * TWO_PI / length * 3) +
-         85 * sinf(z * TWO_PI / length * 7);
-}
 float center(float z) {
   return 650 * sinf(z * TWO_PI / length * 2) +
          280 * sinf(z * TWO_PI / length * 5);
 }
-void span(int y, float left, float right, uint16_t color) {
-  int a = max(0, (int)left), b = min(239, (int)right);
-  if (b >= a) frame.drawFastHLine(a, y, b-a+1, color);
+// Fixed north-up drone camera follows the car. Positive heading turns right.
+constexpr float mapScale = .24f;
+constexpr int carY = 218;
+void quad(float x1, float y1, float x2, float y2, float halfWidth,
+          uint16_t color) {
+  frame.fillTriangle(int(x1-halfWidth),int(y1),int(x1+halfWidth),int(y1),
+                     int(x2-halfWidth),int(y2),color);
+  frame.fillTriangle(int(x1+halfWidth),int(y1),int(x2+halfWidth),int(y2),
+                     int(x2-halfWidth),int(y2),color);
 }
-void render(int steer) {
-  frame.fillSprite(0x8DFA);
-  frame.fillTriangle(0,130,65,63,145,130,0x7C51);
-  frame.fillTriangle(80,130,180,52,239,130,0x6BCF);
-  frame.fillRect(0,130,240,158,0x4E60);
-  float cameraY = elevation(position) + 120;
-  float origin = center(position);
-  float tangent = (center(position+20)-origin)/20;
-  int clip = 287;
-  // Near-to-far horizon clipping hides road behind crests. Interpolate each
-  // projected segment into scanlines; all geometry is periodic at the lap seam.
-  for (int i=0; i<180 && clip>60; ++i) {
-    float z1=55+i*22, z2=z1+22;
-    float s1=150/z1, s2=150/z2;
-    float y1=112-(elevation(position+z1)-cameraY)*s1;
-    float y2=112-(elevation(position+z2)-cameraY)*s2;
-    if (y2>=y1) continue;
-    float x1=120+(center(position+z1)-origin-tangent*z1-lateral)*s1;
-    float x2=120+(center(position+z2)-origin-tangent*z2-lateral)*s2;
-    int bottom=min(clip,min(287,(int)y1));
-    int top=max(0,(int)ceilf(y2));
-    bool stripe=((int)((position+z1)/110)&1);
-    for(int y=bottom; y>=top; --y) {
-      float f=(y1-y)/(y1-y2);
-      float x=x1+(x2-x1)*f, w=190*(s1+(s2-s1)*f);
-      // Small, unmistakably green/yellow checks. Draw horizontal cell spans
-      // rather than sampling textures per pixel; skip cells hidden by the road.
-      constexpr uint16_t green = 0x4E60, yellow = 0xFFE0;
-      frame.drawFastHLine(0,y,240,green);
-      if(w>20) {
-        int cell=max(6,min(20,int(w*.12f)));
-        int row=int((position+28500.f/w)/30.f);
-        int offset=int(x)%cell;
-        int column=int(floorf(-x/cell));
-        for(int gx=offset-cell; gx<240; gx+=cell,++column) {
-          if(((column+row)&1)==0 &&
-             (gx<x-w || gx+cell>x+w))
-            span(y,gx,gx+cell-1,yellow);
-        }
-      }
-      span(y,x-w,x+w,0x4A49);
-      span(y,x-w*1.12f,x-w,stripe?TFT_WHITE:0xB986);
-      span(y,x+w,x+w*1.12f,stripe?TFT_WHITE:0xB986);
-      if(stripe) span(y,x-w*.018f,x+w*.018f,0xD69A);
-      if (((int)((position+z1)/110)%6)==0) {
-        span(y,x-w*1.3f-2,x-w*1.3f+2,TFT_WHITE);
-        span(y,x+w*1.3f-2,x+w*1.3f+2,TFT_WHITE);
-      }
-    }
-    if(top<=bottom) clip=top-1;
+void carPart(float left,float top,float right,float bottom,uint16_t color,
+             float sn,float cs) {
+  // Rotate every body panel and wheel around the same car origin.
+  int ax=120+left*cs-top*sn, ay=carY+left*sn+top*cs;
+  int bx=120+right*cs-top*sn, by=carY+right*sn+top*cs;
+  int cx=120+right*cs-bottom*sn, cy=carY+right*sn+bottom*cs;
+  int dx=120+left*cs-bottom*sn, dy=carY+left*sn+bottom*cs;
+  frame.fillTriangle(ax,ay,bx,by,cx,cy,color);
+  frame.fillTriangle(ax,ay,cx,cy,dx,dy,color);
+}
+void render() {
+  frame.fillSprite(0x4E60);
+  float cameraX=center(position)+lateral;
+  // Small ground cells drawn as rectangles, anchored in world coordinates.
+  constexpr int cell=18;
+  int gx0=int(floorf((cameraX*mapScale-120)/cell));
+  int gz0=int(floorf((position*mapScale+carY-288)/cell));
+  for(int gz=gz0; gz<=gz0+17; ++gz) {
+    int sy=carY-int(gz*cell-position*mapScale)-cell;
+    for(int gx=gx0; gx<=gx0+14; ++gx) if((gx+gz)&1)
+      frame.fillRect(int(gx*cell-cameraX*mapScale+120),sy,cell,cell,0xFFE0);
   }
-  int x=120+steer*3;
-  // Placeholder rear-view car: wheels, body, glass, lights and spoiler.
-  frame.fillEllipse(x,266,30,8,0x2945);
-  frame.fillRoundRect(x-27,240,10,29,3,TFT_BLACK);
-  frame.fillRoundRect(x+17,240,10,29,3,TFT_BLACK);
-  frame.fillTriangle(x-23,259,x-15,224,x+23,259,0xC986);
-  frame.fillTriangle(x-15,224,x+15,224,x+23,259,0xEAC8);
-  frame.fillTriangle(x-12,228,x+12,228,x+16,242,0x2945);
-  frame.fillTriangle(x-12,228,x+16,242,x-16,242,0x2945);
-  frame.fillRoundRect(x-24,246,48,20,3,0xD986);
-  frame.fillRect(x-19,252,9,5,TFT_RED);
-  frame.fillRect(x+10,252,9,5,TFT_RED);
-  frame.fillRect(x-7,257,14,4,TFT_WHITE);
-  frame.fillRect(x-26,244,52,4,0x18E3);
+  // About 20 road strips instead of 180 perspective segments and scanlines.
+  int first=int(floorf((position-320)/80));
+  for(int i=first;i<first+20;++i) {
+    float z1=i*80.f,z2=z1+80;
+    float x1=120+(center(z1)-cameraX)*mapScale;
+    float x2=120+(center(z2)-cameraX)*mapScale;
+    float y1=carY-(z1-position)*mapScale;
+    float y2=carY-(z2-position)*mapScale;
+    quad(x1,y1,x2,y2,49,(i&1)?TFT_WHITE:0xB986);
+    quad(x1,y1,x2,y2,45,0x4A49);
+    if(i&1) quad(x1,y1,x2,y2,1,0xD69A);
+  }
+  float sn=sinf(heading),cs=cosf(heading);
+  carPart(-12,-14,12,16,0x2945,sn,cs);
+  carPart(-12,-12,-8,-4,TFT_BLACK,sn,cs);
+  carPart(8,-12,12,-4,TFT_BLACK,sn,cs);
+  carPart(-12,7,-8,15,TFT_BLACK,sn,cs);
+  carPart(8,7,12,15,TFT_BLACK,sn,cs);
+  carPart(-8,-19,8,18,0xEAC8,sn,cs);
+  carPart(-6,-8,6,-2,0x2945,sn,cs);
+  carPart(-6,7,6,12,0x2945,sn,cs);
+  carPart(-7,-18,-3,-16,TFT_WHITE,sn,cs);
+  carPart(3,-18,7,-16,TFT_WHITE,sn,cs);
+  carPart(-7,15,-3,18,TFT_RED,sn,cs);
+  carPart(3,15,7,18,TFT_RED,sn,cs);
   frame.setTextFont(2);
   frame.setTextColor(TFT_WHITE,0x18E3);
   frame.fillRect(0,0,240,24,0x18E3);
@@ -125,17 +109,20 @@ void rallyLoop() {
   int steer=((held&2)?1:0)-((held&8)?1:0);
   speed += ((held&4)?-700.f:((held&1)?260.f:120.f))*dt;
   speed=constrain(speed,0.f,1050.f);
-  float curvature=(center(position+35)-2*center(position)+center(position-35))/(35*35);
-  lateral+=steer*(65+speed*.20f)*dt-curvature*speed*speed*dt*.30f;
-  lateral=constrain(lateral,-330.f,330.f);
-  // Grass limits speed but must not cancel the throttle at low speed.
-  // Braking can still stop the car anywhere on the course.
+  // Steering changes both the visible orientation and direction of travel.
+  // Limit heading to forward travel for this endless northbound course.
+  heading+=steer*1.5f*dt*(.3f+.7f*speed/1050.f);
+  heading=constrain(heading,-1.25f,1.25f);
   if(fabsf(lateral)>175 && speed>180.f)
     speed=max(180.f,speed-450*dt);
-  position+=speed*dt;
+  float oldCenter=center(position);
+  float newPosition=position+cosf(heading)*speed*dt;
+  lateral+=sinf(heading)*speed*dt-(center(newPosition)-oldCenter);
+  lateral=constrain(lateral,-600.f,600.f);
+  position=newPosition;
   if(position>=length) { position-=length; ++lap; }
   uint32_t renderStart=micros();
-  render(steer);
+  render();
   // Low-rate telemetry measures real frame throughput, including SPI transfer.
   static uint32_t reportAt=0, frames=0, renderUs=0;
   ++frames; renderUs+=micros()-renderStart;
