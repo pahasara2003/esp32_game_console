@@ -23,9 +23,10 @@
 ## Git collaboration
 
 - Repository: `https://github.com/pahasara2003/esp32_game_console.git`
-- Work on a separate branch; do not commit directly to `main`.
+- Branches: `claude/work` is for Claude; `codex/work` is for Codex. Each agent commits only to its own branch.
+- Do not commit directly to `main`. The user reviews and merges into `main`.
 - Inspect status before editing and commit focused changes with clear messages.
-- Push only your branch; Codex/user will review and merge it.
+- Push only your own branch. Codex/user will review and merge it.
 - Never pull, merge, or overwrite remote work unless explicitly requested.
 - In handoffs, report changed files, build/test results, commit hash, and remaining hardware checks.
 
