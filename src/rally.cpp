@@ -24,11 +24,41 @@ void span(int y, float left, float right, uint16_t color) {
   int a = max(0, (int)left), b = min(239, (int)right);
   if (b >= a) frame.drawFastHLine(a, y, b-a+1, color);
 }
+// Procedural materials: no image buffers or SD reads in the driving loop.
+// Sample in road-space so the grain approaches the camera with the ground.
+uint32_t grain(int u, int v) {
+  uint32_t h = uint32_t(u)*374761393u + uint32_t(v)*668265263u;
+  h = (h ^ (h >> 13))*1274126177u;
+  return h ^ (h >> 16);
+}
+void groundRow(int y, float x, float w, float worldZ) {
+  const uint16_t grass[] = {0x7C66, 0x84A7, 0x94C8, 0x6C46};
+  const uint16_t asphalt[] = {0x4208, 0x4A49, 0x528A, 0x4A49};
+  // Fade fine detail into a flat material in the distance to avoid shimmer.
+  bool detail = w > 24;
+  float step = 190.f / w;
+  float u = -x * step;
+  int v = int(worldZ / 9);
+  for(int px=0; px<240; px+=2, u+=2*step) {
+    bool road = fabsf(u)<190;
+    uint16_t color;
+    if(road) {
+      color = detail ? asphalt[grain(int(floorf(u/6)),v)&3] : asphalt[1];
+    } else {
+      // Broad dry patches among olive-green blades; no alternating lawn bands.
+      uint32_t patch = grain(int(floorf(u/95)),int(worldZ/110));
+      unsigned shade = detail ? (grain(int(floorf(u/10)),v)&3) : 1;
+      color = grass[shade];
+      if((patch&7)==0) color = (shade&1) ? 0xAD29 : 0x9CE8;
+    }
+    frame.drawFastHLine(px,y,2,color);
+  }
+}
 void render(int steer) {
   frame.fillSprite(0x8DFA);
   frame.fillTriangle(0,130,65,63,145,130,0x7C51);
   frame.fillTriangle(80,130,180,52,239,130,0x6BCF);
-  frame.fillRect(0,130,240,158,0x4B67);
+  frame.fillRect(0,130,240,158,0x84A7);
   float cameraY = elevation(position) + 120;
   float origin = center(position);
   float tangent = (center(position+20)-origin)/20;
@@ -49,9 +79,11 @@ void render(int steer) {
     for(int y=bottom; y>=top; --y) {
       float f=(y1-y)/(y1-y2);
       float x=x1+(x2-x1)*f, w=190*(s1+(s2-s1)*f);
-      frame.drawFastHLine(0,y,240,stripe?0x4B67:0x5368);
-      span(y,x-w*1.12f,x+w*1.12f,stripe?TFT_WHITE:0xB986);
-      span(y,x-w,x+w,0x528A);
+      float scale = w / 190.f;
+      groundRow(y,x,w,position+150.f/scale);
+      // Keep shoulders and lane paint crisp above the asphalt grain.
+      span(y,x-w*1.12f,x-w,stripe?TFT_WHITE:0xB986);
+      span(y,x+w,x+w*1.12f,stripe?TFT_WHITE:0xB986);
       if(stripe) span(y,x-w*.018f,x+w*.018f,0xD69A);
       if (((int)((position+z1)/110)%6)==0) {
         span(y,x-w*1.3f-2,x-w*1.3f+2,TFT_WHITE);
