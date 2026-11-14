@@ -1,14 +1,15 @@
 #include "game.h"
 #include "buttons.h"
+#include "rally.h"
 
 Game currentGame;
 
 void setup() {
   init_interface();
-  switchGame(0);  // home launcher
+  rallySetup();  // Temporary direct boot for rally development
 }
 
 void loop() {
   if (Serial.available()) buttonsDebugKey(Serial.read());
-  currentGame.gameLoop();
+  rallyLoop();
 }
