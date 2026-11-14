@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Launcher mockup v3 — colorful home screen</title>
+<!--
+  v3 = v1's colorful phone-home-screen look, with the listed fixes.
+
+  Buildability notes (everything static, so it can be baked):
+  - Wallpaper: layered radial "blob" gradients + linear base + a static darkening
+    overlay (bottom + edges) for label contrast. One wallpaper per theme; the blob
+    hues are derived from each theme's accent hue (same shapes, hue-shifted).
+  - Icon tiles: 2-stop 180deg gradient, one hue per icon, all hues at S=60%, L=55->47.
+  - SELECTED-STATE SOFT GLOW IS A PRE-RENDERED OVERLAY: a static radial-gradient
+    layer behind the tile (in firmware it would be baked into the icon sprite /
+    wallpaper, not computed at runtime). The ring itself is a flat 2px white ring.
+  - Label shadow: hard 1px offset, blur 0.
+-->
+<style>
+  :root {
+    --font: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #101418; }
+  body {
+    font-family: var(--font);
+    color: #F5F7F9;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px; padding: 24px; min-height: 100vh;
+  }
+
+  /* ---- demo chrome ---- */
+  h1 { font: 600 13px/16px var(--font); }
+  .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .seg { display: flex; background: #1E242C; border-radius: 6px; padding: 2px; }
+  .seg button {
+    border: 0; background: transparent; color: #8B94A0;
+    font: 400 11px/16px var(--font); padding: 4px 8px; border-radius: 5px; cursor: pointer;
+  }
+  .seg button.on { background: #F5F7F9; color: #101418; font-weight: 600; }
+  .sw { width: 24px; height: 24px; border-radius: 6px; cursor: pointer; border: 0; }
+  .sw.on { outline: 2px solid #F5F7F9; outline-offset: 2px; }
+  #themeName { font: 400 11px/16px var(--font); color: #8B94A0; width: 56px; }
+  .legend { font: 400 11px/16px var(--font); color: #8B94A0; }
+  .legend kbd {
+    font: 400 11px/16px var(--font); color: #F5F7F9;
+    background: #1E242C; border-radius: 4px; padding: 1px 4px;
+  }
+
+  /* ---- console screen: exactly 240x320 at 100% scale ---- */
+  .screen {
+    position: relative;
+    width: 240px; height: 320px;
+    overflow: hidden;
+    background: #101418;
+  }
+
+  /* wallpaper: colorful soft blobs over a same-hue base; per-theme via JS vars */
+  .wall { position: absolute; inset: 0;
+    background:
+      radial-gradient(150px 115px at 84% 10%, var(--wA), transparent 70%),
+      radial-gradient(165px 135px at 10% 36%, var(--wB), transparent 70%),
+      radial-gradient(155px 125px at 90% 64%, var(--wC), transparent 72%),
+      radial-gradient(135px 115px at 16% 94%, var(--wD), transparent 70%),
+      linear-gradient(168deg, var(--wTop) 0%, var(--wMid) 55%, var(--wBot) 100%);
+  }
+  /* static darkening overlay: bottom + edges, so labels keep contrast (bakeable) */
+  .wall::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(12,14,28,.30) 0%, rgba(12,14,28,0) 16%, rgba(12,14,28,0) 84%, rgba(12,14,28,.30) 100%),
+      linear-gradient(180deg, rgba(12,14,28,.22) 0%, rgba(12,14,28,.26) 34%, rgba(12,14,28,.52) 100%);
+  }
+  body.light .wall::after {
+    background:
+      linear-gradient(90deg, rgba(12,14,28,.12) 0%, rgba(12,14,28,0) 16%, rgba(12,14,28,0) 84%, rgba(12,14,28,.12) 100%),
+      linear-gradient(180deg, rgba(12,14,28,.05) 0%, rgba(12,14,28,.08) 34%, rgba(12,14,28,.24) 100%);
+  }
+
+  /* slim 28px status row, white on wallpaper */
+  .status {
+    position: absolute; top: 0; left: 0; right: 0; height: 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 20px; z-index: 3;
+  }
+  .status .t   { font: 600 13px/16px var(--font); color: var(--stext);
+                 text-shadow: 1px 1px 0 var(--sshadow); }
+  .status .ind { font: 400 11px/16px var(--font); color: var(--stext);
+                 text-shadow: 1px 1px 0 var(--sshadow); }
+  body.dark  { --stext: #FFFFFF; --sshadow: rgba(10,12,26,.60); --ltext: #FFFFFF; --lshadow: rgba(10,12,26,.55); --ring: #FFFFFF; }
+  body.light { --stext: #171B26; --sshadow: rgba(255,255,255,.55); --ltext: #171B26; --lshadow: rgba(255,255,255,.55); --ring: #FFFFFF; }
+
+  /* grid: cols at x=20/102/184, tile 56, gap 26; rows at y=36/124/212 */
+  .tile { position: absolute; width: 56px; cursor: pointer; z-index: 2; }
+  .tile .glow { /* PRE-RENDERED soft glow overlay (baked in firmware); sits behind the tile */
+    position: absolute; left: -12px; top: -12px; width: 80px; height: 80px;
+    background: radial-gradient(closest-side, rgba(255,255,255,.30), rgba(255,255,255,0) 72%);
+    display: none; z-index: 0;
+  }
+  .tile.sel .glow { display: block; }
+  .tile .g {
+    position: relative; z-index: 1;
+    width: 56px; height: 56px; border-radius: 14px;
+    display: grid; place-items: center;
+    background: linear-gradient(180deg, var(--ia), var(--ib));
+  }
+  .tile .g svg { display: block; color: #FFFFFF; }
+  .tile .lbl {
+    position: absolute; left: -12px; top: 60px; width: 80px;
+    font: 600 11px/12px var(--font); color: var(--ltext);
+    text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-shadow: 1px 1px 0 var(--lshadow);
+  }
+  /* selected: flat 2px white ring + bold label; no scale animation */
+  .tile.sel .g { box-shadow: 0 0 0 2px var(--ring); }
+  .tile.sel .lbl { font-weight: 700; }
+
+  /* page dots centered at y=300 */
+  .dots {
+    position: absolute; top: 297px; left: 0; right: 0; height: 6px;
+    display: flex; justify-content: center; align-items: center; gap: 8px; z-index: 3;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.45); cursor: pointer; border: 0; padding: 0; }
+  .dot.on { background: #FFFFFF; }
+
+  .toast {
+    position: absolute; top: 262px; left: 50%; transform: translateX(-50%);
+    background: rgba(14,16,28,.92); color: #FFFFFF;
+    font: 400 11px/16px var(--font);
+    padding: 4px 8px; border-radius: 6px;
+    display: none; white-space: nowrap; z-index: 5;
+  }
+  .toast.show { display: block; }
+
+  #curUI, #newUI { position: absolute; inset: 0; display: none; }
+  body.mode-new #newUI { display: block; }
+  body.mode-cur #curUI { display: block; }
+  #curUI svg { display: block; }
+</style>
+</head>
+<body class="mode-new dark">
+
+  <h1>Launcher mockup — v3 (colorful home screen)</h1>
+
+  <div class="bar">
+    <div class="seg" id="modeSeg">
+      <button data-mode="new" class="on">New design</button>
+      <button data-mode="cur">Current firmware</button>
+    </div>
+    <div class="seg" id="lightSeg">
+      <button data-l="dark" class="on">Dark</button>
+      <button data-l="light">Light</button>
+    </div>
+    <div class="sw" data-th="0" style="background:#7BBEFF" title="Aurora"></div>
+    <div class="sw" data-th="1" style="background:#4ABAFF" title="Ocean"></div>
+    <div class="sw" data-th="2" style="background:#CD6AFF" title="Orchid"></div>
+    <div class="sw" data-th="3" style="background:#FF6DAC" title="Rose"></div>
+    <div class="sw" data-th="4" style="background:#CDFF42" title="Citrus"></div>
+    <div class="sw" data-th="5" style="background:#FFB25A" title="Sunset"></div>
+    <div class="sw" data-th="6" style="background:#62FAA4" title="Mint"></div>
+    <div class="sw" data-th="7" style="background:#C5C6C7" title="Silver"></div>
+    <div id="themeName">Aurora</div>
+  </div>
+
+  <div class="screen">
+    <div id="newUI">
+      <div class="wall" id="wall"></div>
+      <div class="status">
+        <span class="t">Games</span>
+        <span class="ind" id="ind">1/2</span>
+      </div>
+      <div id="grid"></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div id="curUI"></div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="legend">
+    <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> move ·
+    <kbd>Enter</kbd> open · <kbd>[</kbd><kbd>]</kbd> page ·
+    <kbd>N</kbd>/<kbd>C</kbd> mode · <kbd>L</kbd> light/dark
+  </div>
+
+<script>
+"use strict";
+
+/* ============ color helpers ============ */
+function hexRgb(h){ return [1,3,5].map(i => parseInt(h.slice(i,i+2),16)); }
+function rgbHex(r,g,b){ return "#"+[r,g,b].map(x => Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,"0")).join(""); }
+function hslHex(h,s,l){
+  h = ((h%360)+360)%360; s/=100; l/=100;
+  const f = n => { const k = (n + h/30) % 12;
+    const a = s * Math.min(l, 1-l);
+    return (l - a * Math.max(-1, Math.min(k-3, 9-k, 1))) * 255; };
+  return rgbHex(f(0), f(8), f(4));
+}
+function hexHue(h){
+  const [r,g,b] = hexRgb(h).map(v => v/255);
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b);
+  if (mx === mn) return 0;
+  const d = mx-mn;
+  let hh;
+  if (mx === r) hh = ((g-b)/d + (g < b ? 6 : 0));
+  else if (mx === g) hh = (b-r)/d + 2; else hh = (r-g)/d + 4;
+  return hh*60; /* degrees */
+}
+
+/* ============ themes (real firmware accents) ============ */
+const THEMES = [
+  { name:"Aurora",  a:"#7BBEFF" },
+  { name:"Ocean",   a:"#4ABAFF" },
+  { name:"Orchid",  a:"#CD6AFF" },
+  { name:"Rose",    a:"#FF6DAC" },
+  { name:"Citrus",  a:"#CDFF42" },
+  { name:"Sunset",  a:"#FFB25A" },
+  { name:"Mint",    a:"#62FAA4" },
+  { name:"Silver",  a:"#C5C6C7" },
+];
+
+/* wallpaper: same shapes per theme, hues shifted from the accent hue */
+function wallpaperVars(hue, light) {
+  const B = light ? 10 : 0; /* lightness boost for light mode */
+  return {
+    "--wTop": hslHex(hue,      48, 40+B),
+    "--wMid": hslHex(hue+10,   45, 26+B),
+    "--wBot": hslHex(hue-12,   50, 13+B),
+    "--wA":   hslHex(hue+16,   62, 60+B),
+    "--wB":   hslHex(hue-30,   58, 50+B),
+    "--wC":   hslHex(hue+145,  52, 44+B),
+    "--wD":   hslHex(hue-165,  55, 40+B),
+  };
+}
+
+/* ============ icons: 56px tiles, radius 14, one hue each, uniform S/L ============ */
+/* hue per app; gradient hsl(h,60%,55%) -> hsl(h,60%,47%) */
+const HUES = {
+  tetris: 16, snake: 135, breakout: 345, run: 32, galaga: 222, puzzle: 172,
+  tictac: 268, pong: 197, mines: 55,
+  life: 150, mandel: 245, sound: 0, settings: 210, info: 185,
+};
+function iconVars(ic) {
+  const h = HUES[ic];
+  return { "--ia": hslHex(h, 60, 55), "--ib": hslHex(h, 60, 47) };
+}
+
+/* ============ glyphs: 28px box, 24-grid, 2px white stroke, round caps ============ */
+const GLYPHS = {
+  tetris:  `<path d="M4.5 5.5h15v5H14v8h-4v-8H4.5z"/>`,
+  snake:   `<path d="M4 18.5h9a3.5 3.5 0 0 0 0-7h-2a3.5 3.5 0 0 1 0-7h6.5"/>
+            <circle cx="20.5" cy="4.5" r="2" fill="currentColor" stroke="none"/>`,
+  breakout:`<path d="M4 5.5h6M14 5.5h6M7 19h10"/>
+            <circle cx="12" cy="11.5" r="2.2" fill="currentColor" stroke="none"/>`,
+  run:     `<circle cx="14.5" cy="4.5" r="2.1" fill="currentColor" stroke="none"/>
+            <path d="M14 8.5 10.5 12.5l3 2.5L11 19.5M14 8.5l4 2 3-1M13 10.5 9 9.5"/>`,
+  galaga:  `<path d="M12 4l3 5h5.5l-4 4 1.5 6-6-3.5L6 19l1.5-6-4-4H9z"/>`,
+  puzzle:  `<rect x="4" y="4" width="7" height="7" rx="1.5"/>
+            <rect x="13" y="4" width="7" height="7" rx="1.5"/>
+            <rect x="4" y="13" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="6" height="6" rx="1.5"/>`,
+  tictac:  `<path d="M9.5 4v16M14.5 4v16M4 9.5h16M4 14.5h16M10.8 10.8l2.4 2.4M13.2 10.8l-2.4 2.4"/>
+            <circle cx="17.25" cy="6.75" r="1.7"/>`,
+  pong:    `<path d="M5 5.5v6M19 12.5v6"/>
+            <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>`,
+  mines:   `<circle cx="12" cy="13" r="4.5"/>
+            <path d="M12 5.5v3M12 17.5v3M4.5 13h3M16.5 13h3M6.6 7.6l2.1 2.1M15.3 16.4l2.1 2.1M17.4 7.6l-2.1 2.1M8.7 16.4l-2.1 2.1"/>`,
+  life:    `<rect x="9" y="4" width="4" height="4" rx="1"/><rect x="14" y="9" width="4" height="4" rx="1"/>
+            <rect x="4" y="14" width="4" height="4" rx="1"/><rect x="9" y="14" width="4" height="4" rx="1"/>
+            <rect x="14" y="14" width="4" height="4" rx="1"/>`,
+  mandel:  `<circle cx="10" cy="13" r="6"/><circle cx="17" cy="13" r="3"/>
+            <circle cx="21" cy="13" r="1.2" fill="currentColor" stroke="none"/>`,
+  sound:   `<path d="M4 9.5h4l5-4v13l-5-4H4z"/><path d="M16 9.2a4.2 4.2 0 0 1 0 5.6"/>`,
+  settings:`<circle cx="12" cy="12" r="3.2"/>
+            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/>`,
+  info:    `<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/>
+            <circle cx="12" cy="7.8" r="1.3" fill="currentColor" stroke="none"/>`,
+};
+const glyphSvg = n =>
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPHS[n]}</svg>`;
+
+/* ============ apps (mirrors menu.ino order) ============ */
+const APPS = [
+  {label:"Tetris",      ic:"tetris"},  {label:"Snake",   ic:"snake"},
+  {label:"Breakout",    ic:"breakout"},{label:"Run",     ic:"run"},
+  {label:"Galaga",      ic:"galaga"},  {label:"Puzzle",  ic:"puzzle"},
+  {label:"Tic-Tac-Toe", ic:"tictac"},  {label:"Pong",    ic:"pong"},
+  {label:"Mines",       ic:"mines"},
+  {label:"Life",        ic:"life"},    {label:"Mandelbrot", ic:"mandel"},
+  {label:"Sound",       ic:"sound"},   {label:"Settings", ic:"settings"},
+  {label:"Info",        ic:"info"},
+];
+const COLS = 3, ROWS = 3, PER_PAGE = COLS*ROWS;
+const PAGES = Math.ceil(APPS.length/PER_PAGE);
+const LEFTS = [20, 102, 184], TOPS = [36, 124, 212];
+
+const state = { mode:"new", light:false, theme:0, page:0, sel:0 };
+const $ = id => document.getElementById(id);
+const grid = $("grid"), dots = $("dots"), toast = $("toast"),
+      curUI = $("curUI"), newUI = $("newUI"), wall = $("wall");
+
+/* ============ new design rendering ============ */
+function renderNew() {
+  const th = THEMES[state.theme];
+  const hue = hexHue(th.a);
+  const vars = wallpaperVars(hue, state.light);
+  for (const k in vars) wall.style.setProperty(k, vars[k]);
+
+  grid.textContent = "";
+  const start = state.page*PER_PAGE, end = Math.min(start+PER_PAGE, APPS.length);
+  for (let i = start; i < end; i++) {
+    const a = APPS[i];
+    const tile = document.createElement("div");
+    tile.className = "tile" + (i === state.sel ? " sel" : "");
+    tile.style.left = LEFTS[i%COLS] + "px";
+    tile.style.top  = TOPS[Math.floor((i%PER_PAGE)/COLS)] + "px";
+    const iv = iconVars(a.ic);
+    for (const k in iv) tile.style.setProperty(k, iv[k]);
+    tile.innerHTML = `<div class="glow"></div><div class="g">${glyphSvg(a.ic)}</div><span class="lbl">${a.label}</span>`;
+    tile.addEventListener("click", () => {
+      if (state.sel === i) openApp(); else { state.sel = i; render(); }
+    });
+    grid.appendChild(tile);
+  }
+  dots.textContent = "";
+  for (let p = 0; p < PAGES; p++) {
+    const d = document.createElement("button");
+    d.className = "dot" + (p === state.page ? " on" : "");
+    d.setAttribute("aria-label", "page " + (p+1));
+    d.addEventListener("click", () => { state.page = p; state.sel = p*PER_PAGE; render(); });
+    dots.appendChild(d);
+  }
+  $("ind").textContent = (state.page+1) + "/" + PAGES;
+}
+
+/* ============ current firmware replica (inline SVG image) ============ */
+const FW = [
+  [0x7DFF,0xB39F,0xB7FF,0xD65F],[0x4DDF,0x3CFF,0xAFFF,0x9E7F],
+  [0xCB5F,0x93BF,0xF67F,0xCE7F],[0xFB75,0xD3BE,0xFE39,0xF65C],
+  [0xCFE8,0x6EF3,0xF7F1,0xCFF7],[0xFD8B,0xF395,0xFF32,0xFE19],
+  [0x67D4,0x4DDF,0xBFFA,0xA79F],[0xC638,0x94B5,0xF7DF,0xCE79]
+];
+const c565 = v => rgbHex((v>>11)*255/31, ((v>>5)&63)*255/63, (v&31)*255/31);
+
+function replicaSVG() {
+  const page = state.page;
+  const pal = FW[state.theme];
+  const cy = c565(pal[0]), pu = c565(pal[1]);
+  const start = page*PER_PAGE, end = Math.min(start+PER_PAGE, APPS.length);
+  const X = [8, 84, 160], Y = [68, 143, 218];
+  let s = `<svg width="240" height="320" viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">`;
+  s += `<defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#12275C"/><stop offset="0.55" stop-color="#4C2A96"/><stop offset="1" stop-color="#1B3F8F"/>
+    </linearGradient>
+    <radialGradient id="b1"><stop offset="0" stop-color="#38BDF8" stop-opacity="0.45"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b2"><stop offset="0" stop-color="#A855F7" stop-opacity="0.5"/><stop offset="1" stop-color="#A855F7" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b3"><stop offset="0" stop-color="#2563EB" stop-opacity="0.45"/><stop offset="1" stop-color="#2563EB" stop-opacity="0"/></radialGradient>
+    <linearGradient id="hd" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C9D7FF"/><stop offset="1" stop-color="#E3D2FF"/>
+    </linearGradient>
+    <linearGradient id="tn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${cy}"/><stop offset="1" stop-color="${pu}"/>
+    </linearGradient>
+  </defs>`;
+  s += `<rect width="240" height="320" fill="url(#wg)"/>
+        <ellipse cx="200" cy="40" rx="70" ry="55" fill="url(#b1)"/>
+        <ellipse cx="35" cy="140" rx="75" ry="65" fill="url(#b2)"/>
+        <ellipse cx="205" cy="290" rx="80" ry="65" fill="url(#b3)"/>`;
+  s += `<rect x="8" y="12" width="224" height="46" rx="9" fill="url(#hd)" stroke="#E4EBFF"/>
+        <rect x="16" y="22" width="3" height="26" rx="1.5" fill="#193029"/>
+        <text x="28" y="31" font-size="12" font-weight="700" fill="#193029">GAME</text>
+        <text x="28" y="49" font-size="12" font-weight="700" fill="#193029">CONSOLE</text>
+        <line x1="164" y1="22" x2="164" y2="48" stroke="#8F86B8"/>
+        <text x="216" y="37" font-size="17" font-weight="700" fill="#193029" text-anchor="end">11</text>
+        <text x="216" y="52" font-size="6.5" fill="#193029" text-anchor="end">PLAYABLE</text>`;
+  for (let i = start; i < end; i++) {
+    const a = APPS[i], x = X[i%COLS], y = Y[Math.floor((i%PER_PAGE)/COLS)];
+    if (i === state.sel) {
+      s += `<rect x="${x}" y="${y}" width="72" height="76" rx="13" fill="url(#tn)"/>
+            <rect x="${x+1}" y="${y+1}" width="70" height="74" rx="12" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+            <rect x="${x+3}" y="${y+3}" width="66" height="70" rx="10" fill="none" stroke="${cy}"/>`;
+    }
+    s += `<g transform="translate(${x+11},${y+9}) scale(2.1667)" color="#081044" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPHS[a.ic]}</g>
+          <g transform="translate(${x+10},${y+8}) scale(2.1667)" color="#FFFFFF" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPHS[a.ic]}</g>
+          <text x="${x+36}" y="${y+68}" font-size="8" fill="#FFFFFF" text-anchor="middle" stroke="#081044" stroke-width="0.8" paint-order="stroke">${a.label}</text>
+          <rect x="${x}" y="${y}" width="72" height="76" fill="transparent" data-i="${i}" style="cursor:pointer"/>`;
+  }
+  for (let p = 0; p < PAGES; p++) {
+    s += `<circle cx="${111 + p*18}" cy="308" r="3.5" fill="${p === page ? "#FFFFFF" : "#20325F"}" data-p="${p}" style="cursor:pointer"/>`;
+  }
+  return s + `</svg>`;
+}
+function renderCur() { curUI.innerHTML = replicaSVG(); }
+
+/* ============ shared state / interaction ============ */
+function render() {
+  document.body.className =
+    (state.mode === "new" ? "mode-new" : "mode-cur") + " " + (state.light ? "light" : "dark");
+  $("themeName").textContent = THEMES[state.theme].name;
+  document.querySelectorAll(".sw").forEach(el =>
+    el.classList.toggle("on", +el.dataset.th === state.theme));
+  document.querySelectorAll("#modeSeg button").forEach(b =>
+    b.classList.toggle("on", b.dataset.mode === state.mode));
+  document.querySelectorAll("#lightSeg button").forEach(b =>
+    b.classList.toggle("on", (b.dataset.l === "light") === state.light));
+  if (state.mode === "new") renderNew(); else renderCur();
+}
+
+function openApp() {
+  toast.textContent = "Opening " + APPS[state.sel].label;
+  toast.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove("show"), 900);
+}
+
+function move(dx, dy) {
+  const inPage = state.sel % PER_PAGE;
+  let page = state.page, c = inPage % COLS, r = Math.floor(inPage/COLS);
+  c += dx;
+  if (c < 0) { if (page > 0) { page--; c = COLS-1; } else c = 0; }
+  if (c > COLS-1) { if (page < PAGES-1) { page++; c = 0; } else c = COLS-1; }
+  r = Math.max(0, Math.min(ROWS-1, r+dy));
+  const t = page*PER_PAGE + r*COLS + c;
+  if (t < APPS.length) { state.page = page; state.sel = t; render(); }
+}
+
+window.addEventListener("keydown", e => {
+  const k = e.key;
+  if (k === "ArrowLeft") { move(-1,0); e.preventDefault(); }
+  else if (k === "ArrowRight") { move(1,0); e.preventDefault(); }
+  else if (k === "ArrowUp") { move(0,-1); e.preventDefault(); }
+  else if (k === "ArrowDown") { move(0,1); e.preventDefault(); }
+  else if (k === "Enter" || k === " ") { openApp(); e.preventDefault(); }
+  else if (k === "[") { if (state.page > 0) { state.page--; state.sel = state.page*PER_PAGE; render(); } }
+  else if (k === "]") { if (state.page < PAGES-1) { state.page++; state.sel = Math.min(state.page*PER_PAGE, APPS.length-1); render(); } }
+  else if (k === "n" || k === "N") { state.mode = "new"; render(); }
+  else if (k === "c" || k === "C") { state.mode = "cur"; render(); }
+  else if (k === "l" || k === "L") { state.light = !state.light; render(); }
+});
+
+$("modeSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.mode = b.dataset.mode; render();
+});
+$("lightSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.light = b.dataset.l === "light"; render();
+});
+document.querySelectorAll(".sw").forEach(el =>
+  el.addEventListener("click", () => { state.theme = +el.dataset.th; render(); }));
+curUI.addEventListener("click", e => {
+  const t = e.target.closest("[data-i]");
+  if (t) {
+    const i = +t.dataset.i;
+    if (state.sel === i) openApp(); else { state.sel = i; render(); }
+    return;
+  }
+  const d = e.target.closest("[data-p]");
+  if (d) { state.page = +d.dataset.p; state.sel = state.page*PER_PAGE; render(); }
+});
+
+render();
+</script>
+</body>
+</html>

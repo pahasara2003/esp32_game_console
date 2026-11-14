@@ -1,0 +1,546 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "DuckDuckGo home" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e8]: DuckDuckGo
+          - generic [ref=e15]:
+            - combobox "Search privately" [ref=e17]: claude
+            - button "Search" [ref=e19] [cursor=pointer]
+        - generic [ref=e22]:
+          - link "Protection. Privacy. Peace of mind." [ref=e24] [cursor=pointer]:
+            - /url: /compare-privacy
+          - button "Open menu" [ref=e25] [cursor=pointer]
+      - navigation [ref=e33]:
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - link [ref=e36] [cursor=pointer]:
+              - /url: /?q=claude&ia=web
+              - strong [ref=e37]: All
+          - listitem [ref=e40]:
+            - link [ref=e41] [cursor=pointer]:
+              - /url: /?q=claude&ia=images&iax=images
+              - strong [ref=e42]: Images
+          - listitem [ref=e43]:
+            - link [ref=e44] [cursor=pointer]:
+              - /url: /?q=claude&ia=news&iar=news
+              - strong [ref=e45]: News
+          - listitem [ref=e46]:
+            - link [ref=e47] [cursor=pointer]:
+              - /url: /?q=claude&ia=videos&iax=videos
+              - strong [ref=e48]: Videos
+          - listitem [ref=e49]:
+            - link [ref=e50] [cursor=pointer]:
+              - /url: /?q=claude&iaxm=maps
+              - strong [ref=e51]: Maps
+        - list [ref=e52]:
+          - listitem [ref=e53]:
+            - link "Search Assist" [ref=e55] [cursor=pointer]:
+              - /url: /?q=claude&ia=web&assist=true
+          - listitem [ref=e62]:
+            - link "Ask Duck.ai" [ref=e64] [cursor=pointer]:
+              - /url: /?q=claude&ia=chat&entry=serp&duckairenameexp=b
+          - listitem [ref=e68]:
+            - button "Search Settings ✀" [ref=e70] [cursor=pointer]:
+              - generic [ref=e73]: Search Settings
+              - generic [ref=e74]: ✀
+    - generic [ref=e81]:
+      - navigation [ref=e83]:
+        - button [ref=e85] [cursor=pointer]:
+          - strong [ref=e92]: Private
+        - button [ref=e97] [cursor=pointer]:
+          - strong [ref=e100]: All regions
+        - button [ref=e104] [cursor=pointer]:
+          - strong [ref=e106]: "Safe search: moderate"
+        - button [ref=e110] [cursor=pointer]:
+          - strong [ref=e112]: Any time
+      - generic [ref=e115]:
+        - generic [ref=e116]:
+          - list [ref=e117]:
+            - listitem [ref=e118]:
+              - article [ref=e119] [cursor=pointer]:
+                - button [ref=e121]
+                - generic [ref=e125]:
+                  - link "Search domain claude.com" [ref=e127]:
+                    - /url: /?q=claude+site:claude.com
+                  - generic [ref=e130]:
+                    - paragraph [ref=e131]: claude.com
+                    - link "https://claude.com" [ref=e132]:
+                      - /url: https://claude.com/
+                      - paragraph [ref=e134]:
+                        - generic [ref=e135]: https://claude.com
+                - heading [level=2] [ref=e137]:
+                  - link "Claude by Anthropic | The AI for problem solvers" [ref=e138]:
+                    - /url: https://claude.com/
+                - generic [ref=e140]: Claude is an AI assistant built by Anthropic and designed to be helpful, honest, and harmless, so you can do your best work.
+                - list [ref=e147]:
+                  - listitem [ref=e148]:
+                    - link "Code Claude Code understands your codebase, edits files, runs commands, and helps you ship faster. It's Anthropic's agentic coding tool for your terminal and IDE." [ref=e149]:
+                      - /url: https://claude.com/product/claude-code
+                      - heading "Code" [level=3] [ref=e150]
+                      - paragraph [ref=e151]:
+                        - generic [ref=e152]: Claude Code understands your codebase, edits files, runs commands, and helps you ship faster. It's Anthropic's agentic coding tool for your terminal and IDE.
+                  - listitem [ref=e153]:
+                    - link "Desktop Download Claude apps for Mac, Windows, iOS, and Android. Install extensions for Chrome, Excel, PowerPoint, and Slack." [ref=e154]:
+                      - /url: https://claude.com/download
+                      - heading "Desktop" [level=3] [ref=e155]
+                      - paragraph [ref=e156]:
+                        - generic [ref=e157]: Download Claude apps for Mac, Windows, iOS, and Android. Install extensions for Chrome, Excel, PowerPoint, and Slack.
+                  - listitem [ref=e158]:
+                    - link "Cowork With Claude Cowork, you can start a task at your desk, check in on it from your phone, and get a polished deck, document, or spreadsheet for review. Connect your data; schedule a daily, weekly, or monthly task; and ask for the format you need." [ref=e159]:
+                      - /url: https://claude.com/product/cowork
+                      - heading "Cowork" [level=3] [ref=e160]
+                      - paragraph [ref=e161]:
+                        - generic [ref=e162]: With Claude Cowork, you can start a task at your desk, check in on it from your phone, and get a polished deck, document, or spreadsheet for review. Connect your data; schedule a daily, weekly, or monthly task; and ask for the format you need.
+                  - listitem [ref=e163]:
+                    - link "Pricing Choose the Claude plan that fits how you solve problems. Free, Pro, Max, Ultra, Team, and Enterprise tiers, plus API pricing for developers." [ref=e164]:
+                      - /url: https://claude.com/pricing
+                      - heading "Pricing" [level=3] [ref=e165]
+                      - paragraph [ref=e166]:
+                        - generic [ref=e167]: Choose the Claude plan that fits how you solve problems. Free, Pro, Max, Ultra, Team, and Enterprise tiers, plus API pricing for developers.
+                  - listitem [ref=e168]:
+                    - link "Log in to your Claude account When you open Claude on a web browser (claude.ai), the desktop app, or a mobile app, you will see two different options for logging in to your Claude account." [ref=e169]:
+                      - /url: https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account
+                      - heading "Log in to your Claude account" [level=3] [ref=e170]
+                      - paragraph [ref=e171]:
+                        - generic [ref=e172]: When you open Claude on a web browser (claude.ai), the desktop app, or a mobile app, you will see two different options for logging in to your Claude account.
+                  - listitem [ref=e173]:
+                    - link "Install Claude Desktop The Claude desktop apps bring Claude's capabilities directly to your computer, allowing for seamless integration with your workflow." [ref=e174]:
+                      - /url: https://support.claude.com/en/articles/10065433-install-claude-desktop
+                      - heading "Install Claude Desktop" [level=3] [ref=e175]
+                      - paragraph [ref=e176]:
+                        - generic [ref=e177]: The Claude desktop apps bring Claude's capabilities directly to your computer, allowing for seamless integration with your workflow.
+            - listitem [ref=e178]:
+              - article [ref=e179] [cursor=pointer]:
+                - button [ref=e181]
+                - generic [ref=e185]:
+                  - link "Search domain claude.ai" [ref=e187]:
+                    - /url: /?q=claude+site:claude.ai
+                  - generic [ref=e190]:
+                    - paragraph [ref=e191]: claude.ai
+                    - link "https://claude.ai › login-Claude" [ref=e192]:
+                      - /url: https://claude.ai/login-Claude
+                      - paragraph [ref=e194]:
+                        - generic [ref=e195]: https://claude.ai
+                        - generic [ref=e196]: › login-Claude
+                - heading [level=2] [ref=e198]:
+                  - link "Claude" [ref=e199]:
+                    - /url: https://claude.ai/login-Claude
+                - generic [ref=e201]: Claude is Anthropic's AI, built for problem solvers. Tackle complex challenges, analyze data, write code, and think through your hardest work.
+            - listitem [ref=e206]:
+              - article [ref=e207] [cursor=pointer]:
+                - button [ref=e209]
+                - generic [ref=e213]:
+                  - link "Search domain claude.ai" [ref=e215]:
+                    - /url: /?q=claude+site:claude.ai
+                  - generic [ref=e218]:
+                    - paragraph [ref=e219]: claude.ai
+                    - link "https://claude.ai" [ref=e220]:
+                      - /url: https://claude.ai/
+                      - paragraph [ref=e222]:
+                        - generic [ref=e223]: https://claude.ai
+                - heading [level=2] [ref=e225]:
+                  - link "Sign in or create an account | Claude.ai" [ref=e226]:
+                    - /url: https://claude.ai/
+                - generic [ref=e228]: Claude is an AI assistant by Anthropic, designed to assist with creative tasks like drafting websites, graphics, documents, and code collaboratively.
+            - listitem [ref=e233]:
+              - article [ref=e234] [cursor=pointer]:
+                - button [ref=e236]
+                - generic [ref=e240]:
+                  - link "Search domain claude.com" [ref=e242]:
+                    - /url: /?q=claude+site:claude.com
+                  - generic [ref=e245]:
+                    - paragraph [ref=e246]: claude.com
+                    - link "https://claude.com › download" [ref=e247]:
+                      - /url: https://claude.com/download
+                      - paragraph [ref=e249]:
+                        - generic [ref=e250]: https://claude.com
+                        - generic [ref=e251]: › download
+                - heading [level=2] [ref=e253]:
+                  - link "Download Claude | Claude by Anthropic" [ref=e254]:
+                    - /url: https://claude.com/download
+                - generic [ref=e256]: Download Claude apps for Mac, Windows, iOS, and Android. Install extensions for Chrome, Excel, PowerPoint, and Slack.
+            - listitem [ref=e261]:
+              - article [ref=e262] [cursor=pointer]:
+                - button [ref=e264]
+                - generic [ref=e268]:
+                  - link "Search domain platform.claude.com" [ref=e270]:
+                    - /url: /?q=claude+site:platform.claude.com
+                  - generic [ref=e273]:
+                    - paragraph [ref=e274]: platform.claude.com
+                    - link "https://platform.claude.com › login" [ref=e275]:
+                      - /url: https://platform.claude.com/login
+                      - paragraph [ref=e277]:
+                        - generic [ref=e278]: https://platform.claude.com
+                        - generic [ref=e279]: › login
+                - heading [level=2] [ref=e281]:
+                  - link "Sign in | Claude Platform - Anthropic" [ref=e282]:
+                    - /url: https://platform.claude.com/login
+                - generic [ref=e284]: Build on the Claude Platform Build on the Claude Platform Create agents and applications with frontier Claude models and managed agent infrastructure.
+            - listitem [ref=e289]:
+              - article [ref=e290] [cursor=pointer]:
+                - button [ref=e292]
+                - generic [ref=e296]:
+                  - link "Search domain support.claude.com" [ref=e298]:
+                    - /url: /?q=claude+site:support.claude.com
+                  - generic [ref=e301]:
+                    - paragraph [ref=e302]: support.claude.com
+                    - link "https://support.claude.com › en › articles › 13189465-log-in-to-your-claude-account" [ref=e303]:
+                      - /url: https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account
+                      - paragraph [ref=e305]:
+                        - generic [ref=e306]: https://support.claude.com
+                        - generic [ref=e307]: › en › articles › 13189465-log-in-to-your-claude-account
+                - heading [level=2] [ref=e309]:
+                  - link "Log in to your Claude account | Claude Help Center" [ref=e310]:
+                    - /url: https://support.claude.com/en/articles/13189465-log-in-to-your-claude-account
+                - generic [ref=e315]:
+                  - text: 4 days ago·
+                  - generic [ref=e316]: When you open Claude on a web browser (claude.ai), the desktop app, or a mobile app, you will see two different options for logging in to your Claude account.
+            - listitem [ref=e317]:
+              - article [ref=e318] [cursor=pointer]:
+                - button [ref=e320]
+                - generic [ref=e324]:
+                  - link "Search domain anthropic.com" [ref=e326]:
+                    - /url: /?q=claude+site:www.anthropic.com
+                  - generic [ref=e329]:
+                    - paragraph [ref=e330]: Anthropic
+                    - link "https://www.anthropic.com" [ref=e331]:
+                      - /url: https://www.anthropic.com/
+                      - paragraph [ref=e333]:
+                        - generic [ref=e334]: https://www.anthropic.com
+                - heading [level=2] [ref=e336]:
+                  - link "Home \\ Anthropic" [ref=e337]:
+                    - /url: https://www.anthropic.com/
+                - generic [ref=e339]: Anthropic is an AI safety and research company that's working to build reliable, interpretable, and steerable AI systems.
+            - listitem [ref=e343]:
+              - article [ref=e344] [cursor=pointer]:
+                - button [ref=e346]
+                - generic [ref=e350]:
+                  - link "Search domain support.claude.com" [ref=e352]:
+                    - /url: /?q=claude+site:support.claude.com
+                  - generic [ref=e355]:
+                    - paragraph [ref=e356]: support.claude.com
+                    - link "https://support.claude.com › en › articles › 10065433-install-claude-desktop" [ref=e357]:
+                      - /url: https://support.claude.com/en/articles/10065433-install-claude-desktop
+                      - paragraph [ref=e359]:
+                        - generic [ref=e360]: https://support.claude.com
+                        - generic [ref=e361]: › en › articles › 10065433-install-claude-desktop
+                - heading [level=2] [ref=e363]:
+                  - link "Install Claude Desktop | Claude Help Center" [ref=e364]:
+                    - /url: https://support.claude.com/en/articles/10065433-install-claude-desktop
+                - generic [ref=e369]:
+                  - text: Oct 30, 2026·
+                  - generic [ref=e370]: The Claude desktop apps bring Claude's capabilities directly to your computer, allowing for seamless integration with your workflow.
+            - listitem [ref=e371]:
+              - article [ref=e372] [cursor=pointer]:
+                - button [ref=e374]
+                - generic [ref=e378]:
+                  - link "Search domain academy.claude.com" [ref=e380]:
+                    - /url: /?q=claude+site:academy.claude.com
+                  - generic [ref=e383]:
+                    - paragraph [ref=e384]: academy.claude.com
+                    - link "https://academy.claude.com" [ref=e385]:
+                      - /url: https://academy.claude.com/
+                      - paragraph [ref=e387]:
+                        - generic [ref=e388]: https://academy.claude.com
+                - heading [level=2] [ref=e390]:
+                  - link "Claude Academy · Learn to work and build with Claude" [ref=e391]:
+                    - /url: https://academy.claude.com/
+                - generic [ref=e393]: Welcome to Claude Academy Learn to use AI safely, effectively, and with intention. Free courses, tutorials, and use cases from Anthropic's education team.
+            - listitem [ref=e398]:
+              - article [ref=e399] [cursor=pointer]:
+                - button [ref=e401]
+                - generic [ref=e405]:
+                  - link "Search domain apps.microsoft.com" [ref=e407]:
+                    - /url: /?q=claude+site:apps.microsoft.com
+                  - generic [ref=e410]:
+                    - paragraph [ref=e411]: Microsoft Apps
+                    - link "https://apps.microsoft.com › detail › 9p6k58ths811?hl=en-US&gl=US" [ref=e412]:
+                      - /url: https://apps.microsoft.com/detail/9p6k58ths811?hl=en-US&gl=US
+                      - paragraph [ref=e414]:
+                        - generic [ref=e415]: https://apps.microsoft.com
+                        - generic [ref=e416]: › detail › 9p6k58ths811?hl=en-US&gl=US
+                - heading [level=2] [ref=e418]:
+                  - link "Claude - Free download and install on Windows | Microsoft Store" [ref=e419]:
+                    - /url: https://apps.microsoft.com/detail/9p6k58ths811?hl=en-US&gl=US
+                - generic [ref=e421]: Meet Claude, your AI problem solver and thinking partner. Claude works with you to write, research, code, and tackle hard problems. It works with your files, browser, and apps to get tasks done, so your chats can end in a finished report, spreadsheet, or presentation. AI WRITING ASSISTANT Turn rough ideas into polished work. Whether you're drafting social posts, professional emails, or long ...
+            - listitem [ref=e426]:
+              - generic [ref=e428]:
+                - heading [level=2] [ref=e430]:
+                  - link "News for claude" [ref=e431] [cursor=pointer]:
+                    - /url: /?q=claude&ia=news&iar=news
+                - generic [ref=e440]:
+                  - list [ref=e441]:
+                    - listitem [ref=e442] [cursor=pointer]:
+                      - link [ref=e443]:
+                        - /url: https://www.msn.com/en-us/technology/artificial-intelligence/anthropic-launches-claude-meetings-to-turn-workplace-discussions-into-plans-and-tasks/ar-AA2h9Rwl
+                        - article [ref=e444]:
+                          - generic [ref=e446]:
+                            - heading "Anthropic launches Claude Meetings to turn workplace discussions into plans and tasks" [level=3] [ref=e448]
+                            - generic [ref=e450]:
+                              - generic [ref=e451]: 11 hours ago
+                              - generic [ref=e453]:
+                                - generic [ref=e454]:
+                                  - generic [ref=e455]: MSN.com
+                                  - generic [ref=e456]: TechCrunch
+                                - button "Menu" [ref=e459]
+                    - listitem [ref=e462] [cursor=pointer]:
+                      - link [ref=e463]:
+                        - /url: https://www.engadget.com/2312177/anthropic-takes-on-google-and-microsoft-with-claude-sheets/
+                        - article [ref=e464]:
+                          - generic [ref=e466]:
+                            - heading "Anthropic takes on Google and Microsoft with Claude Sheets" [level=3] [ref=e468]
+                            - generic [ref=e470]:
+                              - generic [ref=e471]: 11 hours ago
+                              - generic [ref=e473]:
+                                - generic [ref=e474]: Engadget
+                                - button "Menu" [ref=e479]
+                    - listitem [ref=e482] [cursor=pointer]:
+                      - link [ref=e483]:
+                        - /url: https://www.inc.com/aaron-mok/anthropics-claude-can-now-join-your-meetings-its-most-useful-function-happens-before-the-call-ends/91433990
+                        - article [ref=e484]:
+                          - generic [ref=e493]:
+                            - heading "Anthropic's Claude Can Now Join Your Meetings. Its Most Useful Function Happens Before the Call Ends" [level=3] [ref=e495]
+                            - generic [ref=e497]:
+                              - generic [ref=e498]: 10 hours ago
+                              - generic [ref=e500]:
+                                - generic [ref=e501]: Inc.com
+                                - button "Menu" [ref=e506]
+                    - listitem [ref=e509] [cursor=pointer]:
+                      - link [ref=e510]:
+                        - /url: https://gizmodo.com/best-vpn/claude
+                        - article [ref=e511]:
+                          - generic [ref=e513]:
+                            - heading "Best VPN for Claude in 2026 and the Rules for Using One" [level=3] [ref=e515]
+                            - generic [ref=e517]:
+                              - generic [ref=e518]: 9 hours ago
+                              - generic [ref=e520]:
+                                - generic [ref=e521]: Gizmodo
+                                - button "Menu" [ref=e526]
+                    - listitem [ref=e529] [cursor=pointer]:
+                      - link [ref=e530]:
+                        - /url: https://gizmodo.com/anthropic-goes-for-microsofts-crown-with-new-claude-powered-office-tools-2000837885
+                        - article [ref=e531]:
+                          - generic [ref=e540]:
+                            - heading "Anthropic Goes for Microsoft's Crown With New Claude-Powered Office Tools" [level=3] [ref=e542]
+                            - generic [ref=e544]:
+                              - generic [ref=e545]: 7 hours ago
+                              - generic [ref=e547]:
+                                - generic [ref=e548]: Gizmodo
+                                - button "Menu" [ref=e553]
+                  - button "Next page" [ref=e556] [cursor=pointer]
+                - link [ref=e561] [cursor=pointer]:
+                  - /url: /?q=claude&ia=news&iar=news
+                  - strong [ref=e563]: More News
+                - generic [ref=e570]:
+                  - text: Was this helpful?
+                  - button "Positive feedback" [ref=e571] [cursor=pointer]
+                  - button "Negative feedback" [ref=e575] [cursor=pointer]
+            - listitem [ref=e579]:
+              - generic [ref=e582]:
+                - generic [ref=e585]:
+                  - generic [ref=e586]:
+                    - button [aria-hidden] [ref=e588] [cursor=pointer]:
+                      - generic [ref=e589]: Search Assist
+                    - generic [ref=e597]:
+                      - button "Copy to clipboard" [ref=e599] [cursor=pointer]
+                      - button "Learn more about Search Assist and Explore More" [ref=e610] [cursor=pointer]
+                      - button "Change Search Assist settings" [ref=e615] [cursor=pointer]
+                  - generic [ref=e618]:
+                    - generic [ref=e621]:
+                      - paragraph [ref=e623]: Claude is an AI chatbot developed by Anthropic, designed for natural conversation, reasoning, and complex task completion. It is part of a family of large language models that includes various versions like Claude Opus, Sonnet, and Haiku, each tailored for different capabilities and tasks.
+                      - generic [ref=e625]:
+                        - link "Pluralsight" [ref=e628] [cursor=pointer]:
+                          - /url: https://www.pluralsight.com/resources/blog/ai-and-data/what-is-claude-ai
+                        - link "Wikipedia" [ref=e635] [cursor=pointer]:
+                          - /url: https://en.wikipedia.org/wiki/Claude_(AI)
+                    - generic [ref=e644]:
+                      - button "More" [ref=e647] [cursor=pointer]
+                      - button "Expand Duck.ai chat input" [ref=e664] [cursor=pointer]
+                - generic [ref=e670]:
+                  - paragraph [ref=e672]: Auto-generated based on listed sources. May contain inaccuracies.
+                  - generic [ref=e675]:
+                    - text: Was this helpful?
+                    - button "Positive feedback" [ref=e676] [cursor=pointer]
+                    - button "Negative feedback" [ref=e680] [cursor=pointer]
+            - listitem [ref=e684]:
+              - generic [ref=e686]:
+                - paragraph [ref=e687]: Searches related to claude
+                - generic [ref=e688]:
+                  - list [ref=e689]:
+                    - listitem [ref=e690]:
+                      - link "claude ai login" [ref=e691] [cursor=pointer]:
+                        - /url: "?q=claude%20ai%20login&origin=related"
+                    - listitem [ref=e694]:
+                      - link "claude ai free version" [ref=e695] [cursor=pointer]:
+                        - /url: "?q=claude%20ai%20free%20version&origin=related"
+                    - listitem [ref=e698]:
+                      - link "claude ai app download" [ref=e699] [cursor=pointer]:
+                        - /url: "?q=claude%20ai%20app%20download&origin=related"
+                    - listitem [ref=e702]:
+                      - link "claude opus 4.5 features" [ref=e703] [cursor=pointer]:
+                        - /url: "?q=claude%20opus%204.5%20features&origin=related"
+                    - listitem [ref=e706]:
+                      - link "claude anthropic" [ref=e707] [cursor=pointer]:
+                        - /url: "?q=claude%20anthropic&origin=related"
+                  - list [ref=e710]:
+                    - listitem [ref=e711]:
+                      - link "claude ai" [ref=e712] [cursor=pointer]:
+                        - /url: "?q=claude%20ai&origin=related"
+                    - listitem [ref=e715]:
+                      - link "claude download" [ref=e716] [cursor=pointer]:
+                        - /url: "?q=claude%20download&origin=related"
+                    - listitem [ref=e719]:
+                      - link ".claude folder" [ref=e720] [cursor=pointer]:
+                        - /url: "?q=.claude%20folder&origin=related"
+                    - listitem [ref=e723]:
+                      - link ".claude skills" [ref=e724] [cursor=pointer]:
+                        - /url: "?q=.claude%20skills&origin=related"
+                    - listitem [ref=e727]:
+                      - link "claude.com" [ref=e728] [cursor=pointer]:
+                        - /url: "?q=claude.com&origin=related"
+                - generic [ref=e736]:
+                  - text: Was this helpful?
+                  - button "Positive feedback" [ref=e737] [cursor=pointer]
+                  - button "Negative feedback" [ref=e741] [cursor=pointer]
+          - button "More results" [ref=e747] [cursor=pointer]
+        - list [ref=e749]:
+          - listitem [ref=e750]:
+            - generic "Loading..." [ref=e753]: Finding follow-ups you might like…
+    - list [ref=e759]:
+      - button "Close menu" [ref=e760] [cursor=pointer]
+      - list [ref=e764]:
+        - listitem [ref=e765]: Search
+        - listitem [ref=e766]:
+          - link "Homepage" [ref=e767] [cursor=pointer]:
+            - /url: https://start.duckduckgo.com/
+        - listitem [ref=e768]:
+          - link "Themes" [ref=e769] [cursor=pointer]:
+            - /url: /settings#appearance
+        - listitem [ref=e770]:
+          - link "Settings" [ref=e771] [cursor=pointer]:
+            - /url: /settings
+      - list [ref=e772]:
+        - listitem [ref=e773]: Share Feedback
+        - listitem [ref=e774]:
+          - generic [ref=e777]:
+            - button "Positive feedback" [ref=e778] [cursor=pointer]
+            - button "Negative feedback" [ref=e782] [cursor=pointer]
+      - list [ref=e786]:
+        - listitem [ref=e787]: Downloads
+        - listitem [ref=e788]:
+          - link "iOS Browser" [ref=e789] [cursor=pointer]:
+            - /url: https://apps.apple.com/app/duckduckgo-private-browser/id663592361?platform=iphone&pt=866401&mt=8&ct=serp-atb-serp
+        - listitem [ref=e790]:
+          - link "Android Browser" [ref=e791] [cursor=pointer]:
+            - /url: https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android&referrer=utm_campaign%3Dserp-atb-serp%26origin%3Dfunnel_playstore_searchresults
+        - listitem [ref=e792]:
+          - link "Mac Browser" [ref=e793] [cursor=pointer]:
+            - /url: /mac?origin=funnel_browser_searchresults
+        - listitem [ref=e794]:
+          - link "Windows Browser" [ref=e795] [cursor=pointer]:
+            - /url: /windows?origin=funnel_browser_searchresults
+        - listitem [ref=e796]:
+          - link "Browser Extensions" [ref=e797] [cursor=pointer]:
+            - /url: /duckduckgo-help-pages/desktop/adding-duckduckgo-to-your-browser/
+      - list [ref=e798]:
+        - listitem [ref=e799]: More From DuckDuckGo
+        - listitem
+        - listitem [ref=e800]:
+          - link "Duck.ai" [ref=e801] [cursor=pointer]:
+            - /url: https://duck.ai
+        - listitem [ref=e802]:
+          - link "Email Protection" [ref=e803] [cursor=pointer]:
+            - /url: /email
+        - listitem [ref=e804]:
+          - link "Newsletter" [ref=e805] [cursor=pointer]:
+            - /url: /newsletter
+        - listitem [ref=e806]:
+          - link "Blog" [ref=e807] [cursor=pointer]:
+            - /url: /blog
+        - listitem [ref=e808]:
+          - link "Podcast" [ref=e809] [cursor=pointer]:
+            - /url: https://insideduckduckgo.substack.com/?showWelcome=true
+        - listitem [ref=e810]:
+          - link "Collaborations" [ref=e811] [cursor=pointer]:
+            - /url: /collaborations
+      - list [ref=e812]:
+        - listitem [ref=e813]: Learn More
+        - listitem [ref=e814]:
+          - link "What’s New" [ref=e815] [cursor=pointer]:
+            - /url: /updates
+        - listitem [ref=e816]:
+          - link "Compare Privacy" [ref=e817] [cursor=pointer]:
+            - /url: /compare-privacy
+        - listitem [ref=e818]:
+          - link "About Our Browser" [ref=e819] [cursor=pointer]:
+            - /url: /app
+        - listitem [ref=e820]:
+          - link "About DuckDuckGo" [ref=e821] [cursor=pointer]:
+            - /url: /about
+      - list [ref=e822]:
+        - listitem [ref=e823]: Other Resources
+        - listitem [ref=e824]:
+          - link "Help" [ref=e825] [cursor=pointer]:
+            - /url: /duckduckgo-help-pages
+        - listitem [ref=e826]:
+          - link "Community" [ref=e827] [cursor=pointer]:
+            - /url: https://www.reddit.com/r/duckduckgo/
+        - listitem [ref=e828]:
+          - link "Careers" [ref=e829] [cursor=pointer]:
+            - /url: /careers
+        - listitem [ref=e830]:
+          - link "Privacy Policy" [ref=e831] [cursor=pointer]:
+            - /url: /privacy
+        - listitem [ref=e832]:
+          - link "Terms of Service" [ref=e833] [cursor=pointer]:
+            - /url: /terms
+        - listitem [ref=e834]:
+          - link "Press Kit" [ref=e835] [cursor=pointer]:
+            - /url: /press
+        - listitem [ref=e836]:
+          - link "Advertise on Search" [ref=e837] [cursor=pointer]:
+            - /url: /duckduckgo-help-pages/company/advertise-on-duckduckgo-search
+  - generic [ref=e841]:
+    - generic [ref=e843]:
+      - generic [ref=e854]:
+        - heading "See What’s DuckDuckNew" [level=3] [ref=e855]
+        - paragraph [ref=e856]: Explore DuckDuckGo’s latest product updates.
+      - link "Learn More" [ref=e857] [cursor=pointer]:
+        - /url: https://duckduckgo.com/updates
+    - generic [ref=e859]:
+      - generic [ref=e860]:
+        - heading "Learn More" [level=3] [ref=e861]
+        - list [ref=e862]:
+          - listitem [ref=e863]:
+            - link "What's New" [ref=e864] [cursor=pointer]:
+              - /url: https://duckduckgo.com/updates
+          - listitem [ref=e865]:
+            - link "Compare Privacy" [ref=e866] [cursor=pointer]:
+              - /url: https://duckduckgo.com/compare-privacy
+          - listitem [ref=e867]:
+            - link "Search Shortcuts" [ref=e868] [cursor=pointer]:
+              - /url: https://duckduckgo.com/bangs
+          - listitem [ref=e869]:
+            - link "Help Pages" [ref=e870] [cursor=pointer]:
+              - /url: https://duckduckgo.com/duckduckgo-help-pages/
+      - generic [ref=e871]:
+        - heading "Get More" [level=3] [ref=e872]
+        - list [ref=e873]:
+          - listitem [ref=e874]:
+            - link "Email Protection" [ref=e875] [cursor=pointer]:
+              - /url: https://duckduckgo.com/email
+          - listitem [ref=e876]:
+            - generic [ref=e877]:
+              - link "Podcast" [ref=e879] [cursor=pointer]:
+                - /url: https://insideduckduckgo.substack.com/?showWelcome=true
+              - generic [ref=e880]:
+                - text: "&"
+                - link "Newsletter" [ref=e881] [cursor=pointer]:
+                  - /url: https://duckduckgo.com/newsletter
+          - listitem [ref=e882]:
+            - link "Collaborations" [ref=e883] [cursor=pointer]:
+              - /url: https://duckduckgo.com/collaborations
+  - button "Share Feedback" [ref=e888] [cursor=pointer]

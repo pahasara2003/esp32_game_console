@@ -1,0 +1,36 @@
+- generic [ref=f2e1]:
+  - heading "Launcher mockup — v3 (colorful home screen)" [level=1] [ref=f2e2]
+  - generic [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - button "New design" [ref=f2e5] [cursor=pointer]
+      - button "Current firmware" [ref=f2e6] [cursor=pointer]
+    - generic [ref=f2e7]:
+      - button "Dark" [ref=f2e8] [cursor=pointer]
+      - button "Light" [active] [ref=f2e9] [cursor=pointer]
+    - generic "Aurora" [ref=f2e10] [cursor=pointer]
+    - generic "Ocean" [ref=f2e11] [cursor=pointer]
+    - generic "Orchid" [ref=f2e12] [cursor=pointer]
+    - generic "Rose" [ref=f2e13] [cursor=pointer]
+    - generic "Citrus" [ref=f2e14] [cursor=pointer]
+    - generic "Sunset" [ref=f2e15] [cursor=pointer]
+    - generic "Mint" [ref=f2e16] [cursor=pointer]
+    - generic "Silver" [ref=f2e17] [cursor=pointer]
+    - generic [ref=f2e18]: Aurora
+  - generic [ref=f2e20]:
+    - generic [ref=f2e22]:
+      - generic [ref=f2e23]: Games
+      - generic [ref=f2e24]: 1/2
+    - generic:
+      - generic [ref=f2e84] [cursor=pointer]: Tetris
+      - generic [ref=f2e90] [cursor=pointer]: Snake
+      - generic [ref=f2e96] [cursor=pointer]: Breakout
+      - generic [ref=f2e102] [cursor=pointer]: Run
+      - generic [ref=f2e108] [cursor=pointer]: Galaga
+      - generic [ref=f2e113] [cursor=pointer]: Puzzle
+      - generic [ref=f2e121] [cursor=pointer]: Tic-Tac-Toe
+      - generic [ref=f2e127] [cursor=pointer]: Pong
+      - generic [ref=f2e133] [cursor=pointer]: Minesweeper
+    - generic [ref=f2e80]:
+      - button "page 1" [ref=f2e139] [cursor=pointer]
+      - button "page 2" [ref=f2e140] [cursor=pointer]
+  - generic [ref=f2e83]: ←→↑↓ move · Enter open · [] page · N/C mode · L light/dark

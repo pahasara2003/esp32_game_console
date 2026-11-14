@@ -1,0 +1,156 @@
+#include <Arduino.h>
+#include <SPI.h>
+#include <TFT_eSPI.h>
+
+/*
+ * ============================================================================
+ * ESP32-C3 & ILI9341 Display Animation Test
+ * Matched with: lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h
+ * ============================================================================
+ * Circuit Pins:
+ *   - CS:   GPIO 3
+ *   - DC:   GPIO 1
+ *   - RST:  GPIO 2
+ *   - MOSI: GPIO 0
+ *   - SCLK: GPIO 4
+ *   - MISO: GPIO 10
+ * ============================================================================
+ */
+
+TFT_eSPI tft = TFT_eSPI();
+
+// Screen Dimensions (Landscape)
+const int SCREEN_W = 320;
+const int SCREEN_H = 240;
+
+// Animation state
+float ballX = 160.0f;
+float ballY = 120.0f;
+float ballDX = 2.8f;
+float ballDY = 2.2f;
+const int BALL_RADIUS = 10;
+uint16_t ballColor = TFT_CYAN;
+
+// Rotating spinner
+float angle = 0.0f;
+const int SPINNER_CX = 50;
+const int SPINNER_CY = 180;
+const int SPINNER_RADIUS = 28;
+
+// Colors for bouncing ball
+const uint16_t PALETTE[] = {
+  TFT_RED, TFT_GREEN, TFT_BLUE, TFT_YELLOW,
+  TFT_MAGENTA, TFT_CYAN, TFT_ORANGE, TFT_WHITE
+};
+const int NUM_COLORS = sizeof(PALETTE) / sizeof(PALETTE[0]);
+int paletteIndex = 0;
+
+// Performance counters
+unsigned long lastFpsTime = 0;
+uint32_t framesThisSecond = 0;
+uint32_t currentFps = 0;
+unsigned long lastFrameTime = 0;
+
+void drawStaticHeader() {
+  tft.fillRect(0, 0, SCREEN_W, 30, TFT_NAVY);
+  tft.drawFastHLine(0, 30, SCREEN_W, TFT_CYAN);
+
+  tft.setTextColor(TFT_WHITE, TFT_NAVY);
+  tft.setTextSize(2);
+  tft.setCursor(10, 7);
+  tft.print("ESP32-C3 TFT ANIMATION");
+
+  // Bottom info bar
+  tft.drawFastHLine(0, 215, SCREEN_W, TFT_DARKGREY);
+  tft.fillRect(0, 216, SCREEN_W, 24, TFT_BLACK);
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(500);
+
+  Serial.println("\n=============================================");
+  Serial.println("  ESP32-C3 + ILI9341 Dynamic Animation Test  ");
+  Serial.println("=============================================");
+
+  // Initialize TFT with configured settings
+  tft.init();
+  tft.setRotation(1); // Landscape 320x240
+  tft.fillScreen(TFT_BLACK);
+
+  drawStaticHeader();
+  Serial.println("[Setup] Display initialized. Starting animation loop...");
+}
+
+void loop() {
+  unsigned long now = millis();
+
+  // Erase old ball position
+  tft.fillCircle((int)ballX, (int)ballY, BALL_RADIUS, TFT_BLACK);
+
+  // Erase old spinner
+  tft.fillCircle(SPINNER_CX, SPINNER_CY, SPINNER_RADIUS + 2, TFT_BLACK);
+
+  // Update ball physics
+  ballX += ballDX;
+  ballY += ballDY;
+
+  // Bounce off horizontal bounds
+  if (ballX - BALL_RADIUS <= 2 || ballX + BALL_RADIUS >= SCREEN_W - 2) {
+    ballDX = -ballDX;
+    paletteIndex = (paletteIndex + 1) % NUM_COLORS;
+    ballColor = PALETTE[paletteIndex];
+  }
+
+  // Bounce off vertical bounds (keep within 32px header and 214px bottom)
+  if (ballY - BALL_RADIUS <= 33 || ballY + BALL_RADIUS >= 213) {
+    ballDY = -ballDY;
+    paletteIndex = (paletteIndex + 1) % NUM_COLORS;
+    ballColor = PALETTE[paletteIndex];
+  }
+
+  // Draw new ball
+  tft.fillCircle((int)ballX, (int)ballY, BALL_RADIUS, ballColor);
+  tft.drawCircle((int)ballX, (int)ballY, BALL_RADIUS, TFT_WHITE);
+
+  // Draw rotating geometric spinner
+  angle += 0.15f;
+  if (angle > 6.283f) angle -= 6.283f;
+  for (int i = 0; i < 4; i++) {
+    float a = angle + (i * 1.5708f);
+    int x1 = SPINNER_CX + (int)(cos(a) * SPINNER_RADIUS);
+    int y1 = SPINNER_CY + (int)(sin(a) * SPINNER_RADIUS);
+    tft.drawLine(SPINNER_CX, SPINNER_CY, x1, y1, PALETTE[(paletteIndex + i) % NUM_COLORS]);
+  }
+  tft.drawCircle(SPINNER_CX, SPINNER_CY, SPINNER_RADIUS, TFT_DARKGREY);
+
+  // Draw center stats card
+  tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+  tft.setTextSize(1);
+  tft.setCursor(95, 50);
+  tft.print("CHIP: ESP32-C3 (RISC-V)");
+
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.setCursor(95, 65);
+  tft.printf("HEAP: %6u bytes free", ESP.getFreeHeap());
+
+  // FPS calculation
+  framesThisSecond++;
+  if (now - lastFpsTime >= 1000) {
+    currentFps = framesThisSecond;
+    framesThisSecond = 0;
+    lastFpsTime = now;
+
+    // Bottom telemetry bar update every second
+    tft.fillRect(10, 220, 300, 16, TFT_BLACK);
+    tft.setTextColor(TFT_CYAN, TFT_BLACK);
+    tft.setTextSize(1);
+    tft.setCursor(10, 222);
+    tft.printf("FPS: %2u  |  Uptime: %lus  |  SPI: 4MHz", currentFps, now / 1000);
+
+    Serial.printf("[Tele] Uptime: %lu s | FPS: %u | Free Heap: %u bytes\n", now / 1000, currentFps, ESP.getFreeHeap());
+  }
+
+  // Delay slightly to cap frame rate smoothly (~30-40 FPS)
+  delay(15);
+}
