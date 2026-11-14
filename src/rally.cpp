@@ -18,6 +18,9 @@ float center(float z) {
   return 650 * sinf(z * TWO_PI / length * 2) +
          280 * sinf(z * TWO_PI / length * 5);
 }
+float roadHeading(float z) {
+  return atanf((center(z+20.f)-center(z-20.f))/40.f);
+}
 // Fixed north-up drone camera follows the car. Positive heading turns right.
 constexpr float mapScale = .24f;
 constexpr int carY = 218;
@@ -107,6 +110,8 @@ void rallySetup() {
   tft.fillScreen(TFT_BLACK);
   if(!ready) { ui::heading(20,80,"Rally","Low memory"); return; }
   ui::hint(297,"Left/right steer  Down brake",TFT_BLACK);
+  position=0; speed=0; lateral=0; heading=roadHeading(position);
+  paused=false; lap=1;
   buttonsRequireRelease();
   lastFrame=millis();
 }
@@ -128,15 +133,17 @@ void rallyLoop() {
   uint8_t held=buttonsHeld();
   int steer=((held&2)?1:0)-((held&8)?1:0);
   bool onRoad=fabsf(lateral)<=175.f;
-  float acceleration=(held&4)?-700.f:((held&1)?(onRoad?140.f:90.f)
+  float acceleration=(held&4)?-700.f:((held&1)?(onRoad?140.f:220.f)
                                                 :(onRoad?75.f:-80.f));
   speed=constrain(speed+acceleration*dt,0.f,600.f);
   // Steering changes both the visible orientation and direction of travel.
   // Limit heading to forward travel for this endless northbound course.
   heading+=steer*2.7f*dt*(.55f+.45f*speed/600.f);
+  if(!steer && onRoad)
+    heading+=(roadHeading(position)-heading)*min(1.f,3.f*dt);
   heading=constrain(heading,-1.25f,1.25f);
   // Grass drag has no minimum speed; releasing Up lets the car stop completely.
-  if(!onRoad) speed=max(0.f,speed-min(450.f,speed*4.f)*dt);
+  if(!onRoad) speed=max(0.f,speed-min(450.f,speed*2.2f)*dt);
   float oldCenter=center(position);
   float newPosition=position+cosf(heading)*speed*dt;
   lateral+=sinf(heading)*speed*dt-(center(newPosition)-oldCenter);
@@ -150,8 +157,9 @@ void rallyLoop() {
   ++frames; renderUs+=micros()-renderStart;
   if(now-reportAt>=2000) {
     if(Serial.availableForWrite()>80)
-      Serial.printf("[Rally] fps=%.1f render_ms=%.1f\n",
-                    frames*1000.f/(now-reportAt),renderUs/(frames*1000.f));
+      Serial.printf("[Rally] fps=%.1f render_ms=%.1f speed=%.1f lateral=%.1f\n",
+                    frames*1000.f/(now-reportAt),renderUs/(frames*1000.f),
+                    speed,lateral);
     reportAt=now; frames=0; renderUs=0;
   }
 }
