@@ -319,27 +319,15 @@ static void updateRunClouds() {
 // SOUND EFFECTS
 // -----------------------------------------------------------------
 static void soundJump() {
-  setBuzzerTone(659); // E5
-  delay(20);
-  setBuzzerTone(880); // A5
-  delay(30);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Jump);
 }
 
 static void soundCrash() {
-  setBuzzerTone(220);
-  delay(60);
-  setBuzzerTone(165);
-  delay(100);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Death);
 }
 
 static void soundMilestone() {
-  setBuzzerTone(1319);
-  delay(40);
-  setBuzzerTone(1760);
-  delay(60);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Milestone);
 }
 
 // -----------------------------------------------------------------
@@ -427,11 +415,8 @@ static void playRunnerDeathAnimation(int py) {
   eraseRunner(RUNNER_X, (int)prevRunnerY);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
                             VAMPIRE_DEAD_FRAME_W, RUNNER_H);
-  setBuzzerTone(260);
+  audio::play(audio::Cue::Death);
   for (int frame = 0; frame < VAMPIRE_DEAD_FRAME_COUNT; ++frame) {
-    if (frame == 3) setBuzzerTone(180);
-    if (frame == 6) setBuzzerTone(110);
-    if (frame == 8) setBuzzerTone(0);
     drawRunnerDeathFrame(py, frame);
     delay(95);
   }
@@ -692,6 +677,7 @@ void runSetup() {
 }
 
 void runLoop() {
+  audio::gameState(gameState);
   if (gameState == 0) {
     // Each confirmed Up press jumps; Shoot opens the pause menu immediately.
     int cmd = findCommand(false);

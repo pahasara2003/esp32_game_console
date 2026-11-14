@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "config.h"
+#include "audio_kit.h"
 #include "buttons.h"
 #include <functional>
 #include <stdint.h>
@@ -70,6 +71,7 @@ void init_interface();
 void audioReleaseForMusic();
 void audioReclaimFromMusic();
 void runMusicPlayer();
+void runVideoPlayer();
 void breakoutSetup();
 void breakoutLoop();
 void runSetup();
@@ -85,6 +87,7 @@ void pongLoop();
 void minesweeperSetup();
 void minesweeperLoop();
 void lifeSetup();
+void lifeRelease();
 void lifeLoop();
 void mandelbrotSetup();
 void mandelbrotLoop();

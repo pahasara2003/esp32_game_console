@@ -166,32 +166,25 @@ static int boParticleCount = 0;
 // -----------------------------------------------------------------
 // SOUND EFFECTS
 // -----------------------------------------------------------------
+static uint8_t audioBrickCombo = 0;
 static void soundPaddleHit() {
-  setBuzzerTone(880); // A5
-  delay(18);
-  setBuzzerTone(0);
+  audioBrickCombo = 0;
+  audio::play(audio::Cue::Paddle);
 }
 
 static void soundBrickHit(uint16_t freq = 1319) {
-  setBuzzerTone(freq);
-  delay(22);
-  setBuzzerTone(0);
+  audioBrickCombo = min(12, int(audioBrickCombo) + 1);
+  audio::play(audio::Cue::Brick, freq + audioBrickCombo * 35);
+  if (audioBrickCombo % 5 == 0) audio::play(audio::Cue::Milestone);
 }
 
 static void soundLostBall() {
-  setBuzzerTone(392);
-  delay(60);
-  setBuzzerTone(294);
-  delay(80);
-  setBuzzerTone(0);
+  audioBrickCombo = 0;
+  audio::play(audio::Cue::Hit);
 }
 
 static void soundPowerup() {
-  setBuzzerTone(1046);
-  delay(30);
-  setBuzzerTone(1568);
-  delay(50);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Powerup);
 }
 
 // -----------------------------------------------------------------
@@ -538,6 +531,7 @@ static void checkBrickCollisions() {
 
   // Level Clear check
   if (remaining == 0) {
+    audio::play(audio::Cue::Win);
     gameState = 3; // Level clear state
     menu_drawn = false;
   }
@@ -594,6 +588,7 @@ static void updateBallAndPhysics() {
     updateScoreAndLivesHUD();
 
     if (lives <= 0) {
+      audio::play(audio::Cue::Death);
       gameState = 2; // Game Over
       menu_drawn = false;
       return;
@@ -828,6 +823,7 @@ void breakoutSetup() {
 }
 
 void breakoutLoop() {
+  audio::gameState(gameState);
   if (gameState == 0) {
     handleBreakoutInput();
     if (gameState != 0) return;
