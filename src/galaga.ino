@@ -151,26 +151,12 @@ static int galaSoundEffect = 0;
 static unsigned long galaSoundStarted = 0;
 
 static void updateGalagaSound() {
-  if (galaSoundEffect == 0) return;
-  unsigned long elapsed = millis() - galaSoundStarted;
-  int frequency = 0;
-  if (galaSoundEffect == 1) {
-    frequency = elapsed < 15 ? 1568 : elapsed < 35 ? 2093 : 0;
-  } else if (galaSoundEffect == 2) {
-    frequency = elapsed < 20 ? 988 : elapsed < 50 ? 659 : 0;
-  } else if (galaSoundEffect == 3) {
-    frequency = elapsed < 50 ? 330 : elapsed < 120 ? 220 : elapsed < 220 ? 147 : 0;
-  }
-  setBuzzerTone(frequency);
-  if (frequency == 0) galaSoundEffect = 0;
+  // Sequencing now runs in the shared I2S task.
 }
 
 static void startGalagaSound(int effect) {
-  // A laser must not interrupt the longer hit or ship-loss sound.
-  if (effect < galaSoundEffect) return;
-  galaSoundEffect = effect;
-  galaSoundStarted = millis();
-  updateGalagaSound();
+  audio::play(effect == 1 ? audio::Cue::Laser :
+              effect == 2 ? audio::Cue::Hit : audio::Cue::Death);
 }
 
 static void soundPlayerLaser() {
@@ -461,6 +447,7 @@ static void updateBullets() {
 // FLEET MOVEMENT & DIVING AI
 // -----------------------------------------------------------------
 static void initGalagaWave(int wave) {
+  audio::play(audio::Cue::Wave);
   galaWave = wave;
   fleetOffsetX = 0;
   fleetDir = 1.0f;
@@ -543,6 +530,7 @@ static void updateAliens() {
       // Random dive launch
       if (random(1200) < 2) {
         aliens[i].diving = true;
+        audio::play(audio::Cue::Dive);
         aliens[i].diveAngle = 0;
         aliens[i].diveSpeed = random(35, 55) / 10.0f * GALA_ENEMY_MOTION_SCALE;
       }
@@ -759,6 +747,7 @@ static void drawGalagaWaveClearOption(int item) {
 }
 
 static void drawGalagaWaveClear() {
+  audio::play(audio::Cue::Win);
   buttonsRequireRelease();
   ui::card(26, 66, 188, 194);
   ui::heading(40, 80, "Galaga", "Wave cleared");
@@ -803,6 +792,7 @@ void galagaSetup() {
 }
 
 void galagaLoop() {
+  audio::gameState(gameState);
   updateGalagaSound();
   if (gameState == 0) {
     handleGalagaInput();
