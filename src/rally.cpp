@@ -24,36 +24,6 @@ void span(int y, float left, float right, uint16_t color) {
   int a = max(0, (int)left), b = min(239, (int)right);
   if (b >= a) frame.drawFastHLine(a, y, b-a+1, color);
 }
-// Procedural materials: no image buffers or SD reads in the driving loop.
-// Sample in road-space so the grain approaches the camera with the ground.
-uint32_t grain(int u, int v) {
-  uint32_t h = uint32_t(u)*374761393u + uint32_t(v)*668265263u;
-  h = (h ^ (h >> 13))*1274126177u;
-  return h ^ (h >> 16);
-}
-void groundRow(int y, float x, float w, float worldZ) {
-  const uint16_t grass[] = {0x7C66, 0x84A7, 0x94C8, 0x6C46};
-  const uint16_t asphalt[] = {0x4208, 0x4A49, 0x528A, 0x4A49};
-  // Fade fine detail into a flat material in the distance to avoid shimmer.
-  bool detail = w > 24;
-  float step = 190.f / w;
-  float u = -x * step;
-  int v = int(worldZ / 9);
-  for(int px=0; px<240; px+=2, u+=2*step) {
-    bool road = fabsf(u)<190;
-    uint16_t color;
-    if(road) {
-      color = detail ? asphalt[grain(int(floorf(u/6)),v)&3] : asphalt[1];
-    } else {
-      // Broad dry patches among olive-green blades; no alternating lawn bands.
-      uint32_t patch = grain(int(floorf(u/95)),int(worldZ/110));
-      unsigned shade = detail ? (grain(int(floorf(u/10)),v)&3) : 1;
-      color = grass[shade];
-      if((patch&7)==0) color = (shade&1) ? 0xAD29 : 0x9CE8;
-    }
-    frame.drawFastHLine(px,y,2,color);
-  }
-}
 void render(int steer) {
   frame.fillSprite(0x8DFA);
   frame.fillTriangle(0,130,65,63,145,130,0x7C51);
@@ -79,9 +49,18 @@ void render(int steer) {
     for(int y=bottom; y>=top; --y) {
       float f=(y1-y)/(y1-y2);
       float x=x1+(x2-x1)*f, w=190*(s1+(s2-s1)*f);
-      float scale = w / 190.f;
-      groundRow(y,x,w,position+150.f/scale);
-      // Keep shoulders and lane paint crisp above the asphalt grain.
+      // Broad yellow-green bands and four perspective grid lines replace
+      // 120 texture samples per row. No per-pixel hashes or floating-point floors.
+      frame.drawFastHLine(0,y,240,stripe?0x94C8:0x84A7);
+      if(w>20) {
+        for(int side=-1; side<=1; side+=2) {
+          for(int line=2; line<=3; ++line) {
+            int gx=int(x+side*w*line);
+            if(gx>=0 && gx<240) frame.drawPixel(gx,y,0xAD29);
+          }
+        }
+      }
+      span(y,x-w,x+w,0x4A49);
       span(y,x-w*1.12f,x-w,stripe?TFT_WHITE:0xB986);
       span(y,x+w,x+w*1.12f,stripe?TFT_WHITE:0xB986);
       if(stripe) span(y,x-w*.018f,x+w*.018f,0xD69A);
@@ -136,7 +115,7 @@ void rallyLoop() {
   }
   if(paused) { delay(5); return; }
   uint32_t now=millis();
-  if(now-lastFrame<40) { delay(1); return; }
+  if(now-lastFrame<20) { delay(1); return; }
   float dt=min(.1f,(now-lastFrame)*.001f); lastFrame=now;
   uint8_t held=buttonsHeld();
   int steer=((held&2)?1:0)-((held&8)?1:0);
@@ -151,5 +130,15 @@ void rallyLoop() {
     speed=max(180.f,speed-450*dt);
   position+=speed*dt;
   if(position>=length) { position-=length; ++lap; }
+  uint32_t renderStart=micros();
   render(steer);
+  // Low-rate telemetry measures real frame throughput, including SPI transfer.
+  static uint32_t reportAt=0, frames=0, renderUs=0;
+  ++frames; renderUs+=micros()-renderStart;
+  if(now-reportAt>=2000) {
+    if(Serial.availableForWrite()>80)
+      Serial.printf("[Rally] fps=%.1f render_ms=%.1f\n",
+                    frames*1000.f/(now-reportAt),renderUs/(frames*1000.f));
+    reportAt=now; frames=0; renderUs=0;
+  }
 }
