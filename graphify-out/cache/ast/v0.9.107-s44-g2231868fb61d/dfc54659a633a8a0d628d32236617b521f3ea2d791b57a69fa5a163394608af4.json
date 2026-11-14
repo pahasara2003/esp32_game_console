@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_lib_tft_espi_examples_sprite_animated_dial_dial_h", "label": "dial.h", "file_type": "code", "source_file": "lib/TFT_eSPI/examples/Sprite/Animated_dial/dial.h", "source_location": "L1"}], "edges": [], "raw_calls": [], "parse_errors": {"first_error_line": 19, "multiline_error": false}}

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Console — Menu UI Mockup</title>
+<style>
+  :root {
+    --accent: #22d3ee;
+    --page-bg: #0d0f17;
+    --font: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--page-bg);
+    color: #e2e8f0;
+    font-family: var(--font);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 16px 40px;
+    gap: 22px;
+  }
+  h1 { font-size: 15px; font-weight: 600; letter-spacing: .4px; color: #94a3b8; }
+  h1 b { color: #f1f5f9; }
+
+  /* ---------- toolbar ---------- */
+  .toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .seg { display: flex; background: #161a26; border: 1px solid #262c3d; border-radius: 10px; padding: 3px; }
+  .seg button {
+    border: 0; background: transparent; color: #8b93a7; font: 600 12px/1 var(--font);
+    padding: 8px 16px; border-radius: 7px; cursor: pointer; transition: .15s;
+  }
+  .seg button.on { background: var(--accent); color: #06121a; }
+  .swatches { display: flex; gap: 7px; align-items: center; }
+  .swatches span { font-size: 11px; color: #64748b; margin-right: 2px; }
+  .sw {
+    width: 20px; height: 20px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: .15s;
+  }
+  .sw.on { border-color: #fff; transform: scale(1.12); }
+
+  /* ---------- phone ---------- */
+  .phone {
+    padding: 12px; border-radius: 30px;
+    background: linear-gradient(180deg, #1b1f2c, #0a0c13);
+    box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 0 0 1px #2a3145;
+  }
+  .viewport { width: 480px; height: 640px; overflow: hidden; border-radius: 20px; }
+  .screen {
+    width: 240px; height: 320px;
+    transform: scale(2); transform-origin: top left;
+    position: relative; overflow: hidden;
+    color: #fff;
+  }
+  /* wallpaper sits under everything and swaps per mode */
+  .wall { position: absolute; inset: 0; display: none; }
+  body.mode-new .wall-new { display: block; }
+  body.mode-current .wall-cur { display: block; }
+
+  .wall-new {
+    background:
+      radial-gradient(90px 70px at 85% 8%,  rgba(124,58,237,.55), transparent 70%),
+      radial-gradient(110px 80px at 8% 30%, rgba(14,165,233,.38), transparent 70%),
+      radial-gradient(120px 90px at 90% 78%,rgba(236,72,153,.25), transparent 70%),
+      radial-gradient(100px 80px at 15% 95%,rgba(34,211,238,.22), transparent 70%),
+      linear-gradient(168deg, #0b1030 0%, #171a4e 40%, #2a1568 72%, #0e1e4e 100%);
+  }
+  .wall-cur {
+    background:
+      radial-gradient(120px 90px at 80% 12%, rgba(56,189,248,.45), transparent 70%),
+      radial-gradient(130px 100px at 10% 45%, rgba(168,85,247,.5), transparent 70%),
+      radial-gradient(140px 100px at 85% 88%, rgba(37,99,235,.45), transparent 70%),
+      linear-gradient(155deg, #12275c 0%, #4c2a96 52%, #1b3f8f 100%);
+  }
+
+  /* ---------- header (shared geometry, styled per mode) ---------- */
+  .header { position: absolute; left: 10px; top: 8px; width: 220px; height: 40px;
+            display: flex; align-items: center; padding: 0 10px; z-index: 5; }
+  .logo-badge { width: 26px; height: 26px; border-radius: 8px; margin-right: 8px;
+                display: grid; place-items: center; font: 800 9px/1 var(--font);
+                letter-spacing: .5px; color: #fff;
+                background: linear-gradient(135deg, var(--accent), #8b5cf6);
+                box-shadow: 0 3px 8px rgba(0,0,0,.35); }
+  .titles { display: flex; flex-direction: column; }
+  .t-main  { font: 800 10px/1.15 var(--font); letter-spacing: 1.6px; }
+  .t-sub   { font: 500 7px/1.4 var(--font); letter-spacing: 1.2px; color: rgba(255,255,255,.55); }
+  .pill    { margin-left: auto; font: 700 8px/1 var(--font); letter-spacing: .8px;
+             padding: 5px 8px; border-radius: 20px; color: var(--accent);
+             background: color-mix(in srgb, var(--accent) 14%, transparent);
+             border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+
+  body.mode-new .header {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  }
+  body.mode-current .header {
+    left: 8px; top: 12px; width: 224px; height: 46px; border-radius: 9px;
+    background: linear-gradient(135deg, #c9d7ff 0%, #e3d2ff 100%);
+    border: 1px solid #eef2ff;
+  }
+  body.mode-current .logo-badge { display: none; }
+  body.mode-current .t-main { color: #14203c; font-size: 11px; }
+  body.mode-current .t-sub  { display: none; }
+  body.mode-current .pill   { display: none; }
+  /* current-mode extras: accent stripe, divider, big count */
+  .cur-stripe { display: none; }
+  body.mode-current .cur-stripe {
+    display: block; position: absolute; left: 8px; top: 10px; width: 3px; height: 26px;
+    border-radius: 2px; background: #1d5a52;
+  }
+  .cur-divider { display: none; }
+  body.mode-current .cur-divider {
+    display: block; position: absolute; left: 156px; top: 10px; width: 1px; height: 26px;
+    background: rgba(20,32,60,.35);
+  }
+  .cur-count { display: none; }
+  body.mode-current .cur-count {
+    display: block; position: absolute; right: 16px; top: 3px;
+    font: 700 17px/1 var(--font); color: #14203c;
+  }
+  .cur-playable { display: none; }
+  body.mode-current .cur-playable {
+    display: block; position: absolute; right: 16px; bottom: 3px;
+    font: 500 6.5px/1 var(--font); letter-spacing: .5px; color: #14203c;
+  }
+  .header::after { /* seam for the two stacked words in current mode */
+    content: ""; display: none;
+  }
+
+  /* ---------- grid ---------- */
+  .pageWrap { position: absolute; inset: 0; z-index: 2; }
+
+  .tile { position: absolute; display: flex; flex-direction: column;
+          align-items: center; cursor: pointer; user-select: none;
+          transition: transform .13s ease, filter .13s ease; }
+  .tile:hover { filter: brightness(1.12); }
+
+  .icon { display: grid; place-items: center; }
+  .icon svg { display: block; }
+
+  .label { color: #fff; font-weight: 600; text-align: center; letter-spacing: .3px; }
+
+  /* NEW mode geometry + styling */
+  body.mode-new .tile { width: 66px; }
+  body.mode-new .icon {
+    width: 46px; height: 46px; border-radius: 14px;
+    box-shadow: 0 5px 12px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  body.mode-new .label { font-size: 8px; margin-top: 5px;
+                         text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+  body.mode-new .tile.sel {
+    transform: translateY(-3px) scale(1.05);
+  }
+  body.mode-new .tile.sel .icon {
+    box-shadow: 0 0 0 2px var(--accent),
+                0 0 18px color-mix(in srgb, var(--accent) 45%, transparent),
+                0 8px 16px rgba(0,0,0,.4);
+  }
+  body.mode-new .tile.sel .label { color: var(--accent); text-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent); }
+
+  /* CURRENT mode geometry + styling (replica of firmware) */
+  body.mode-current .tile { width: 72px; height: 76px; border-radius: 12px; }
+  body.mode-current .icon {
+    width: 52px; height: 52px; margin-top: 8px;
+    filter: drop-shadow(1px 1px 0 rgba(8,16,68,.9));
+  }
+  body.mode-current .label { position: absolute; bottom: 4px; left: 0; right: 0;
+                             font-size: 8px; text-shadow: 1px 1px 0 #081044; }
+  body.mode-current .tile.sel::before {
+    content: ""; position: absolute; inset: 0; border-radius: 12px;
+    background: linear-gradient(180deg, rgba(96,110,235,.34), rgba(150,90,235,.34));
+  }
+  body.mode-current .tile.sel::after {
+    content: ""; position: absolute; inset: 0; border-radius: 12px;
+    box-shadow: 0 0 0 1px #081044,
+                inset 0 0 0 2px #ffffff,
+                inset 0 0 0 3px var(--accent);
+  }
+
+  /* ---------- page dots ---------- */
+  .dots { position: absolute; left: 0; right: 0; bottom: 10px;
+          display: flex; justify-content: center; gap: 12px; z-index: 5; }
+  .dot { border-radius: 20px; transition: all .2s; }
+  body.mode-new .dot { width: 5px; height: 5px; background: rgba(255,255,255,.28); }
+  body.mode-new .dot.on { width: 14px; background: var(--accent);
+                          box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 70%, transparent); }
+  body.mode-current .dot { width: 6px; height: 6px; background: rgba(8,16,68,.75); }
+  body.mode-current .dot.on { background: #fff; }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(6px);
+    background: rgba(10,14,30,.88); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    color: #fff; font: 600 8px/1 var(--font); letter-spacing: .4px;
+    padding: 7px 12px; border-radius: 20px; opacity: 0; pointer-events: none;
+    transition: all .18s ease; z-index: 20; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast b { color: var(--accent); }
+
+  /* ---------- legend ---------- */
+  .legend { font-size: 12px; color: #64748b; text-align: center; line-height: 1.8; }
+  .legend kbd {
+    background: #1a2032; border: 1px solid #2c3550; border-bottom-width: 2px;
+    border-radius: 5px; padding: 2px 6px; font: 600 10px/1 ui-monospace, monospace;
+    color: #cbd5e1; margin: 0 2px;
+  }
+</style>
+</head>
+<body class="mode-new">
+
+  <h1>🎮 Game Console — <b>Launcher UI Mockup</b></h1>
+
+  <div class="toolbar">
+    <div class="seg" id="modeSeg">
+      <button data-mode="new" class="on">✨ New design</button>
+      <button data-mode="current">Current firmware</button>
+    </div>
+    <div class="swatches" id="swatches">
+      <span>Accent</span>
+      <div class="sw on" data-c="#22d3ee" style="background:#22d3ee"></div>
+      <div class="sw" data-c="#a78bfa" style="background:#a78bfa"></div>
+      <div class="sw" data-c="#fbbf24" style="background:#fbbf24"></div>
+      <div class="sw" data-c="#34d399" style="background:#34d399"></div>
+      <div class="sw" data-c="#f472b6" style="background:#f472b6"></div>
+    </div>
+  </div>
+
+  <div class="phone">
+    <div class="viewport">
+      <div class="screen" id="screen">
+        <div class="wall wall-new"></div>
+        <div class="wall wall-cur"></div>
+        <div class="header">
+          <div class="logo-badge">GC</div>
+          <div class="titles">
+            <div class="t-main">GAME CONSOLE</div>
+            <div class="t-sub">RETRO EDITION</div>
+          </div>
+          <div class="pill">11 GAMES</div>
+          <div class="cur-stripe"></div>
+          <div class="cur-divider"></div>
+          <div class="cur-count">11</div>
+          <div class="cur-playable">PLAYABLE</div>
+        </div>
+        <div class="pageWrap" id="pageWrap"></div>
+        <div class="dots" id="dots"></div>
+        <div class="toast" id="toast"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> move &nbsp;·&nbsp;
+    <kbd>Enter</kbd> open (Shoot) &nbsp;·&nbsp;
+    <kbd>[</kbd><kbd>]</kbd> switch page &nbsp;·&nbsp; click tiles with the mouse
+  </div>
+
+<script>
+/* ============ icon glyphs (24x24, drawn white) ============ */
+const I = {
+  tetris: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <rect x="4" y="13" width="5" height="5" rx="1" fill="#fff" opacity=".95"/>
+    <rect x="9.5" y="13" width="5" height="5" rx="1" fill="#fff" opacity=".8"/>
+    <rect x="9.5" y="7.5" width="5" height="5" rx="1" fill="#fff" opacity=".95"/>
+    <rect x="15" y="13" width="5" height="5" rx="1" fill="#fff" opacity=".65"/></svg>`,
+  snake: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <path d="M5 17h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="18.5" cy="5" r="2.2" fill="#fff"/>
+    <circle cx="19.2" cy="4.4" r=".7" fill="#0f2"/><circle cx="19.2" cy="5.7" r=".7" fill="#0f2"/></svg>`,
+  breakout: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <rect x="3" y="4" width="5" height="2.6" rx="1" fill="#fff" opacity=".9"/>
+    <rect x="9.5" y="4" width="5" height="2.6" rx="1" fill="#fff" opacity=".7"/>
+    <rect x="16" y="4" width="5" height="2.6" rx="1" fill="#fff" opacity=".9"/>
+    <rect x="3" y="8" width="5" height="2.6" rx="1" fill="#fff" opacity=".65"/>
+    <rect x="9.5" y="8" width="5" height="2.6" rx="1" fill="#fff" opacity=".9"/>
+    <circle cx="15" cy="14" r="2" fill="#fff"/>
+    <rect x="9" y="19" width="9" height="2.4" rx="1.2" fill="#fff"/></svg>`,
+  run: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+    <circle cx="14" cy="5" r="2.1" fill="#fff" stroke="none"/>
+    <path d="M13.5 9.5 10 12l2.5 2.5L10 19"/><path d="M13.5 9.5 17 11.5l3-.8"/><path d="M13.5 12.5 18 15l1 4.5"/>
+    <path d="M4 20h4"/></svg>`,
+  galaga: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <path d="M12 3l2.2 5h5.3l-4 3.4 1.5 5.6L12 14l-5 3-1.5-5.6L1.5 8h5.3L12 3z" transform="translate(0,2)" fill="#fff" opacity=".95"/>
+    <circle cx="12" cy="9" r="1.6" fill="#38bdf8"/></svg>`,
+  puzzle: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <rect x="4" y="4" width="7" height="7" rx="1.6" fill="#fff" opacity=".95"/>
+    <rect x="13" y="4" width="7" height="7" rx="1.6" fill="#fff" opacity=".6"/>
+    <rect x="4" y="13" width="7" height="7" rx="1.6" fill="#fff" opacity=".6"/>
+    <path d="M16.5 13v3.5H13" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".95"/>
+    <path d="M20 20v-3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>`,
+  tictac: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+    <path d="M9.5 4v16M14.5 4v16M4 9.5h16M4 14.5h16" opacity=".55"/>
+    <path d="M6 6l3 3M9 6L6 9" stroke-width="2.2"/>
+    <circle cx="17" cy="17" r="2.4" stroke-width="2.2"/></svg>`,
+  pong: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <rect x="4" y="6" width="2.6" height="9" rx="1.3" fill="#fff"/>
+    <rect x="17.4" y="9" width="2.6" height="9" rx="1.3" fill="#fff" opacity=".85"/>
+    <circle cx="11" cy="11" r="2" fill="#fff"/>
+    <path d="M14.5 8.5l2-1.5M13.5 14.5l3 1" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".5"/></svg>`,
+  mines: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <circle cx="11" cy="14" r="5" fill="#fff"/>
+    <path d="M11 6.5v3M11 18.5v3M4 14h2M16 14h2M6 9l2 2M16 19l2 2M16 9l-2 2M6 19l2-2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M15 4l4 2-4 2z" fill="#fff" opacity=".8"/></svg>`,
+  conway: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <rect x="5" y="5" width="4" height="4" rx="1" fill="#fff"/>
+    <rect x="11" y="5" width="4" height="4" rx="1" fill="#fff" opacity=".65"/>
+    <rect x="17" y="5" width="4" height="4" rx="1" fill="#fff" opacity=".4"/>
+    <rect x="11" y="11" width="4" height="4" rx="1" fill="#fff" opacity=".85"/>
+    <rect x="17" y="11" width="4" height="4" rx="1" fill="#fff" opacity=".6"/></svg>`,
+  mandel: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff">
+    <circle cx="10" cy="13" r="6.5" stroke-width="2.2"/>
+    <circle cx="17.5" cy="13" r="3.4" stroke-width="2.2"/>
+    <circle cx="21" cy="13" r="1.5" fill="#fff" stroke="none"/></svg>`,
+  sound: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <path d="M4 10v4h3l4 3.5v-11L7 10H4z" fill="#fff"/>
+    <path d="M14.5 9.5a3.5 3.5 0 0 1 0 5M17 7.5a6.5 6.5 0 0 1 0 9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" opacity=".8"/></svg>`,
+  settings: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff">
+    <circle cx="12" cy="12" r="4.5" stroke-width="2.2"/>
+    <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke-width="2" stroke-linecap="round" opacity=".8"/></svg>`,
+  info: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff">
+    <circle cx="12" cy="12" r="8.5" stroke-width="2"/>
+    <circle cx="12" cy="8.2" r="1.4" fill="#fff" stroke="none"/>
+    <path d="M12 11.5v5.5" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+};
+
+/* ============ app registry (mirrors menu.ino order) ============ */
+const APPS = [
+  { label:"Tetris",   g:["#f97316","#ef4444"], ic:I.tetris   },
+  { label:"Snake",    g:["#22c55e","#84cc16"], ic:I.snake    },
+  { label:"Breakout", g:["#ec4899","#f43f5e"], ic:I.breakout },
+  { label:"Run",      g:["#f59e0b","#fbbf24"], ic:I.run      },
+  { label:"Galaga",   g:["#6366f1","#3b82f6"], ic:I.galaga   },
+  { label:"Puzzle",   g:["#14b8a6","#0ea5e9"], ic:I.puzzle   },
+  { label:"Tic-Tac",  g:["#8b5cf6","#d946ef"], ic:I.tictac   },
+  { label:"Pong",     g:["#06b6d4","#3b82f6"], ic:I.pong     },
+  { label:"Mines",    g:["#64748b","#94a3b8"], ic:I.mines    },
+  { label:"Conway's", g:["#a855f7","#6366f1"], ic:I.conway   },
+  { label:"Mandel",   g:["#0ea5e9","#8b5cf6"], ic:I.mandel   },
+  { label:"Sound",    g:["#f43f5e","#f97316"], ic:I.sound    },
+  { label:"Settings", g:["#475569","#64748b"], ic:I.settings },
+  { label:"Info",     g:["#0ea5e9","#22d3ee"], ic:I.info     },
+];
+const COLS = 3, ROWS = 3, PER_PAGE = COLS * ROWS;
+const PAGES = Math.ceil(APPS.length / PER_PAGE);
+
+/* geometry per mode: [tileW, tileH, leftMargin, colGap, rowTops] */
+const GEO = {
+  new:     { w:66, h:70, mx:10, gap:11, rows:[56,130,204] },
+  current: { w:72, h:76, mx:8,  gap:4,  rows:[68,143,218] },
+};
+
+const state = { mode:"new", page:0, sel:0 };
+
+const wrap  = document.getElementById("pageWrap");
+const dots  = document.getElementById("dots");
+const toast = document.getElementById("toast");
+
+function slot(i) { return { c: i % COLS, r: Math.floor(i % PER_PAGE / COLS) }; }
+
+function render() {
+  document.body.className = "mode-" + state.mode;
+  document.querySelectorAll("#modeSeg button").forEach(b =>
+    b.classList.toggle("on", b.dataset.mode === state.mode));
+  wrap.innerHTML = "";
+  const g = GEO[state.mode];
+  const start = state.page * PER_PAGE;
+  const end = Math.min(start + PER_PAGE, APPS.length);
+  for (let i = start; i < end; i++) {
+    const a = APPS[i], s = slot(i);
+    const tile = document.createElement("div");
+    tile.className = "tile" + (i === state.sel ? " sel" : "");
+    tile.style.left = (g.mx + s.c * (g.w + g.gap)) + "px";
+    tile.style.top  = g.rows[s.r] + "px";
+    if (state.mode === "new") {
+      tile.innerHTML =
+        `<div class="icon" style="background:linear-gradient(135deg,${a.g[0]},${a.g[1]})">${a.ic}</div>` +
+        `<div class="label">${a.label}</div>`;
+    } else {
+      tile.innerHTML =
+        `<div class="icon">${a.ic}</div><div class="label">${a.label}</div>`;
+    }
+    tile.addEventListener("click", () => {
+      if (state.sel === i) openApp(i);
+      else { state.sel = i; render(); }
+    });
+    wrap.appendChild(tile);
+  }
+  dots.innerHTML = "";
+  for (let p = 0; p < PAGES; p++) {
+    const d = document.createElement("div");
+    d.className = "dot" + (p === state.page ? " on" : "");
+    dots.appendChild(d);
+  }
+}
+
+function openApp(i) {
+  toast.innerHTML = `▶ Opening <b>${APPS[i].label}</b>…`;
+  toast.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove("show"), 1100);
+}
+
+function move(dx, dy) {
+  const s = slot(state.sel);
+  let page = state.page, c = s.c, r = s.r;
+  c += dx;
+  if (c < 0)  { if (page > 0) { page--; c = COLS - 1; } else c = 0; }
+  if (c > COLS - 1) { if (page < PAGES - 1) { page++; c = 0; } else c = COLS - 1; }
+  r = Math.max(0, Math.min(ROWS - 1, r + dy));
+  const target = page * PER_PAGE + r * COLS + c;
+  if (target < APPS.length) {
+    if (page !== state.page) animatePage(page - state.page);
+    state.page = page; state.sel = target;
+    render();
+  }
+}
+
+function animatePage(dir) {
+  wrap.animate(
+    [{ transform: "translateX(0)", opacity: 1 },
+     { transform: `translateX(${-dir * 16}px)`, opacity: 0 }],
+    { duration: 110, fill: "forwards", easing: "ease-in" });
+  setTimeout(() => {
+    wrap.animate(
+      [{ transform: `translateX(${dir * 16}px)`, opacity: 0 },
+       { transform: "translateX(0)", opacity: 1 }],
+      { duration: 130, easing: "ease-out", fill: "forwards" });
+  }, 115);
+}
+
+window.addEventListener("keydown", e => {
+  const k = e.key;
+  if (k === "ArrowLeft")  { move(-1, 0); e.preventDefault(); }
+  else if (k === "ArrowRight") { move(1, 0); e.preventDefault(); }
+  else if (k === "ArrowUp")    { move(0, -1); e.preventDefault(); }
+  else if (k === "ArrowDown")  { move(0, 1); e.preventDefault(); }
+  else if (k === "Enter" || k === " ") { openApp(state.sel); e.preventDefault(); }
+  else if (k === "[") { if (state.page > 0) { animatePage(-1); state.page--; state.sel = state.page * PER_PAGE; render(); } }
+  else if (k === "]") { if (state.page < PAGES - 1) { animatePage(1); state.page++; state.sel = Math.min(state.page * PER_PAGE, APPS.length - 1); render(); } }
+  else if (k === "n" || k === "N") { state.mode = "new"; render(); }
+  else if (k === "c" || k === "C") { state.mode = "current"; render(); }
+});
+
+document.getElementById("modeSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.mode = b.dataset.mode; render();
+});
+
+document.getElementById("swatches").addEventListener("click", e => {
+  const s = e.target.closest(".sw"); if (!s) return;
+  document.documentElement.style.setProperty("--accent", s.dataset.c);
+  document.querySelectorAll(".sw").forEach(x => x.classList.toggle("on", x === s));
+});
+
+render();
+</script>
+</body>
+</html>

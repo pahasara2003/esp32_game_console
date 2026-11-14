@@ -1,0 +1,4 @@
+- generic [active] [ref=f1e1]:
+  - textbox "Your name" [ref=f1e2]
+  - button "Say hi" [ref=f1e3]
+  - paragraph

@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - heading "Launcher mockup — v4 (redesign)" [level=1] [ref=e2]
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - button "New design" [ref=e5] [cursor=pointer]
+      - button "Current firmware" [ref=e6] [cursor=pointer]
+    - generic [ref=e7]:
+      - button "Dark" [ref=e8] [cursor=pointer]
+      - button "Light" [ref=e9] [cursor=pointer]
+    - generic "Aurora" [ref=e10] [cursor=pointer]
+    - generic "Ocean" [ref=e11] [cursor=pointer]
+    - generic "Orchid" [ref=e12] [cursor=pointer]
+    - generic "Rose" [ref=e13] [cursor=pointer]
+    - generic "Citrus" [ref=e14] [cursor=pointer]
+    - generic "Sunset" [ref=e15] [cursor=pointer]
+    - generic "Mint" [ref=e16] [cursor=pointer]
+    - generic "Silver" [ref=e17] [cursor=pointer]
+    - generic [ref=e18]: Sunset
+  - generic [ref=e20]:
+    - generic [ref=e22]:
+      - generic [ref=e23]: Games
+      - generic [ref=e24]: 1/2
+    - generic:
+      - generic [ref=e84] [cursor=pointer]: Tetris
+      - generic [ref=e90] [cursor=pointer]: Snake
+      - generic [ref=e96] [cursor=pointer]: Breakout
+      - generic [ref=e102] [cursor=pointer]: Run
+      - generic [ref=e108] [cursor=pointer]: Galaga
+      - generic [ref=e113] [cursor=pointer]: Puzzle
+      - generic [ref=e121] [cursor=pointer]: Tic-Tac-Toe
+      - generic [ref=e127] [cursor=pointer]: Pong
+      - generic [ref=e133] [cursor=pointer]: Mines
+    - generic [ref=e80]:
+      - button "page 1" [ref=e139] [cursor=pointer]
+      - button "page 2" [ref=e140] [cursor=pointer]
+  - generic [ref=e83]: ←→↑↓ move · Enter open · [] page · N/C mode · L light/dark

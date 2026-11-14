@@ -1,0 +1,4686 @@
+{
+  ".playwright-mcp/page-2026-11-11T03-58-08-359Z.yml": {
+    "mtime": 1794369488.3651676,
+    "seen": 1794508044.2863812,
+    "ast_hash": "77f04c061aa911547593cac1ed5942b1",
+    "semantic_hash": "77f04c061aa911547593cac1ed5942b1",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T03-58-20-496Z.yml": {
+    "mtime": 1794369500.5001667,
+    "seen": 1794508044.2864118,
+    "ast_hash": "ae4426360b0f5b63953bd0ed5a195a86",
+    "semantic_hash": "ae4426360b0f5b63953bd0ed5a195a86",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T03-58-31-784Z.yml": {
+    "mtime": 1794369511.7901654,
+    "seen": 1794508044.2864223,
+    "ast_hash": "ebb9607a83948c24c813c05815a48c00",
+    "semantic_hash": "ebb9607a83948c24c813c05815a48c00",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-04-10-941Z.yml": {
+    "mtime": 1794369850.9461346,
+    "seen": 1794508044.286428,
+    "ast_hash": "13692305aba44705050de7d0b980be7b",
+    "semantic_hash": "13692305aba44705050de7d0b980be7b",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-35-17-317Z.yml": {
+    "mtime": 1794371717.3301249,
+    "seen": 1794508044.2864325,
+    "ast_hash": "5c59951a394678000031df30faa0c4b0",
+    "semantic_hash": "5c59951a394678000031df30faa0c4b0",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-35-19-898Z.yml": {
+    "mtime": 1794371719.902128,
+    "seen": 1794508044.2864363,
+    "ast_hash": "7864dde40ecf4ee6bad609de4fad8957",
+    "semantic_hash": "7864dde40ecf4ee6bad609de4fad8957",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-36-01-025Z.yml": {
+    "mtime": 1794371761.0291786,
+    "seen": 1794508044.2864413,
+    "ast_hash": "21edf7ff03a2d937ce1bffa500bd044e",
+    "semantic_hash": "21edf7ff03a2d937ce1bffa500bd044e",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-36-02-065Z.yml": {
+    "mtime": 1794371762.06718,
+    "seen": 1794508044.2864442,
+    "ast_hash": "f2be1ae2deea6fa461e0c97611ba0308",
+    "semantic_hash": "f2be1ae2deea6fa461e0c97611ba0308",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-37-08-745Z.yml": {
+    "mtime": 1794371828.7492619,
+    "seen": 1794508044.286461,
+    "ast_hash": "c039bae67e0b1f5822e8f9e48501f6cf",
+    "semantic_hash": "c039bae67e0b1f5822e8f9e48501f6cf",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-49-01-745Z.yml": {
+    "mtime": 1794372541.7567134,
+    "seen": 1794508044.2864656,
+    "ast_hash": "0dcb572f6a1c8c2f9ae1c2625ab2f46d",
+    "semantic_hash": "0dcb572f6a1c8c2f9ae1c2625ab2f46d",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-49-11-497Z.yml": {
+    "mtime": 1794372551.499709,
+    "seen": 1794508044.2864692,
+    "ast_hash": "d95cf8500552a64764cf2a3f69daabc7",
+    "semantic_hash": "d95cf8500552a64764cf2a3f69daabc7",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-49-29-393Z.yml": {
+    "mtime": 1794372569.394701,
+    "seen": 1794508044.2864735,
+    "ast_hash": "0151d1c1aab222d98f16ee4a97e4605f",
+    "semantic_hash": "0151d1c1aab222d98f16ee4a97e4605f",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-49-45-460Z.yml": {
+    "mtime": 1794372585.4626937,
+    "seen": 1794508044.2864769,
+    "ast_hash": "1516c7a0aee806dc78cc028379bce004",
+    "semantic_hash": "1516c7a0aee806dc78cc028379bce004",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-49-46-178Z.yml": {
+    "mtime": 1794372586.1806934,
+    "seen": 1794508044.2864804,
+    "ast_hash": "a8c466ba4642d0ec558d91b4fd877065",
+    "semantic_hash": "a8c466ba4642d0ec558d91b4fd877065",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-52-16-962Z.yml": {
+    "mtime": 1794372736.9636257,
+    "seen": 1794508044.2864842,
+    "ast_hash": "4f9340520f53f6bbb75282d7fdae0f4d",
+    "semantic_hash": "4f9340520f53f6bbb75282d7fdae0f4d",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-58-19-031Z.yml": {
+    "mtime": 1794373099.0574112,
+    "seen": 1794508044.286488,
+    "ast_hash": "e0385db8262c18e90385866e66204c29",
+    "semantic_hash": "e0385db8262c18e90385866e66204c29",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-58-56-590Z.yml": {
+    "mtime": 1794373136.594386,
+    "seen": 1794508044.2864914,
+    "ast_hash": "63cacb104eb8affcbaa3b2f63025a2c0",
+    "semantic_hash": "63cacb104eb8affcbaa3b2f63025a2c0",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-58-58-287Z.yml": {
+    "mtime": 1794373138.2893848,
+    "seen": 1794508044.286495,
+    "ast_hash": "244e986b6fe9db9d5e425d9d8414d9fb",
+    "semantic_hash": "244e986b6fe9db9d5e425d9d8414d9fb",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-58-59-008Z.yml": {
+    "mtime": 1794373139.0113845,
+    "seen": 1794508044.2864988,
+    "ast_hash": "5d7424b25786d23519ceaa4b90c9932f",
+    "semantic_hash": "5d7424b25786d23519ceaa4b90c9932f",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T04-59-59-945Z.yml": {
+    "mtime": 1794373199.9553437,
+    "seen": 1794508044.2865024,
+    "ast_hash": "e33f74c81febc3a88ce0da8a9068bf9e",
+    "semantic_hash": "e33f74c81febc3a88ce0da8a9068bf9e",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T05-00-00-650Z.yml": {
+    "mtime": 1794373200.6523433,
+    "seen": 1794508044.2865064,
+    "ast_hash": "2e951882611c4f4668165027a9b4f59b",
+    "semantic_hash": "2e951882611c4f4668165027a9b4f59b",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T05-00-15-966Z.yml": {
+    "mtime": 1794373215.9693332,
+    "seen": 1794508044.2865098,
+    "ast_hash": "983c9a25c47016eeaedbddc324d3c912",
+    "semantic_hash": "983c9a25c47016eeaedbddc324d3c912",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T05-16-02-512Z.yml": {
+    "mtime": 1794374162.5155184,
+    "seen": 1794508044.2865138,
+    "ast_hash": "2ee9e248b08a7ab3c687d99d7fe10ed7",
+    "semantic_hash": "2ee9e248b08a7ab3c687d99d7fe10ed7",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T05-16-04-100Z.yml": {
+    "mtime": 1794374164.102517,
+    "seen": 1794508044.2865176,
+    "ast_hash": "2887f9b96b4869e2b644c8fa6a16d0c8",
+    "semantic_hash": "2887f9b96b4869e2b644c8fa6a16d0c8",
+    "ast_empty": true
+  },
+  ".playwright-mcp/page-2026-11-11T05-16-04-841Z.yml": {
+    "mtime": 1794374164.843516,
+    "seen": 1794508044.2865207,
+    "ast_hash": "d586d558819f4b6944698c84638d7bcc",
+    "semantic_hash": "d586d558819f4b6944698c84638d7bcc",
+    "ast_empty": true
+  },
+  ".vscode/extensions.json": {
+    "mtime": 1791601043.5593116,
+    "seen": 1794508044.2865248,
+    "ast_hash": "1bb1a03a1864036d5bae0680854d9365",
+    "semantic_hash": "1bb1a03a1864036d5bae0680854d9365",
+    "ast_empty": true
+  },
+  "backups/Setup70c_ESP32_C3_ILI9341.h": {
+    "mtime": 1794485454.6368513,
+    "seen": 1794508044.2865286,
+    "ast_hash": "5c471ec8a296000b701a1c9e7be893fb",
+    "semantic_hash": "5c471ec8a296000b701a1c9e7be893fb"
+  },
+  "backups/build_crystal_world-before-reference.py": {
+    "mtime": 1793266124.4194496,
+    "seen": 1794508044.2867608,
+    "ast_hash": "b29bad4f635fd8e9b2ba544a8e55822b",
+    "semantic_hash": "b29bad4f635fd8e9b2ba544a8e55822b"
+  },
+  "backups/config.h": {
+    "mtime": 1794485454.6418512,
+    "seen": 1794508044.286869,
+    "ast_hash": "071bdab5f0d31a83e61a97953ad0a24b",
+    "semantic_hash": "071bdab5f0d31a83e61a97953ad0a24b"
+  },
+  "backups/menu-icons-before-clipboard-2026-10-23/modern_icons_40x40.h": {
+    "mtime": 1792761744.79841,
+    "seen": 1794508044.2869499,
+    "ast_hash": "6b8e86fa16edd7b5d48acd362baf4be6",
+    "semantic_hash": "6b8e86fa16edd7b5d48acd362baf4be6"
+  },
+  "backups/menu-icons-before-downloads-2026-10-23-1826/modern_icons_40x40.h": {
+    "mtime": 1792760355.6591003,
+    "seen": 1794508044.2870398,
+    "ast_hash": "0988630f88d77e3c95720a12800118ba",
+    "semantic_hash": "0988630f88d77e3c95720a12800118ba"
+  },
+  "camera_demo/src/main.cpp": {
+    "mtime": 1793199075.238993,
+    "seen": 1794508044.2871275,
+    "ast_hash": "8cf85398b79b2a0d9423a5ed9fd42f1e",
+    "semantic_hash": "8cf85398b79b2a0d9423a5ed9fd42f1e"
+  },
+  "display_test/song_controller.py": {
+    "mtime": 1794231933.2364116,
+    "seen": 1794508044.2872136,
+    "ast_hash": "91d3e02c59613ea1f649375dc96b9c12",
+    "semantic_hash": "91d3e02c59613ea1f649375dc96b9c12"
+  },
+  "display_test/src/main.cpp": {
+    "mtime": 1794238758.7242935,
+    "seen": 1794508044.2872956,
+    "ast_hash": "5a4df005bd818501365e3f8ed69645f1",
+    "semantic_hash": "5a4df005bd818501365e3f8ed69645f1"
+  },
+  "image.py": {
+    "mtime": 1794373164.9977999,
+    "seen": 1794508044.2877069,
+    "ast_hash": "50ae60f36ee6b6144d675de8149d76ca",
+    "semantic_hash": "50ae60f36ee6b6144d675de8149d76ca"
+  },
+  "lib/TFT_eSPI/Extensions/Button.cpp": {
+    "mtime": 1763185608.910414,
+    "seen": 1794508044.2880664,
+    "ast_hash": "5431f291db59850b6a96768dcb6f8c98",
+    "semantic_hash": "5431f291db59850b6a96768dcb6f8c98"
+  },
+  "lib/TFT_eSPI/Extensions/Button.h": {
+    "mtime": 1763185608.910414,
+    "seen": 1794508044.2882447,
+    "ast_hash": "8845b7d1c01b8a349932afd099d35a64",
+    "semantic_hash": "8845b7d1c01b8a349932afd099d35a64"
+  },
+  "lib/TFT_eSPI/Extensions/Smooth_font.cpp": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.288381,
+    "ast_hash": "1ff86283014fb6855962b53a935e60f1",
+    "semantic_hash": "1ff86283014fb6855962b53a935e60f1"
+  },
+  "lib/TFT_eSPI/Extensions/Smooth_font.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.2885494,
+    "ast_hash": "6fea65bb5df24d5b3770af2c488e206a",
+    "semantic_hash": "6fea65bb5df24d5b3770af2c488e206a"
+  },
+  "lib/TFT_eSPI/Extensions/Sprite.cpp": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.288685,
+    "ast_hash": "74274b78d186b22433a6c1bc47bb82e8",
+    "semantic_hash": "74274b78d186b22433a6c1bc47bb82e8"
+  },
+  "lib/TFT_eSPI/Extensions/Sprite.h": {
+    "mtime": 1763185608.910414,
+    "seen": 1794508044.2888217,
+    "ast_hash": "0396ee85128f7e06c28344a63d89b65a",
+    "semantic_hash": "0396ee85128f7e06c28344a63d89b65a"
+  },
+  "lib/TFT_eSPI/Extensions/Touch.cpp": {
+    "mtime": 1763185608.910414,
+    "seen": 1794508044.2889514,
+    "ast_hash": "d193ec1c60127ffd326b0a969586f663",
+    "semantic_hash": "d193ec1c60127ffd326b0a969586f663"
+  },
+  "lib/TFT_eSPI/Extensions/Touch.h": {
+    "mtime": 1763185608.910414,
+    "seen": 1794508044.2890809,
+    "ast_hash": "699e8120de7635193aa0d489965c6b37",
+    "semantic_hash": "699e8120de7635193aa0d489965c6b37"
+  },
+  "lib/TFT_eSPI/Fonts/Custom/Orbitron_Light_24.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2892199,
+    "ast_hash": "7741938bc9ce8a683723f945f941879a",
+    "semantic_hash": "7741938bc9ce8a683723f945f941879a"
+  },
+  "lib/TFT_eSPI/Fonts/Custom/Orbitron_Light_32.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2893755,
+    "ast_hash": "8020bdd45ee6748f34d197110a1a0863",
+    "semantic_hash": "8020bdd45ee6748f34d197110a1a0863"
+  },
+  "lib/TFT_eSPI/Fonts/Custom/Roboto_Thin_24.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2895508,
+    "ast_hash": "ffaa60deb98df59792a8e5a91e11c176",
+    "semantic_hash": "ffaa60deb98df59792a8e5a91e11c176"
+  },
+  "lib/TFT_eSPI/Fonts/Custom/Satisfy_24.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.289711,
+    "ast_hash": "f7e0d85596f7e33f09d340a22f2de6f2",
+    "semantic_hash": "f7e0d85596f7e33f09d340a22f2de6f2"
+  },
+  "lib/TFT_eSPI/Fonts/Custom/Yellowtail_32.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2899346,
+    "ast_hash": "a5dbd4c8671207c15167bdc9ee85b868",
+    "semantic_hash": "a5dbd4c8671207c15167bdc9ee85b868"
+  },
+  "lib/TFT_eSPI/Fonts/Font16.c": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.2900825,
+    "ast_hash": "6f2582a7ae6856c34b17eb28272c5731",
+    "semantic_hash": "6f2582a7ae6856c34b17eb28272c5731"
+  },
+  "lib/TFT_eSPI/Fonts/Font16.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2902255,
+    "ast_hash": "7a2f580add5333c18d7a2b0875d161ca",
+    "semantic_hash": "7a2f580add5333c18d7a2b0875d161ca"
+  },
+  "lib/TFT_eSPI/Fonts/Font32rle.c": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.290377,
+    "ast_hash": "ba3f1638c4757c7ca4a3051329feb4ba",
+    "semantic_hash": "ba3f1638c4757c7ca4a3051329feb4ba"
+  },
+  "lib/TFT_eSPI/Fonts/Font32rle.h": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.290694,
+    "ast_hash": "285c7923e20f2956bb273c841e3b1770",
+    "semantic_hash": "285c7923e20f2956bb273c841e3b1770"
+  },
+  "lib/TFT_eSPI/Fonts/Font64rle.c": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.2908442,
+    "ast_hash": "cc87d776d58138d7116c143c0ada72ac",
+    "semantic_hash": "cc87d776d58138d7116c143c0ada72ac"
+  },
+  "lib/TFT_eSPI/Fonts/Font64rle.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2909927,
+    "ast_hash": "6cbce02cae7cd21a0c7ad35dde354af4",
+    "semantic_hash": "6cbce02cae7cd21a0c7ad35dde354af4"
+  },
+  "lib/TFT_eSPI/Fonts/Font72rle.c": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.291156,
+    "ast_hash": "2c74d00bbf79cc3555ee3122a1662c03",
+    "semantic_hash": "2c74d00bbf79cc3555ee3122a1662c03"
+  },
+  "lib/TFT_eSPI/Fonts/Font72rle.h": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.2914195,
+    "ast_hash": "0296257ca422baaec6f04809141495e7",
+    "semantic_hash": "0296257ca422baaec6f04809141495e7"
+  },
+  "lib/TFT_eSPI/Fonts/Font72x53rle.c": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.291607,
+    "ast_hash": "d1f1e0d775b7277e12433526773b5639",
+    "semantic_hash": "d1f1e0d775b7277e12433526773b5639"
+  },
+  "lib/TFT_eSPI/Fonts/Font72x53rle.h": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.2917626,
+    "ast_hash": "bdc479426889f0dcf9f4c03cda01c6fa",
+    "semantic_hash": "bdc479426889f0dcf9f4c03cda01c6fa"
+  },
+  "lib/TFT_eSPI/Fonts/Font7srle.c": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2919161,
+    "ast_hash": "fe7f792876717115841b5f9996a430c9",
+    "semantic_hash": "fe7f792876717115841b5f9996a430c9"
+  },
+  "lib/TFT_eSPI/Fonts/Font7srle.h": {
+    "mtime": 1763185608.9284148,
+    "seen": 1794508044.2920642,
+    "ast_hash": "1f8539396752cc8fa895cceda1a90c27",
+    "semantic_hash": "1f8539396752cc8fa895cceda1a90c27"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMono12pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2922091,
+    "ast_hash": "cc345a0a44d021182cb8ce8d4c474844",
+    "semantic_hash": "cc345a0a44d021182cb8ce8d4c474844"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMono18pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2923687,
+    "ast_hash": "06bbbb081af4d7857993ada987b0decf",
+    "semantic_hash": "06bbbb081af4d7857993ada987b0decf"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMono24pt7b.h": {
+    "mtime": 1763185608.9214146,
+    "seen": 1794508044.2925436,
+    "ast_hash": "9310830958a693d8857623a0098ec4b3",
+    "semantic_hash": "9310830958a693d8857623a0098ec4b3"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMono9pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.292688,
+    "ast_hash": "d57bfeb6c1dcf6c2ecfb6ae8e21008e8",
+    "semantic_hash": "d57bfeb6c1dcf6c2ecfb6ae8e21008e8"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold12pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2928267,
+    "ast_hash": "923ce5eb21fe972ae388c55d470e868e",
+    "semantic_hash": "923ce5eb21fe972ae388c55d470e868e"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold18pt7b.h": {
+    "mtime": 1763185608.9214146,
+    "seen": 1794508044.292968,
+    "ast_hash": "cf592d471bc985e9ad76d123b88d4a03",
+    "semantic_hash": "cf592d471bc985e9ad76d123b88d4a03"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold24pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2931132,
+    "ast_hash": "c6f39a3854b86fad065e1bf8a2db7710",
+    "semantic_hash": "c6f39a3854b86fad065e1bf8a2db7710"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold9pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.293261,
+    "ast_hash": "f5f061c53a12419ddcf6ba0d9af8b228",
+    "semantic_hash": "f5f061c53a12419ddcf6ba0d9af8b228"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique12pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2934194,
+    "ast_hash": "348538df3023597280ff4a94bf72578f",
+    "semantic_hash": "348538df3023597280ff4a94bf72578f"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique18pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2936091,
+    "ast_hash": "248484848aeb7d3f76d25bfe67a8124e",
+    "semantic_hash": "248484848aeb7d3f76d25bfe67a8124e"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique24pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.293765,
+    "ast_hash": "88acf8853110ff04f541091182543bbd",
+    "semantic_hash": "88acf8853110ff04f541091182543bbd"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique9pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2939117,
+    "ast_hash": "1c47ea0511037c70465b99014a142fd2",
+    "semantic_hash": "1c47ea0511037c70465b99014a142fd2"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique12pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.294061,
+    "ast_hash": "61c6e55a13d18512b44e7401a5047f0a",
+    "semantic_hash": "61c6e55a13d18512b44e7401a5047f0a"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique18pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2942016,
+    "ast_hash": "0c3c345b366b8efe37c2b068c864b8a2",
+    "semantic_hash": "0c3c345b366b8efe37c2b068c864b8a2"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique24pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2943444,
+    "ast_hash": "87182ae8704808f37a72412c1c893cd3",
+    "semantic_hash": "87182ae8704808f37a72412c1c893cd3"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique9pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2945046,
+    "ast_hash": "b8548ae642f2184a53b4055541a33dd0",
+    "semantic_hash": "b8548ae642f2184a53b4055541a33dd0"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSans12pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2947803,
+    "ast_hash": "30dfb251c3b02a6ffaca02b0af4ba129",
+    "semantic_hash": "30dfb251c3b02a6ffaca02b0af4ba129"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSans18pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.295035,
+    "ast_hash": "b404dc4739db35c5f7c433a94ae76a18",
+    "semantic_hash": "b404dc4739db35c5f7c433a94ae76a18"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSans24pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2951126,
+    "ast_hash": "982da2b8bb8862198bf7ccbdf904f290",
+    "semantic_hash": "982da2b8bb8862198bf7ccbdf904f290"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSans9pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2951956,
+    "ast_hash": "d048e883a1d1e1dcba4f7e409fd5a994",
+    "semantic_hash": "d048e883a1d1e1dcba4f7e409fd5a994"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold12pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.295274,
+    "ast_hash": "d6bf286a360520d64aee6e87bfd67df4",
+    "semantic_hash": "d6bf286a360520d64aee6e87bfd67df4"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold18pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2953603,
+    "ast_hash": "2e769a35dd360bf316e2b3f3927dd072",
+    "semantic_hash": "2e769a35dd360bf316e2b3f3927dd072"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold24pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.295423,
+    "ast_hash": "d55dda46ab6bb0b8fef2120f13f95a9f",
+    "semantic_hash": "d55dda46ab6bb0b8fef2120f13f95a9f"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold9pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.295522,
+    "ast_hash": "b67fa5d17eccba4a1b4b48829e1e443b",
+    "semantic_hash": "b67fa5d17eccba4a1b4b48829e1e443b"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique12pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2955837,
+    "ast_hash": "d1e5573e0effaa87851f3592f30065db",
+    "semantic_hash": "d1e5573e0effaa87851f3592f30065db"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique18pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2956479,
+    "ast_hash": "7ec66e3e3e0c5ac104741d9d3020f0fe",
+    "semantic_hash": "7ec66e3e3e0c5ac104741d9d3020f0fe"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique24pt7b.h": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2957165,
+    "ast_hash": "87d72481a0bc59f8cab9aa77b2533045",
+    "semantic_hash": "87d72481a0bc59f8cab9aa77b2533045"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique9pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2957778,
+    "ast_hash": "1399e657696f81079b9c5c44c110c1f9",
+    "semantic_hash": "1399e657696f81079b9c5c44c110c1f9"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique12pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2958379,
+    "ast_hash": "b8b26742fb8f0e63aa48e245acb189e8",
+    "semantic_hash": "b8b26742fb8f0e63aa48e245acb189e8"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique18pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.295896,
+    "ast_hash": "f82d7ad2f7528157a02b3394a062d0ca",
+    "semantic_hash": "f82d7ad2f7528157a02b3394a062d0ca"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique24pt7b.h": {
+    "mtime": 1763185608.9214146,
+    "seen": 1794508044.2959554,
+    "ast_hash": "88aa0ccaeae658c370dcb155b8dc3fad",
+    "semantic_hash": "88aa0ccaeae658c370dcb155b8dc3fad"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique9pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.296014,
+    "ast_hash": "9c08b745e824b23407537d58af6befe5",
+    "semantic_hash": "9c08b745e824b23407537d58af6befe5"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerif12pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2960758,
+    "ast_hash": "3dad2543633b66263e239504db2c6ed2",
+    "semantic_hash": "3dad2543633b66263e239504db2c6ed2"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerif18pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2961624,
+    "ast_hash": "ae9d1a80412733fcd36a1cb8991a695d",
+    "semantic_hash": "ae9d1a80412733fcd36a1cb8991a695d"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerif24pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2962456,
+    "ast_hash": "42f47a4fd86dab977eef42781ad30fec",
+    "semantic_hash": "42f47a4fd86dab977eef42781ad30fec"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerif9pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2963338,
+    "ast_hash": "0644d6b6a1fbedc8c9b40c1070842336",
+    "semantic_hash": "0644d6b6a1fbedc8c9b40c1070842336"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold12pt7b.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2963982,
+    "ast_hash": "2a5d499c4b6f6389448ba230c774b781",
+    "semantic_hash": "2a5d499c4b6f6389448ba230c774b781"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold18pt7b.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2964835,
+    "ast_hash": "116b333029d92bcb4cf9f6e12eb065af",
+    "semantic_hash": "116b333029d92bcb4cf9f6e12eb065af"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold24pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2965646,
+    "ast_hash": "05f0adf71880944834ea0bbc2c241c39",
+    "semantic_hash": "05f0adf71880944834ea0bbc2c241c39"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold9pt7b.h": {
+    "mtime": 1763185608.9214146,
+    "seen": 1794508044.2966342,
+    "ast_hash": "c1ee3f7a9ffdde0e8fbbaab3d75168a0",
+    "semantic_hash": "c1ee3f7a9ffdde0e8fbbaab3d75168a0"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic12pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2967038,
+    "ast_hash": "e520a9f7fb593e9568ebbb7d0702ae77",
+    "semantic_hash": "e520a9f7fb593e9568ebbb7d0702ae77"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic18pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2967808,
+    "ast_hash": "50ebb591a4027648bfff7a8d5e607db2",
+    "semantic_hash": "50ebb591a4027648bfff7a8d5e607db2"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic24pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2968535,
+    "ast_hash": "326b31594fa0b690f99a10663d1c50a7",
+    "semantic_hash": "326b31594fa0b690f99a10663d1c50a7"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic9pt7b.h": {
+    "mtime": 1763185608.9254148,
+    "seen": 1794508044.2969215,
+    "ast_hash": "980df1345b9a835edb4e6a2371f9e3f9",
+    "semantic_hash": "980df1345b9a835edb4e6a2371f9e3f9"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic12pt7b.h": {
+    "mtime": 1763185608.9244146,
+    "seen": 1794508044.2969887,
+    "ast_hash": "4c5b7610f50894879ac3a196c32eb4f0",
+    "semantic_hash": "4c5b7610f50894879ac3a196c32eb4f0"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic18pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2970598,
+    "ast_hash": "7743bfab48afc22c7cb241f7079181c2",
+    "semantic_hash": "7743bfab48afc22c7cb241f7079181c2"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic24pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2971296,
+    "ast_hash": "49696c737694a64ff38209d55b271030",
+    "semantic_hash": "49696c737694a64ff38209d55b271030"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic9pt7b.h": {
+    "mtime": 1763185608.9224145,
+    "seen": 1794508044.2971954,
+    "ast_hash": "b0d7d59e131d7a1a69899b2eee53373e",
+    "semantic_hash": "b0d7d59e131d7a1a69899b2eee53373e"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/TomThumb.h": {
+    "mtime": 1763185608.9234147,
+    "seen": 1794508044.2972622,
+    "ast_hash": "e76fb4c7e52f358ddc6eceeba7ba5c76",
+    "semantic_hash": "e76fb4c7e52f358ddc6eceeba7ba5c76"
+  },
+  "lib/TFT_eSPI/Fonts/GFXFF/gfxfont.h": {
+    "mtime": 1763185608.9264147,
+    "seen": 1794508044.2973294,
+    "ast_hash": "b9fa481cf0dd240fe9bde1bbb6e016d0",
+    "semantic_hash": "b9fa481cf0dd240fe9bde1bbb6e016d0"
+  },
+  "lib/TFT_eSPI/Fonts/glcdfont.c": {
+    "mtime": 1763185608.927415,
+    "seen": 1794508044.2973986,
+    "ast_hash": "36441bca98e5d228f0e14447aa52c32a",
+    "semantic_hash": "36441bca98e5d228f0e14447aa52c32a"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32.c": {
+    "mtime": 1763185608.813409,
+    "seen": 1794508044.297489,
+    "ast_hash": "b290eb09101ed684700e2aeb8e08207a",
+    "semantic_hash": "b290eb09101ed684700e2aeb8e08207a"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2975702,
+    "ast_hash": "f9536c64f955d5c3aefac3f59c0d8a36",
+    "semantic_hash": "f9536c64f955d5c3aefac3f59c0d8a36"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_C3.c": {
+    "mtime": 1763643885.7182791,
+    "seen": 1794508044.2976377,
+    "ast_hash": "b0293c6ddbce8f7b4317d90c1ee0cd17",
+    "semantic_hash": "b0293c6ddbce8f7b4317d90c1ee0cd17"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_C3.h": {
+    "mtime": 1791601819.6937904,
+    "seen": 1794508044.2977035,
+    "ast_hash": "34b21c8058634c97bf7f6799fae096d2",
+    "semantic_hash": "34b21c8058634c97bf7f6799fae096d2"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_S3.c": {
+    "mtime": 1763185608.813409,
+    "seen": 1794508044.2977674,
+    "ast_hash": "589a97b47fde794052a9b7dbddb8fe30",
+    "semantic_hash": "589a97b47fde794052a9b7dbddb8fe30"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_S3.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.2978306,
+    "ast_hash": "fbad99a0f22bfd91d81a1ad672d73690",
+    "semantic_hash": "fbad99a0f22bfd91d81a1ad672d73690"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP8266.c": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.297892,
+    "ast_hash": "29db0d445f756c6b3d4065315413acd9",
+    "semantic_hash": "29db0d445f756c6b3d4065315413acd9"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_ESP8266.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.2979534,
+    "ast_hash": "2680019e480e78e2ebcec6af8f5bc777",
+    "semantic_hash": "2680019e480e78e2ebcec6af8f5bc777"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_Generic.c": {
+    "mtime": 1763185608.813409,
+    "seen": 1794508044.298011,
+    "ast_hash": "91611630eca805daebd9fb73ce16833b",
+    "semantic_hash": "91611630eca805daebd9fb73ce16833b"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_Generic.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2980702,
+    "ast_hash": "75d6e2e6c92d87f79f5858cadbf9fb53",
+    "semantic_hash": "75d6e2e6c92d87f79f5858cadbf9fb53"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_RP2040.c": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.2981603,
+    "ast_hash": "9aece05b6452aef6d1ce0ae5a4ff267b",
+    "semantic_hash": "9aece05b6452aef6d1ce0ae5a4ff267b"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_RP2040.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.298233,
+    "ast_hash": "ead736a1af45b6f5b90ca86f47e258ca",
+    "semantic_hash": "ead736a1af45b6f5b90ca86f47e258ca"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_STM32.c": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2982938,
+    "ast_hash": "45eb8883c153ca2a6b7d7de8ced1eaaf",
+    "semantic_hash": "45eb8883c153ca2a6b7d7de8ced1eaaf"
+  },
+  "lib/TFT_eSPI/Processors/TFT_eSPI_STM32.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.298351,
+    "ast_hash": "570319f91a3f8b8a6df5c4cc642dda31",
+    "semantic_hash": "570319f91a3f8b8a6df5c4cc642dda31"
+  },
+  "lib/TFT_eSPI/Processors/pio_16bit_parallel.pio.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.298409,
+    "ast_hash": "3e760619f9cc8e622d744b30b9311bef",
+    "semantic_hash": "3e760619f9cc8e622d744b30b9311bef"
+  },
+  "lib/TFT_eSPI/Processors/pio_8bit_parallel.pio.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2984898,
+    "ast_hash": "250ece072a1acafbd456f8b354484d1f",
+    "semantic_hash": "250ece072a1acafbd456f8b354484d1f"
+  },
+  "lib/TFT_eSPI/Processors/pio_8bit_parallel_18bpp.pio.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.2985451,
+    "ast_hash": "80ddccc7621dc926ad8f8b4072898e0e",
+    "semantic_hash": "80ddccc7621dc926ad8f8b4072898e0e"
+  },
+  "lib/TFT_eSPI/Processors/pio_SPI.pio.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.2985995,
+    "ast_hash": "cf8a46941f56ffe3ea3bb39f61ccc252",
+    "semantic_hash": "cf8a46941f56ffe3ea3bb39f61ccc252"
+  },
+  "lib/TFT_eSPI/Processors/pio_SPI_18bit.pio.h": {
+    "mtime": 1763185608.814409,
+    "seen": 1794508044.298651,
+    "ast_hash": "c89c79ab6e3d7ab9fa986d3e15c963cb",
+    "semantic_hash": "c89c79ab6e3d7ab9fa986d3e15c963cb"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/EPD_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.298703,
+    "ast_hash": "724e25fa70f9ed4d878d3ee9b02a72cd",
+    "semantic_hash": "724e25fa70f9ed4d878d3ee9b02a72cd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/GC9A01_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.298775,
+    "ast_hash": "2aef86d0b7db0a6d78b300a9e7ff46ac",
+    "semantic_hash": "2aef86d0b7db0a6d78b300a9e7ff46ac"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/GC9A01_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2988427,
+    "ast_hash": "2d4d2d4156b47229998b8440fe125c0e",
+    "semantic_hash": "2d4d2d4156b47229998b8440fe125c0e"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/GC9A01_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2989028,
+    "ast_hash": "7d00a3bd8153f87d06aa8e314e5aeae6",
+    "semantic_hash": "7d00a3bd8153f87d06aa8e314e5aeae6"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357B_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2989552,
+    "ast_hash": "d47607531f258f3fa90dd1e2d591118e",
+    "semantic_hash": "d47607531f258f3fa90dd1e2d591118e"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357B_Init.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.2990062,
+    "ast_hash": "9adf411a0279955c860d8373022dcfa8",
+    "semantic_hash": "9adf411a0279955c860d8373022dcfa8"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357B_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2990582,
+    "ast_hash": "1abb6d80eaf51346f9ed34663c38c13b",
+    "semantic_hash": "1abb6d80eaf51346f9ed34663c38c13b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357C_Defines.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.29911,
+    "ast_hash": "d47607531f258f3fa90dd1e2d591118e",
+    "semantic_hash": "d47607531f258f3fa90dd1e2d591118e"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357C_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2991633,
+    "ast_hash": "dfb5a338f9a4a9b25db4a7815d7e2d88",
+    "semantic_hash": "dfb5a338f9a4a9b25db4a7815d7e2d88"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357C_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2992172,
+    "ast_hash": "1abb6d80eaf51346f9ed34663c38c13b",
+    "semantic_hash": "1abb6d80eaf51346f9ed34663c38c13b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357D_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2992697,
+    "ast_hash": "9a7a9e28f9ba043a9430a258f958c5ab",
+    "semantic_hash": "9a7a9e28f9ba043a9430a258f958c5ab"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357D_Init.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2993214,
+    "ast_hash": "6c946bc281e1cafbf8345b67ac64c814",
+    "semantic_hash": "6c946bc281e1cafbf8345b67ac64c814"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/HX8357D_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2993717,
+    "ast_hash": "c1740a9fed8731e77170574cd8fe4e64",
+    "semantic_hash": "c1740a9fed8731e77170574cd8fe4e64"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9163_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2994215,
+    "ast_hash": "00f8b742515971a4c6f685b7e5620693",
+    "semantic_hash": "00f8b742515971a4c6f685b7e5620693"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9163_Init.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.2994995,
+    "ast_hash": "13ee1d4c2da49bae04eb1d187fa311f3",
+    "semantic_hash": "13ee1d4c2da49bae04eb1d187fa311f3"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9163_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.299552,
+    "ast_hash": "9e8b9d98321bb0a10ef1fb1277d4029a",
+    "semantic_hash": "9e8b9d98321bb0a10ef1fb1277d4029a"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9225_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2996025,
+    "ast_hash": "5794d2517a4dbd78675f8bcd8de56b51",
+    "semantic_hash": "5794d2517a4dbd78675f8bcd8de56b51"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9225_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2996516,
+    "ast_hash": "3446996aa36b9232f9f517ee0142bfbb",
+    "semantic_hash": "3446996aa36b9232f9f517ee0142bfbb"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9225_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.299701,
+    "ast_hash": "79fbc97b0f08c214b48e24015719ec5d",
+    "semantic_hash": "79fbc97b0f08c214b48e24015719ec5d"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9341_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2997491,
+    "ast_hash": "27a535a0ed9e3bb7bff2851d81a70f69",
+    "semantic_hash": "27a535a0ed9e3bb7bff2851d81a70f69"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9341_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2997985,
+    "ast_hash": "e1bd148c37493b247f65ef695667b9bb",
+    "semantic_hash": "e1bd148c37493b247f65ef695667b9bb"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9341_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.2998478,
+    "ast_hash": "b6deaadb2067aab8857b5f3bfe923793",
+    "semantic_hash": "b6deaadb2067aab8857b5f3bfe923793"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9481_Defines.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.2998972,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9481_Init.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.2999458,
+    "ast_hash": "3f078e7bbbbfbc762cb35449f8bc54d5",
+    "semantic_hash": "3f078e7bbbbfbc762cb35449f8bc54d5"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9481_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.2999957,
+    "ast_hash": "c6525a8beae7d53a51c4a121aa808c22",
+    "semantic_hash": "c6525a8beae7d53a51c4a121aa808c22"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9486_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3000455,
+    "ast_hash": "7cc54f8799e4715b702c02487fe1d69d",
+    "semantic_hash": "7cc54f8799e4715b702c02487fe1d69d"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9486_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3000953,
+    "ast_hash": "b63e310d0121bb73b211890c684732bd",
+    "semantic_hash": "b63e310d0121bb73b211890c684732bd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9486_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3001454,
+    "ast_hash": "1d97bebc029a275fedaed8668a0ad5a3",
+    "semantic_hash": "1d97bebc029a275fedaed8668a0ad5a3"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9488_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.300195,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9488_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3002455,
+    "ast_hash": "d012cdf9c2abf5df3077c82a6a6d743b",
+    "semantic_hash": "d012cdf9c2abf5df3077c82a6a6d743b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ILI9488_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3002956,
+    "ast_hash": "49d881a799cd8fc118a50d05ef9d085a",
+    "semantic_hash": "49d881a799cd8fc118a50d05ef9d085a"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/R61581_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3003461,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/R61581_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.300395,
+    "ast_hash": "edf13a6280379651329f8bab187bb3a3",
+    "semantic_hash": "edf13a6280379651329f8bab187bb3a3"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/R61581_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.300445,
+    "ast_hash": "1880a80bc5366fbf24843de5971a6c25",
+    "semantic_hash": "1880a80bc5366fbf24843de5971a6c25"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68120_Defines.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.3005257,
+    "ast_hash": "70b9b41e54a79792fbba803837d8fe4b",
+    "semantic_hash": "70b9b41e54a79792fbba803837d8fe4b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68120_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3005881,
+    "ast_hash": "6c2344990af9fb0b1cbd40b4b7fe6ed4",
+    "semantic_hash": "6c2344990af9fb0b1cbd40b4b7fe6ed4"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68120_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3006482,
+    "ast_hash": "df84f135ad47dbf80bc83d5e006f2b11",
+    "semantic_hash": "df84f135ad47dbf80bc83d5e006f2b11"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68140_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3006995,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68140_Init.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3007486,
+    "ast_hash": "559d90ca9d02d547e0bf9b352d8a5725",
+    "semantic_hash": "559d90ca9d02d547e0bf9b352d8a5725"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/RM68140_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.300797,
+    "ast_hash": "cb72dcd26fe2687af50d5b76a65354e8",
+    "semantic_hash": "cb72dcd26fe2687af50d5b76a65354e8"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/S6D02A1_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3008454,
+    "ast_hash": "46d36acb3467878be6ac1f0b128c9c04",
+    "semantic_hash": "46d36acb3467878be6ac1f0b128c9c04"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/S6D02A1_Init.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.3009033,
+    "ast_hash": "043d2085f013e4c712054f70a2957a8b",
+    "semantic_hash": "043d2085f013e4c712054f70a2957a8b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/S6D02A1_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3009536,
+    "ast_hash": "e47713692e59773f5065855fced3d0dd",
+    "semantic_hash": "e47713692e59773f5065855fced3d0dd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1351_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3010027,
+    "ast_hash": "2d35c17561bd3a81772f59bd049e6bdf",
+    "semantic_hash": "2d35c17561bd3a81772f59bd049e6bdf"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1351_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3010507,
+    "ast_hash": "954b932e1c4544bdcece0ad844764312",
+    "semantic_hash": "954b932e1c4544bdcece0ad844764312"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1351_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3011005,
+    "ast_hash": "3983b85e773f5b7efc0fceac3bb0ccdd",
+    "semantic_hash": "3983b85e773f5b7efc0fceac3bb0ccdd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1963_Defines.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3011494,
+    "ast_hash": "7c5c595fb61cf06101ac8ded66bc63a2",
+    "semantic_hash": "7c5c595fb61cf06101ac8ded66bc63a2"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1963_Init.h": {
+    "mtime": 1763185608.8154092,
+    "seen": 1794508044.301198,
+    "ast_hash": "be637860eab77495b68e65a7892aed49",
+    "semantic_hash": "be637860eab77495b68e65a7892aed49"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/SSD1963_Rotation.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.3012478,
+    "ast_hash": "86e7e3b3b782cf6ecde77beb80aa0b7b",
+    "semantic_hash": "86e7e3b3b782cf6ecde77beb80aa0b7b"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7735_Defines.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.3012972,
+    "ast_hash": "fddc16d9595abe60a910365c3313b978",
+    "semantic_hash": "fddc16d9595abe60a910365c3313b978"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7735_Init.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.301346,
+    "ast_hash": "ff3c433c2cc3bfdaed28a859b9cd64c7",
+    "semantic_hash": "ff3c433c2cc3bfdaed28a859b9cd64c7"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7735_Rotation.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.3013961,
+    "ast_hash": "455d1589a4500d27e3d5d0a041dab5ff",
+    "semantic_hash": "455d1589a4500d27e3d5d0a041dab5ff"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_2_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.301445,
+    "ast_hash": "5010a578eb52a8593fd4f2e2ca77e575",
+    "semantic_hash": "5010a578eb52a8593fd4f2e2ca77e575"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_2_Init.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.3015075,
+    "ast_hash": "fe3cd5b4e6db098246bcd6c937ef385d",
+    "semantic_hash": "fe3cd5b4e6db098246bcd6c937ef385d"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_2_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3015568,
+    "ast_hash": "03b8b00f58276dd97a9f8d7c84f115dd",
+    "semantic_hash": "03b8b00f58276dd97a9f8d7c84f115dd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_Defines.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3016074,
+    "ast_hash": "adfcb028006d5f2cb558e6d4075bab38",
+    "semantic_hash": "adfcb028006d5f2cb558e6d4075bab38"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3016558,
+    "ast_hash": "0157b4fa7bcb868d3cc3b4309d53d4bc",
+    "semantic_hash": "0157b4fa7bcb868d3cc3b4309d53d4bc"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7789_Rotation.h": {
+    "mtime": 1763185608.8174093,
+    "seen": 1794508044.3017044,
+    "ast_hash": "03b8b00f58276dd97a9f8d7c84f115dd",
+    "semantic_hash": "03b8b00f58276dd97a9f8d7c84f115dd"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7796_Defines.h": {
+    "mtime": 1763185608.8184092,
+    "seen": 1794508044.3017528,
+    "ast_hash": "50460b5d686c9ba1c36e1c6f88a78902",
+    "semantic_hash": "50460b5d686c9ba1c36e1c6f88a78902"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7796_Init.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3018014,
+    "ast_hash": "326dc16b21fbb0b2aa2ac7fc18b3c351",
+    "semantic_hash": "326dc16b21fbb0b2aa2ac7fc18b3c351"
+  },
+  "lib/TFT_eSPI/TFT_Drivers/ST7796_Rotation.h": {
+    "mtime": 1763185608.816409,
+    "seen": 1794508044.3018503,
+    "ast_hash": "17a0cb94a100e01491b16fc7a407bb67",
+    "semantic_hash": "17a0cb94a100e01491b16fc7a407bb67"
+  },
+  "lib/TFT_eSPI/TFT_config.h": {
+    "mtime": 1763185608.813409,
+    "seen": 1794508044.3018982,
+    "ast_hash": "439c8b931340a6f9099807f7e2586454",
+    "semantic_hash": "439c8b931340a6f9099807f7e2586454"
+  },
+  "lib/TFT_eSPI/TFT_eSPI.cpp": {
+    "mtime": 1763643847.2965908,
+    "seen": 1794508044.301945,
+    "ast_hash": "74f9f37a4da0ae02bd86c57616d14aaa",
+    "semantic_hash": "74f9f37a4da0ae02bd86c57616d14aaa"
+  },
+  "lib/TFT_eSPI/TFT_eSPI.h": {
+    "mtime": 1763643852.9245405,
+    "seen": 1794508044.3019896,
+    "ast_hash": "678e0442451b2039cab0bcb98979f793",
+    "semantic_hash": "678e0442451b2039cab0bcb98979f793"
+  },
+  "lib/TFT_eSPI/Tools/Create_Smooth_Font/Create_font/FontFiles/Final-Frontier28.h": {
+    "mtime": 1763185608.8194094,
+    "seen": 1794508044.3020346,
+    "ast_hash": "97284428ba36961e6bda9876bb54e22e",
+    "semantic_hash": "97284428ba36961e6bda9876bb54e22e"
+  },
+  "lib/TFT_eSPI/Tools/bmp2array4bit/bmp2array4bit.py": {
+    "mtime": 1763185608.8194094,
+    "seen": 1794508044.3021104,
+    "ast_hash": "f17cc78db5d6571b65a3469fcc3199d4",
+    "semantic_hash": "f17cc78db5d6571b65a3469fcc3199d4"
+  },
+  "lib/TFT_eSPI/User_Setup.h": {
+    "mtime": 1763185608.9214146,
+    "seen": 1794508044.3021662,
+    "ast_hash": "e7e981c70c1f5288d4837fb42614c65a",
+    "semantic_hash": "e7e981c70c1f5288d4837fb42614c65a"
+  },
+  "lib/TFT_eSPI/User_Setup_Select.h": {
+    "mtime": 1763186207.4457994,
+    "seen": 1794508044.3022122,
+    "ast_hash": "688dc52445f63f7124a7793cd27afd78",
+    "semantic_hash": "688dc52445f63f7124a7793cd27afd78"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup0_Sprite.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.302259,
+    "ast_hash": "93c91fa67cdb26cb71d7a233798ce249",
+    "semantic_hash": "93c91fa67cdb26cb71d7a233798ce249"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup100_RP2040_ILI9488_parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.302311,
+    "ast_hash": "9eb72aed80e8e4478d9eb578600270c4",
+    "semantic_hash": "9eb72aed80e8e4478d9eb578600270c4"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup101_RP2040_ILI9481_parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3023636,
+    "ast_hash": "8b561dc2656db848d9061246fa277e96",
+    "semantic_hash": "8b561dc2656db848d9061246fa277e96"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup102_RP2040_ILI9341_parallel.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3024142,
+    "ast_hash": "c1ca6374e881347ce9a3689767e45135",
+    "semantic_hash": "c1ca6374e881347ce9a3689767e45135"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup103_RP2040_ILI9486_parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.302482,
+    "ast_hash": "986199a73ab3df297b5b32a91d2ca38e",
+    "semantic_hash": "986199a73ab3df297b5b32a91d2ca38e"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup104_RP2040_ST7796_parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3025331,
+    "ast_hash": "db1f5394840e7033313eff6986d99c11",
+    "semantic_hash": "db1f5394840e7033313eff6986d99c11"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup105_RP2040_ST7796_16bit_parallel.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.3025844,
+    "ast_hash": "72b4901e44fe66c8dc783079ea426e68",
+    "semantic_hash": "72b4901e44fe66c8dc783079ea426e68"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup106_RP2040_ILI9481_16bit_parallel.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3026333,
+    "ast_hash": "5f963dcd6da277d6d0273dac89434c0a",
+    "semantic_hash": "5f963dcd6da277d6d0273dac89434c0a"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup107_RP2040_ILI9341_16bit_parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.302681,
+    "ast_hash": "f020db951ffe483d5f93b8d14df00b14",
+    "semantic_hash": "f020db951ffe483d5f93b8d14df00b14"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup108_RP2040_ST7735.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3027272,
+    "ast_hash": "deb192660d0b0b1052c76b0d83cd1985",
+    "semantic_hash": "deb192660d0b0b1052c76b0d83cd1985"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup10_RPi_touch_ILI9486.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.3027737,
+    "ast_hash": "311eb6784bfa037c147f2e9a2510949e",
+    "semantic_hash": "311eb6784bfa037c147f2e9a2510949e"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup11_RPi_touch_ILI9486.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.302819,
+    "ast_hash": "a76a10e152b56642ddbbc7f97aa6b402",
+    "semantic_hash": "a76a10e152b56642ddbbc7f97aa6b402"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup12_M5Stack_Basic_Core.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.302866,
+    "ast_hash": "ff91167a463795f9823a620f768ebfa1",
+    "semantic_hash": "ff91167a463795f9823a620f768ebfa1"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup135_ST7789.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3029118,
+    "ast_hash": "166faab742b5697b864396d16f7feab6",
+    "semantic_hash": "166faab742b5697b864396d16f7feab6"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup136_LilyGo_TTV.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3029578,
+    "ast_hash": "cdc1e119219dbaa58beb4f97d6bb38a4",
+    "semantic_hash": "cdc1e119219dbaa58beb4f97d6bb38a4"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup137_LilyGo_TDisplay_RP2040.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3030047,
+    "ast_hash": "a752739c5498fa5c880330e488eef269",
+    "semantic_hash": "a752739c5498fa5c880330e488eef269"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup138_Pico_Explorer_Base_RP2040_ST7789.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3030515,
+    "ast_hash": "82ab100f5325ba6ab16a7f645baf1014",
+    "semantic_hash": "82ab100f5325ba6ab16a7f645baf1014"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup13_ILI9481_Parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3030987,
+    "ast_hash": "98e674434ae671f6214a608f124c6856",
+    "semantic_hash": "98e674434ae671f6214a608f124c6856"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup14_ILI9341_Parallel.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.303145,
+    "ast_hash": "a6a89152393fdcf48644eb0d74ecab03",
+    "semantic_hash": "a6a89152393fdcf48644eb0d74ecab03"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup15_HX8357D.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.303189,
+    "ast_hash": "990332a441542bebed43fa64d6d874aa",
+    "semantic_hash": "990332a441542bebed43fa64d6d874aa"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup16_ILI9488_Parallel.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.303234,
+    "ast_hash": "b6781f5b7c07d04081f9f293b6d81ccb",
+    "semantic_hash": "b6781f5b7c07d04081f9f293b6d81ccb"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup17_ePaper.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3032806,
+    "ast_hash": "27c0eb9c0ba9f992788a10d2ee6a0072",
+    "semantic_hash": "27c0eb9c0ba9f992788a10d2ee6a0072"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup18_ST7789.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3033264,
+    "ast_hash": "a93a4ccd32a20537585d520253f9c33b",
+    "semantic_hash": "a93a4ccd32a20537585d520253f9c33b"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup19_RM68140_Parallel.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3033714,
+    "ast_hash": "6523ea0ef58b74b8239be86a3ec118c2",
+    "semantic_hash": "6523ea0ef58b74b8239be86a3ec118c2"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup1_ILI9341.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3034177,
+    "ast_hash": "96249f78af851c9e1d458df442b4932f",
+    "semantic_hash": "96249f78af851c9e1d458df442b4932f"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup200_GC9A01.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.303475,
+    "ast_hash": "0bfc60172800e3ea654993d3ab6cd1a5",
+    "semantic_hash": "0bfc60172800e3ea654993d3ab6cd1a5"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup201_WT32_SC01.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.303521,
+    "ast_hash": "c12cc6c0d3ec318d5f190f89e906a78c",
+    "semantic_hash": "c12cc6c0d3ec318d5f190f89e906a78c"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup202_SSD1351_128.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.303567,
+    "ast_hash": "883311dcf893a9e35fcaaf72255f634f",
+    "semantic_hash": "883311dcf893a9e35fcaaf72255f634f"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup203_ST7789.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.303613,
+    "ast_hash": "d9aff04f47134e82db7e9e70f2261d36",
+    "semantic_hash": "d9aff04f47134e82db7e9e70f2261d36"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup204_ESP32_TouchDown.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3036585,
+    "ast_hash": "23b3d11f33ae32e78263c2d4c94aaba3",
+    "semantic_hash": "23b3d11f33ae32e78263c2d4c94aaba3"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup205_ESP32_TouchDown_S3.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.303704,
+    "ast_hash": "c67372786fb3f703e3f5a2f6227c9333",
+    "semantic_hash": "c67372786fb3f703e3f5a2f6227c9333"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup206_LilyGo_T_Display_S3.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3037496,
+    "ast_hash": "4f1004370821743f886b45a165098676",
+    "semantic_hash": "4f1004370821743f886b45a165098676"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup207_LilyGo_T_HMI.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.303795,
+    "ast_hash": "088252214d6c2087ac7c607ada49ca32",
+    "semantic_hash": "088252214d6c2087ac7c607ada49ca32"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup209_LilyGo_T_Dongle_S3.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3038416,
+    "ast_hash": "a955ad42bb1527ea935a277c1c4c9786",
+    "semantic_hash": "a955ad42bb1527ea935a277c1c4c9786"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup20_ILI9488.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3038874,
+    "ast_hash": "43b7e3098e34fd52a360c0835ba2c643",
+    "semantic_hash": "43b7e3098e34fd52a360c0835ba2c643"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup210_LilyGo_T_Embed_S3.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3039339,
+    "ast_hash": "c8ddac1f1108092d23dcd21d0358d91e",
+    "semantic_hash": "c8ddac1f1108092d23dcd21d0358d91e"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup211_LilyGo_T_QT_Pro_S3.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.30398,
+    "ast_hash": "c461de5ebeab36e20c510c13694e09c7",
+    "semantic_hash": "c461de5ebeab36e20c510c13694e09c7"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup212_LilyGo_T_PicoPro.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3040254,
+    "ast_hash": "45fa5762830ebd54bfd4767126aafffc",
+    "semantic_hash": "45fa5762830ebd54bfd4767126aafffc"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup213_LilyGo_T_Beam_Shield.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3040724,
+    "ast_hash": "46389b78912f040e96830cd2784089c4",
+    "semantic_hash": "46389b78912f040e96830cd2784089c4"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup21_ILI9488.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.304118,
+    "ast_hash": "0f9f5f3844903c4308dde50df2d50550",
+    "semantic_hash": "0f9f5f3844903c4308dde50df2d50550"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup22_TTGO_T4.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.304165,
+    "ast_hash": "28de23cd93ec4d41ce1b4a036fb5c6b1",
+    "semantic_hash": "28de23cd93ec4d41ce1b4a036fb5c6b1"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup22_TTGO_T4_v1.3.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3042102,
+    "ast_hash": "51b8296562bf1384f7ff1c6cbcc1a95a",
+    "semantic_hash": "51b8296562bf1384f7ff1c6cbcc1a95a"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup23_TTGO_TM.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3042552,
+    "ast_hash": "ebb8f42ee418bfe800070ab53697149c",
+    "semantic_hash": "ebb8f42ee418bfe800070ab53697149c"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup24_ST7789.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3043013,
+    "ast_hash": "abb09e16b5d1be26fcf1c5327014f80f",
+    "semantic_hash": "abb09e16b5d1be26fcf1c5327014f80f"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup250_ESP32_S3_Box_Lite.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.3043473,
+    "ast_hash": "d6c6d70170990e01512b2ff2fd7ddeb1",
+    "semantic_hash": "d6c6d70170990e01512b2ff2fd7ddeb1"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup251_ESP32_S3_Box.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.304393,
+    "ast_hash": "fdcb8de4230ed74362f1672da66d4f91",
+    "semantic_hash": "fdcb8de4230ed74362f1672da66d4f91"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup25_TTGO_T_Display.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.304439,
+    "ast_hash": "5de33d433739a1fe190b82dec060be10",
+    "semantic_hash": "5de33d433739a1fe190b82dec060be10"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup26_TTGO_T_Wristband.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3045151,
+    "ast_hash": "680063e2aedd23c3beea99aa02cc5e64",
+    "semantic_hash": "680063e2aedd23c3beea99aa02cc5e64"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup27_RPi_ST7796_ESP32.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.304578,
+    "ast_hash": "73ac6a177175a26284a6b2f4feb59b6b",
+    "semantic_hash": "73ac6a177175a26284a6b2f4feb59b6b"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup28_RPi_ST7796_ESP8266.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.3046439,
+    "ast_hash": "2e354fb3704d631648ce762d7ede4e97",
+    "semantic_hash": "2e354fb3704d631648ce762d7ede4e97"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup29_ILI9341_STM32.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3046918,
+    "ast_hash": "99b8f26b34860d6c7b5e63dc27e400d5",
+    "semantic_hash": "99b8f26b34860d6c7b5e63dc27e400d5"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup29b_ILI9341_STM32.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3047366,
+    "ast_hash": "379d3ba2b7016d4aaa59d39200547e72",
+    "semantic_hash": "379d3ba2b7016d4aaa59d39200547e72"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup2_ST7735.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3047822,
+    "ast_hash": "31b2b6ec7d4663e8373f9e608ca4faf6",
+    "semantic_hash": "31b2b6ec7d4663e8373f9e608ca4faf6"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup301_BW16_ST7735.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3048277,
+    "ast_hash": "5fbdbe57cf74dcc1873322ae2df0a882",
+    "semantic_hash": "5fbdbe57cf74dcc1873322ae2df0a882"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup302_Waveshare_ESP32S3_GC9A01.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3048728,
+    "ast_hash": "21120155d77233dedf7d9aced7285927",
+    "semantic_hash": "21120155d77233dedf7d9aced7285927"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup30_ILI9341_Parallel_STM32.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3049176,
+    "ast_hash": "601840de42e64d309869affc69a06e86",
+    "semantic_hash": "601840de42e64d309869affc69a06e86"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup31_ST7796_Parallel_STM32.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3049638,
+    "ast_hash": "95fe9e83fe682fa6a02c80516025b662",
+    "semantic_hash": "95fe9e83fe682fa6a02c80516025b662"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup32_ILI9341_STM32F103.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3050091,
+    "ast_hash": "df48eff171ea331b09bcfeb924c589cf",
+    "semantic_hash": "df48eff171ea331b09bcfeb924c589cf"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup33_RPi_ILI9486_STM32.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.305055,
+    "ast_hash": "c16b7565dd8cb452a399679729938368",
+    "semantic_hash": "c16b7565dd8cb452a399679729938368"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup34_ILI9481_Parallel_STM32.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3051014,
+    "ast_hash": "af3c0f330b470a1baad5bc52b1fb55c2",
+    "semantic_hash": "af3c0f330b470a1baad5bc52b1fb55c2"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup35_ILI9341_STM32_Port_Bus.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.305148,
+    "ast_hash": "2ae7f162158f9c119b0b7e434ca0ebb4",
+    "semantic_hash": "2ae7f162158f9c119b0b7e434ca0ebb4"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup36_RPi_touch_ST7796.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3051934,
+    "ast_hash": "88a4fc4cdb5c2336e192c57330237c03",
+    "semantic_hash": "88a4fc4cdb5c2336e192c57330237c03"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup3_ILI9163.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3052402,
+    "ast_hash": "d44731d9cae5805b0aaecf87dad14b69",
+    "semantic_hash": "d44731d9cae5805b0aaecf87dad14b69"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup42_ILI9341_ESP32.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3052862,
+    "ast_hash": "e41cafd6b577ce54294a4e576d8b6c68",
+    "semantic_hash": "e41cafd6b577ce54294a4e576d8b6c68"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup43_ST7735.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3053315,
+    "ast_hash": "a20576c008ebf0f8d615c18f4a5f358a",
+    "semantic_hash": "a20576c008ebf0f8d615c18f4a5f358a"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup44_TTGO_CameraPlus.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3053763,
+    "ast_hash": "fae31f242e1523a4157f2c82194ba407",
+    "semantic_hash": "fae31f242e1523a4157f2c82194ba407"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup45_TTGO_T_Watch.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.305421,
+    "ast_hash": "cbd2c9549c4e5a90229aab8fa6978a28",
+    "semantic_hash": "cbd2c9549c4e5a90229aab8fa6978a28"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup46_GC9A01_ESP32.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3054886,
+    "ast_hash": "761daa29432bc0d7e10ff5dc0a448aa7",
+    "semantic_hash": "761daa29432bc0d7e10ff5dc0a448aa7"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup47_ST7735.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3055356,
+    "ast_hash": "4d2e28a573c0eb47331d119c43a5d555",
+    "semantic_hash": "4d2e28a573c0eb47331d119c43a5d555"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup4_S6D02A1.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.305581,
+    "ast_hash": "e74f5088a7cadf370454cef823f90802",
+    "semantic_hash": "e74f5088a7cadf370454cef823f90802"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup50_SSD1963_Parallel.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.305626,
+    "ast_hash": "0d0df0b402f41132d72e78b5dc1a98ca",
+    "semantic_hash": "0d0df0b402f41132d72e78b5dc1a98ca"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup51_LilyPi_ILI9481.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3056717,
+    "ast_hash": "2db4b240f8f6655d4fb53886d545d5ac",
+    "semantic_hash": "2db4b240f8f6655d4fb53886d545d5ac"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup52_LilyPi_ST7796.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3057163,
+    "ast_hash": "bae20935adccc15035170d74e9695ddb",
+    "semantic_hash": "bae20935adccc15035170d74e9695ddb"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup5_RPi_ILI9486.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.3057613,
+    "ast_hash": "3dd4e42dac554d0c1b04aa4ae85c3433",
+    "semantic_hash": "3dd4e42dac554d0c1b04aa4ae85c3433"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup60_RP2040_ILI9341.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3058074,
+    "ast_hash": "56d0491436a42cce45215651b5315789",
+    "semantic_hash": "56d0491436a42cce45215651b5315789"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup60_RP2040_RPI_MHS.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.305853,
+    "ast_hash": "db93ca90f8fa63213e36fd26f4c68cb5",
+    "semantic_hash": "db93ca90f8fa63213e36fd26f4c68cb5"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup61_RP2040_ILI9341_PIO_SPI.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3058977,
+    "ast_hash": "9a1899b4d29dc6e6b6b3e6c85990b7b1",
+    "semantic_hash": "9a1899b4d29dc6e6b6b3e6c85990b7b1"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup62_RP2040_Nano_Connect_ILI9341.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.305943,
+    "ast_hash": "01ccb780edc39a4917b70967d3ad0f96",
+    "semantic_hash": "01ccb780edc39a4917b70967d3ad0f96"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup66_Seeed_XIAO_Round.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.305989,
+    "ast_hash": "cfe74e30409567391c40d7cae800028c",
+    "semantic_hash": "cfe74e30409567391c40d7cae800028c"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup6_RPi_Wr_ILI9486.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.306035,
+    "ast_hash": "4075f8ea905754231c2d784efc8295e6",
+    "semantic_hash": "4075f8ea905754231c2d784efc8295e6"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70_ESP32_S2_ILI9341.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3060813,
+    "ast_hash": "0ef57d3d0bdb2157d9bfa46fe2039054",
+    "semantic_hash": "0ef57d3d0bdb2157d9bfa46fe2039054"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70b_ESP32_S3_ILI9341.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3061407,
+    "ast_hash": "ce7d42768ad297b10891267bad57e1d3",
+    "semantic_hash": "ce7d42768ad297b10891267bad57e1d3"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h": {
+    "mtime": 1794485497.5677602,
+    "seen": 1794508044.306207,
+    "ast_hash": "b2e001f085c7dd3b72fee8ff1b0f6d01",
+    "semantic_hash": "b2e001f085c7dd3b72fee8ff1b0f6d01"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70d_ILI9488_S3_Parallel.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.30626,
+    "ast_hash": "9321ce70cc437ca6245a67c3e9cd43e0",
+    "semantic_hash": "9321ce70cc437ca6245a67c3e9cd43e0"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70f_ESP32_S2_ST7735.h": {
+    "mtime": 1763185608.912414,
+    "seen": 1794508044.306307,
+    "ast_hash": "a10cd2e5ada6f990777084f5b0d3d7a5",
+    "semantic_hash": "a10cd2e5ada6f990777084f5b0d3d7a5"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup70h_ESP32_S3_GC9A01.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3063533,
+    "ast_hash": "b19b71e784e70431fd62b8c845a315f8",
+    "semantic_hash": "b19b71e784e70431fd62b8c845a315f8"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup71_ESP32_S2_ST7789.h": {
+    "mtime": 1763185608.9134142,
+    "seen": 1794508044.3063984,
+    "ast_hash": "5563362800aba8c9d0f40ec92aae0abf",
+    "semantic_hash": "5563362800aba8c9d0f40ec92aae0abf"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup72_ESP32_ST7789_172x320.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.306444,
+    "ast_hash": "07c80909cd5e7ad1177482de6d555bd5",
+    "semantic_hash": "07c80909cd5e7ad1177482de6d555bd5"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup7_ST7735_128x128.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3065066,
+    "ast_hash": "d30dff3b8a64571ecd0546fafa7b159a",
+    "semantic_hash": "d30dff3b8a64571ecd0546fafa7b159a"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup8_ILI9163_128x128.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3065534,
+    "ast_hash": "9358f8de474e097abf7e3f21d14d7a82",
+    "semantic_hash": "9358f8de474e097abf7e3f21d14d7a82"
+  },
+  "lib/TFT_eSPI/User_Setups/Setup9_ST7735_Overlap.h": {
+    "mtime": 1763185608.9144142,
+    "seen": 1794508044.3065994,
+    "ast_hash": "0fb8f401e8c302ac26becc78ba6d4843",
+    "semantic_hash": "0fb8f401e8c302ac26becc78ba6d4843"
+  },
+  "lib/TFT_eSPI/User_Setups/SetupX_Template.h": {
+    "mtime": 1763185608.9154143,
+    "seen": 1794508044.306645,
+    "ast_hash": "b60c41116c359178361397e6e847ed3e",
+    "semantic_hash": "b60c41116c359178361397e6e847ed3e"
+  },
+  "lib/TFT_eSPI/User_Setups/User_Custom_Fonts.h": {
+    "mtime": 1763185608.9114141,
+    "seen": 1794508044.3066905,
+    "ast_hash": "fb11191535465b58af8678840b1e9256",
+    "semantic_hash": "fb11191535465b58af8678840b1e9256"
+  },
+  "lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg1.h": {
+    "mtime": 1763185608.8224094,
+    "seen": 1794508044.3067362,
+    "ast_hash": "787f3303a104a9a1dd808b22b28adc54",
+    "semantic_hash": "787f3303a104a9a1dd808b22b28adc54"
+  },
+  "lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg2.h": {
+    "mtime": 1763185608.8224094,
+    "seen": 1794508044.3067987,
+    "ast_hash": "132ab4fb5153a74917935af6350690af",
+    "semantic_hash": "132ab4fb5153a74917935af6350690af"
+  },
+  "lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg3.h": {
+    "mtime": 1763185608.8224094,
+    "seen": 1794508044.3068542,
+    "ast_hash": "66517b0c45dfb248f8272facd0fb87c3",
+    "semantic_hash": "66517b0c45dfb248f8272facd0fb87c3"
+  },
+  "lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg4.h": {
+    "mtime": 1763185608.8214095,
+    "seen": 1794508044.3069081,
+    "ast_hash": "03be4ef7cc2ce917ae0ae4d267681375",
+    "semantic_hash": "03be4ef7cc2ce917ae0ae4d267681375"
+  },
+  "lib/TFT_eSPI/examples/320 x 240/All_Free_Fonts_Demo/Free_Fonts.h": {
+    "mtime": 1763185608.8814125,
+    "seen": 1794508044.3069625,
+    "ast_hash": "98785bb084524aa81c1b07e4ccafa4ec",
+    "semantic_hash": "98785bb084524aa81c1b07e4ccafa4ec"
+  },
+  "lib/TFT_eSPI/examples/320 x 240/Free_Font_Demo/Free_Fonts.h": {
+    "mtime": 1763185608.8814125,
+    "seen": 1794508044.307019,
+    "ast_hash": "88114979c5e0bee415de29306d0a7b71",
+    "semantic_hash": "88114979c5e0bee415de29306d0a7b71"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/Free_Font_Demo/Free_Fonts.h": {
+    "mtime": 1763185608.8294098,
+    "seen": 1794508044.307076,
+    "ast_hash": "f472b3f4dddbba1bdc5afac828031d8a",
+    "semantic_hash": "f472b3f4dddbba1bdc5afac828031d8a"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg1.h": {
+    "mtime": 1763185608.83041,
+    "seen": 1794508044.3071332,
+    "ast_hash": "84545d1729bb8473d34e2241645d5610",
+    "semantic_hash": "84545d1729bb8473d34e2241645d5610"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg2.h": {
+    "mtime": 1763185608.83041,
+    "seen": 1794508044.307188,
+    "ast_hash": "9f0a527ad373fa00688e804f5de70e90",
+    "semantic_hash": "9f0a527ad373fa00688e804f5de70e90"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg3.h": {
+    "mtime": 1763185608.83141,
+    "seen": 1794508044.3072422,
+    "ast_hash": "67802cd620309e0ae85594ce5851566d",
+    "semantic_hash": "67802cd620309e0ae85594ce5851566d"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg4.h": {
+    "mtime": 1763185608.8294098,
+    "seen": 1794508044.3072972,
+    "ast_hash": "6d348fd4b58d9e29e61bfff507a31e5a",
+    "semantic_hash": "6d348fd4b58d9e29e61bfff507a31e5a"
+  },
+  "lib/TFT_eSPI/examples/480 x 320/TFT_ring_meter/Alert.h": {
+    "mtime": 1763185608.8284097,
+    "seen": 1794508044.3073514,
+    "ast_hash": "1a1a1cd6cd6128c12e2e5c8082f9608b",
+    "semantic_hash": "1a1a1cd6cd6128c12e2e5c8082f9608b"
+  },
+  "lib/TFT_eSPI/examples/DMA test/Flash_Jpg_DMA/panda.h": {
+    "mtime": 1763185608.8204093,
+    "seen": 1794508044.3074074,
+    "ast_hash": "dcb34ab5cc5cc14aa17843d7a37490eb",
+    "semantic_hash": "dcb34ab5cc5cc14aa17843d7a37490eb"
+  },
+  "lib/TFT_eSPI/examples/DMA test/boing_ball/graphic.h": {
+    "mtime": 1763185608.8214095,
+    "seen": 1794508044.3074687,
+    "ast_hash": "b054bb9746f1f553c1e1dabdb9c1ce9c",
+    "semantic_hash": "b054bb9746f1f553c1e1dabdb9c1ce9c"
+  },
+  "lib/TFT_eSPI/examples/GUI Widgets/Buttons/Button_demo/Free_Fonts.h": {
+    "mtime": 1763185608.909414,
+    "seen": 1794508044.3075356,
+    "ast_hash": "952ae57542288218f5d0312b66e151d0",
+    "semantic_hash": "952ae57542288218f5d0312b66e151d0"
+  },
+  "lib/TFT_eSPI/examples/GUI Widgets/Sliders/Slider_demo/Free_Fonts.h": {
+    "mtime": 1763185608.909414,
+    "seen": 1794508044.3075998,
+    "ast_hash": "952ae57542288218f5d0312b66e151d0",
+    "semantic_hash": "952ae57542288218f5d0312b66e151d0"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/config.h": {
+    "mtime": 1763185608.8594115,
+    "seen": 1794508044.30766,
+    "ast_hash": "d625f88773377956c98540644d728b05",
+    "semantic_hash": "d625f88773377956c98540644d728b05"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/catEye.h": {
+    "mtime": 1763185608.8574114,
+    "seen": 1794508044.3077176,
+    "ast_hash": "902ea4baf5f172440726d3ffdef59879",
+    "semantic_hash": "902ea4baf5f172440726d3ffdef59879"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/defaultEye.h": {
+    "mtime": 1763185608.8544111,
+    "seen": 1794508044.3077793,
+    "ast_hash": "1d72c1202ac87b929a7e65d3bcbbe916",
+    "semantic_hash": "1d72c1202ac87b929a7e65d3bcbbe916"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/doeEye.h": {
+    "mtime": 1763185608.8554113,
+    "seen": 1794508044.3078384,
+    "ast_hash": "1e86ce5d31aca8cccdbdcab46464b0ed",
+    "semantic_hash": "1e86ce5d31aca8cccdbdcab46464b0ed"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/dragonEye.h": {
+    "mtime": 1763185608.8464108,
+    "seen": 1794508044.3078978,
+    "ast_hash": "809c1b2f99e02456f0df14a1f7f69fd6",
+    "semantic_hash": "809c1b2f99e02456f0df14a1f7f69fd6"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/goatEye.h": {
+    "mtime": 1763185608.8594115,
+    "seen": 1794508044.3079567,
+    "ast_hash": "06af6993b27dc725c30dfbd36e8f1987",
+    "semantic_hash": "06af6993b27dc725c30dfbd36e8f1987"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/logo.h": {
+    "mtime": 1763185608.8564112,
+    "seen": 1794508044.308016,
+    "ast_hash": "04a84576b7263b7b6090de9089387bb7",
+    "semantic_hash": "04a84576b7263b7b6090de9089387bb7"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/naugaEye.h": {
+    "mtime": 1763185608.8564112,
+    "seen": 1794508044.3080757,
+    "ast_hash": "6c616e1a78e53c5e9c7e230857996f01",
+    "semantic_hash": "6c616e1a78e53c5e9c7e230857996f01"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/newtEye.h": {
+    "mtime": 1763185608.852411,
+    "seen": 1794508044.3081336,
+    "ast_hash": "efc43d39fddc4f20a8bd2a9d76ea8742",
+    "semantic_hash": "efc43d39fddc4f20a8bd2a9d76ea8742"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/noScleraEye.h": {
+    "mtime": 1763185608.8494108,
+    "seen": 1794508044.3081918,
+    "ast_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30",
+    "semantic_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/owlEye.h": {
+    "mtime": 1763185608.850411,
+    "seen": 1794508044.308249,
+    "ast_hash": "37b24b223db768ade319d858d4041ff8",
+    "semantic_hash": "37b24b223db768ade319d858d4041ff8"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/terminatorEye.h": {
+    "mtime": 1763185608.8444107,
+    "seen": 1794508044.308308,
+    "ast_hash": "a63a6b2aef6f898e798369f8bbee8f79",
+    "semantic_hash": "a63a6b2aef6f898e798369f8bbee8f79"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user.cpp": {
+    "mtime": 1763185608.8424106,
+    "seen": 1794508044.3083668,
+    "ast_hash": "644142070b59c17bb98904d7fd6fa2dd",
+    "semantic_hash": "644142070b59c17bb98904d7fd6fa2dd"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user_bat.cpp": {
+    "mtime": 1763185608.8424106,
+    "seen": 1794508044.3084226,
+    "ast_hash": "7ea504677ac26c041e36c91b0d207fc0",
+    "semantic_hash": "7ea504677ac26c041e36c91b0d207fc0"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user_xmas.cpp": {
+    "mtime": 1763185608.8594115,
+    "seen": 1794508044.3085053,
+    "ast_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf",
+    "semantic_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/config.h": {
+    "mtime": 1763185608.8804126,
+    "seen": 1794508044.3085623,
+    "ast_hash": "5d88d3926ec6e56eeb2f122e628fb0e4",
+    "semantic_hash": "5d88d3926ec6e56eeb2f122e628fb0e4"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/catEye.h": {
+    "mtime": 1763185608.8774123,
+    "seen": 1794508044.3086162,
+    "ast_hash": "902ea4baf5f172440726d3ffdef59879",
+    "semantic_hash": "902ea4baf5f172440726d3ffdef59879"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/defaultEye.h": {
+    "mtime": 1763185608.872412,
+    "seen": 1794508044.308676,
+    "ast_hash": "1d72c1202ac87b929a7e65d3bcbbe916",
+    "semantic_hash": "1d72c1202ac87b929a7e65d3bcbbe916"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/doeEye.h": {
+    "mtime": 1763185608.8764122,
+    "seen": 1794508044.3087351,
+    "ast_hash": "1e86ce5d31aca8cccdbdcab46464b0ed",
+    "semantic_hash": "1e86ce5d31aca8cccdbdcab46464b0ed"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/dragonEye.h": {
+    "mtime": 1763185608.8634117,
+    "seen": 1794508044.3087947,
+    "ast_hash": "809c1b2f99e02456f0df14a1f7f69fd6",
+    "semantic_hash": "809c1b2f99e02456f0df14a1f7f69fd6"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/goatEye.h": {
+    "mtime": 1763185608.8794124,
+    "seen": 1794508044.3088531,
+    "ast_hash": "06af6993b27dc725c30dfbd36e8f1987",
+    "semantic_hash": "06af6993b27dc725c30dfbd36e8f1987"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/logo.h": {
+    "mtime": 1763185608.8764122,
+    "seen": 1794508044.308913,
+    "ast_hash": "04a84576b7263b7b6090de9089387bb7",
+    "semantic_hash": "04a84576b7263b7b6090de9089387bb7"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/naugaEye.h": {
+    "mtime": 1763185608.8764122,
+    "seen": 1794508044.3089712,
+    "ast_hash": "6c616e1a78e53c5e9c7e230857996f01",
+    "semantic_hash": "6c616e1a78e53c5e9c7e230857996f01"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/newtEye.h": {
+    "mtime": 1763185608.869412,
+    "seen": 1794508044.3090303,
+    "ast_hash": "efc43d39fddc4f20a8bd2a9d76ea8742",
+    "semantic_hash": "efc43d39fddc4f20a8bd2a9d76ea8742"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/noScleraEye.h": {
+    "mtime": 1763185608.8654118,
+    "seen": 1794508044.30909,
+    "ast_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30",
+    "semantic_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/owlEye.h": {
+    "mtime": 1763185608.8664117,
+    "seen": 1794508044.3091493,
+    "ast_hash": "37b24b223db768ade319d858d4041ff8",
+    "semantic_hash": "37b24b223db768ade319d858d4041ff8"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/terminatorEye.h": {
+    "mtime": 1763185608.8614116,
+    "seen": 1794508044.3092072,
+    "ast_hash": "a63a6b2aef6f898e798369f8bbee8f79",
+    "semantic_hash": "a63a6b2aef6f898e798369f8bbee8f79"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user.cpp": {
+    "mtime": 1763185608.8594115,
+    "seen": 1794508044.3092659,
+    "ast_hash": "644142070b59c17bb98904d7fd6fa2dd",
+    "semantic_hash": "644142070b59c17bb98904d7fd6fa2dd"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user_bat.cpp": {
+    "mtime": 1763185608.8594115,
+    "seen": 1794508044.3093207,
+    "ast_hash": "7ea504677ac26c041e36c91b0d207fc0",
+    "semantic_hash": "7ea504677ac26c041e36c91b0d207fc0"
+  },
+  "lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user_xmas.cpp": {
+    "mtime": 1763185608.8804126,
+    "seen": 1794508044.3093755,
+    "ast_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf",
+    "semantic_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf"
+  },
+  "lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/defaultEye.h": {
+    "mtime": 1763185608.8394103,
+    "seen": 1794508044.3094292,
+    "ast_hash": "5d222bbe574aba1d477652199b570196",
+    "semantic_hash": "5d222bbe574aba1d477652199b570196"
+  },
+  "lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/dragonEye.h": {
+    "mtime": 1763185608.8344102,
+    "seen": 1794508044.3094969,
+    "ast_hash": "d1e9af48a8d00aaf6b791675ddfef4c6",
+    "semantic_hash": "d1e9af48a8d00aaf6b791675ddfef4c6"
+  },
+  "lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/goatEye.h": {
+    "mtime": 1763185608.8404105,
+    "seen": 1794508044.3095524,
+    "ast_hash": "c15c85eb83e4d52690144aade3f6f535",
+    "semantic_hash": "c15c85eb83e4d52690144aade3f6f535"
+  },
+  "lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/noScleraEye.h": {
+    "mtime": 1763185608.8374102,
+    "seen": 1794508044.3096075,
+    "ast_hash": "bd18cfefaf233f8f458b259c18556b22",
+    "semantic_hash": "bd18cfefaf233f8f458b259c18556b22"
+  },
+  "lib/TFT_eSPI/examples/Generic/Local_Custom_Fonts/MyFont.h": {
+    "mtime": 1763185608.8424106,
+    "seen": 1794508044.3096616,
+    "ast_hash": "a1a83b981862b433aaa8bed890caee05",
+    "semantic_hash": "a1a83b981862b433aaa8bed890caee05"
+  },
+  "lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Alert.h": {
+    "mtime": 1763185608.8414104,
+    "seen": 1794508044.3097267,
+    "ast_hash": "eb015a5f23016535aec96e38986914ce",
+    "semantic_hash": "eb015a5f23016535aec96e38986914ce"
+  },
+  "lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Close.h": {
+    "mtime": 1763185608.8424106,
+    "seen": 1794508044.309782,
+    "ast_hash": "a6b953defa2ce70256707754a72eeb79",
+    "semantic_hash": "a6b953defa2ce70256707754a72eeb79"
+  },
+  "lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Info.h": {
+    "mtime": 1763185608.8424106,
+    "seen": 1794508044.3098354,
+    "ast_hash": "bfcb84a24ce5b9955831543266593f80",
+    "semantic_hash": "bfcb84a24ce5b9955831543266593f80"
+  },
+  "lib/TFT_eSPI/examples/Generic/drawXBitmap/xbm.h": {
+    "mtime": 1763185608.8404105,
+    "seen": 1794508044.3098893,
+    "ast_hash": "620b3236586b7662c91da46e6c0e87f6",
+    "semantic_hash": "620b3236586b7662c91da46e6c0e87f6"
+  },
+  "lib/TFT_eSPI/examples/PNG Images/Flash_PNG/panda.h": {
+    "mtime": 1763185608.8284097,
+    "seen": 1794508044.3099458,
+    "ast_hash": "aab56d9a47a6b5e150f503b64aabf95f",
+    "semantic_hash": "aab56d9a47a6b5e150f503b64aabf95f"
+  },
+  "lib/TFT_eSPI/examples/PNG Images/Flash_transparent_PNG/SpongeBob.h": {
+    "mtime": 1763185608.8234096,
+    "seen": 1794508044.310004,
+    "ast_hash": "07bbdb751653da020213defc79956178",
+    "semantic_hash": "07bbdb751653da020213defc79956178"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_1_Array/NotoSansBold15.h": {
+    "mtime": 1763185608.8944132,
+    "seen": 1794508044.3100593,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_1_Array/NotoSansBold36.h": {
+    "mtime": 1763185608.8944132,
+    "seen": 1794508044.3101237,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_2_Array/NotoSansBold15.h": {
+    "mtime": 1763185608.9024136,
+    "seen": 1794508044.310184,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_2_Array/NotoSansBold36.h": {
+    "mtime": 1763185608.9034135,
+    "seen": 1794508044.3102434,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansBold15.h": {
+    "mtime": 1763185608.8994133,
+    "seen": 1794508044.3103015,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansBold36.h": {
+    "mtime": 1763185608.9014134,
+    "seen": 1794508044.31036,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansMonoSCB20.h": {
+    "mtime": 1763185608.8994133,
+    "seen": 1794508044.310419,
+    "ast_hash": "91b5cd93eaf2a573bc0d65da7b79a4bf",
+    "semantic_hash": "91b5cd93eaf2a573bc0d65da7b79a4bf"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_4_Array/NotoSansBold15.h": {
+    "mtime": 1763185608.8954132,
+    "seen": 1794508044.3104918,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_4_Array/NotoSansBold36.h": {
+    "mtime": 1763185608.8954132,
+    "seen": 1794508044.3105497,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Print_Smooth_Font/Final_Frontier_28.h": {
+    "mtime": 1763185608.9014134,
+    "seen": 1794508044.3106072,
+    "ast_hash": "06a5a05067549f1a3e71f86d45eee7ff",
+    "semantic_hash": "06a5a05067549f1a3e71f86d45eee7ff"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_gradient/NotoSansBold15.h": {
+    "mtime": 1763185608.893413,
+    "seen": 1794508044.3106666,
+    "ast_hash": "91194109f7e3415102927a71124f752f",
+    "semantic_hash": "91194109f7e3415102927a71124f752f"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_gradient/NotoSansBold36.h": {
+    "mtime": 1763185608.8944132,
+    "seen": 1794508044.3107255,
+    "ast_hash": "8093cf3379b5ff2266022d88505b4b1e",
+    "semantic_hash": "8093cf3379b5ff2266022d88505b4b1e"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_reading_TFT/NotoSansBold15.h": {
+    "mtime": 1763185608.8954132,
+    "seen": 1794508044.310785,
+    "ast_hash": "6f366cdca9cbd945b813ae6decd9f515",
+    "semantic_hash": "6f366cdca9cbd945b813ae6decd9f515"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_reading_TFT/NotoSansBold36.h": {
+    "mtime": 1763185608.8964133,
+    "seen": 1794508044.310845,
+    "ast_hash": "eb54c2f9f35c7c49626c789874de8c6e",
+    "semantic_hash": "eb54c2f9f35c7c49626c789874de8c6e"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Final_Frontier_28.h": {
+    "mtime": 1763185608.8984134,
+    "seen": 1794508044.3109038,
+    "ast_hash": "37ed33d9d7f68e350c7e6b675c9b8459",
+    "semantic_hash": "37ed33d9d7f68e350c7e6b675c9b8459"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Latin_Hiragana_24.h": {
+    "mtime": 1763185608.8974133,
+    "seen": 1794508044.3109634,
+    "ast_hash": "f8b86ea45de18a8b35834a26025c563b",
+    "semantic_hash": "f8b86ea45de18a8b35834a26025c563b"
+  },
+  "lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Unicode_Test_72.h": {
+    "mtime": 1763185608.8984134,
+    "seen": 1794508044.3110216,
+    "ast_hash": "50c792256e44f1eafe60e574b183da21",
+    "semantic_hash": "50c792256e44f1eafe60e574b183da21"
+  },
+  "lib/TFT_eSPI/examples/Smooth Graphics/Anti-aliased_Clock/NTP_Time.h": {
+    "mtime": 1763185608.909414,
+    "seen": 1794508044.3110807,
+    "ast_hash": "b9dff80774ba490bdd29d2ce3b35200c",
+    "semantic_hash": "b9dff80774ba490bdd29d2ce3b35200c"
+  },
+  "lib/TFT_eSPI/examples/Smooth Graphics/Anti-aliased_Clock/NotoSansBold15.h": {
+    "mtime": 1763185608.909414,
+    "seen": 1794508044.3111384,
+    "ast_hash": "5a7e6672d2ee9e1f99cacb0fe2148d15",
+    "semantic_hash": "5a7e6672d2ee9e1f99cacb0fe2148d15"
+  },
+  "lib/TFT_eSPI/examples/Smooth Graphics/Arc_meter_demo/NotoSans_Bold.h": {
+    "mtime": 1763185608.908414,
+    "seen": 1794508044.311194,
+    "ast_hash": "439126619f258074b1f3c6047a64402d",
+    "semantic_hash": "439126619f258074b1f3c6047a64402d"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Animated_dial/NotoSansBold36.h": {
+    "mtime": 1763185608.907414,
+    "seen": 1794508044.3112495,
+    "ast_hash": "24eebbb3446d02379f97ffd011ce4d5c",
+    "semantic_hash": "24eebbb3446d02379f97ffd011ce4d5c"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Animated_dial/dial.h": {
+    "mtime": 1763185608.908414,
+    "seen": 1794508044.311307,
+    "ast_hash": "74ea3a346c7afdca0f11350babef7039",
+    "semantic_hash": "74ea3a346c7afdca0f11350babef7039"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Orrery/astronomy.c": {
+    "mtime": 1763185608.9064138,
+    "seen": 1794508044.3113637,
+    "ast_hash": "c17005a9dc9b66355b9d92dca0dd32f6",
+    "semantic_hash": "c17005a9dc9b66355b9d92dca0dd32f6"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Orrery/astronomy.h": {
+    "mtime": 1763185608.907414,
+    "seen": 1794508044.3114178,
+    "ast_hash": "6fab2c25565afae7ecf3e4115a1599d2",
+    "semantic_hash": "6fab2c25565afae7ecf3e4115a1599d2"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Sprite_image_4bit/sample_images.h": {
+    "mtime": 1763185608.9044137,
+    "seen": 1794508044.3114936,
+    "ast_hash": "1e99e247676a512cdf1802b620615834",
+    "semantic_hash": "1e99e247676a512cdf1802b620615834"
+  },
+  "lib/TFT_eSPI/examples/Sprite/Sprite_image_4bit/starImage.cpp": {
+    "mtime": 1763185608.9054139,
+    "seen": 1794508044.31155,
+    "ast_hash": "40351b67e57b4d2bc90e464536f76578",
+    "semantic_hash": "40351b67e57b4d2bc90e464536f76578"
+  },
+  "lib/TFT_eSPI/examples/ePaper/Floyd_Steinberg/EPD_Support.h": {
+    "mtime": 1763185608.83241,
+    "seen": 1794508044.3116047,
+    "ast_hash": "6e10ede1497c1415ccd7629f6ccfc55d",
+    "semantic_hash": "6e10ede1497c1415ccd7629f6ccfc55d"
+  },
+  "lib/TFT_eSPI/library.json": {
+    "mtime": 1763185608.9204144,
+    "seen": 1794508044.3116608,
+    "ast_hash": "7b6989847c08fedb388c8ec79fddf674",
+    "semantic_hash": "7b6989847c08fedb388c8ec79fddf674",
+    "ast_empty": true
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Button.cpp": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.3116674,
+    "ast_hash": "5431f291db59850b6a96768dcb6f8c98",
+    "semantic_hash": "5431f291db59850b6a96768dcb6f8c98"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Button.h": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.3117247,
+    "ast_hash": "8845b7d1c01b8a349932afd099d35a64",
+    "semantic_hash": "8845b7d1c01b8a349932afd099d35a64"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Smooth_font.cpp": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.311778,
+    "ast_hash": "1ff86283014fb6855962b53a935e60f1",
+    "semantic_hash": "1ff86283014fb6855962b53a935e60f1"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Smooth_font.h": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.3118293,
+    "ast_hash": "6fea65bb5df24d5b3770af2c488e206a",
+    "semantic_hash": "6fea65bb5df24d5b3770af2c488e206a"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Sprite.cpp": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.3118787,
+    "ast_hash": "74274b78d186b22433a6c1bc47bb82e8",
+    "semantic_hash": "74274b78d186b22433a6c1bc47bb82e8"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Sprite.h": {
+    "mtime": 1794485890.0704854,
+    "seen": 1794508044.3119278,
+    "ast_hash": "0396ee85128f7e06c28344a63d89b65a",
+    "semantic_hash": "0396ee85128f7e06c28344a63d89b65a"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Touch.cpp": {
+    "mtime": 1794485890.0712929,
+    "seen": 1794508044.3119776,
+    "ast_hash": "d193ec1c60127ffd326b0a969586f663",
+    "semantic_hash": "d193ec1c60127ffd326b0a969586f663"
+  },
+  "menu_preview/lib/TFT_eSPI/Extensions/Touch.h": {
+    "mtime": 1794485890.0712929,
+    "seen": 1794508044.3120277,
+    "ast_hash": "699e8120de7635193aa0d489965c6b37",
+    "semantic_hash": "699e8120de7635193aa0d489965c6b37"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Custom/Orbitron_Light_24.h": {
+    "mtime": 1794485890.0718625,
+    "seen": 1794508044.3120775,
+    "ast_hash": "7741938bc9ce8a683723f945f941879a",
+    "semantic_hash": "7741938bc9ce8a683723f945f941879a"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Custom/Orbitron_Light_32.h": {
+    "mtime": 1794485890.0718625,
+    "seen": 1794508044.3121352,
+    "ast_hash": "8020bdd45ee6748f34d197110a1a0863",
+    "semantic_hash": "8020bdd45ee6748f34d197110a1a0863"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Custom/Roboto_Thin_24.h": {
+    "mtime": 1794485890.0718625,
+    "seen": 1794508044.31219,
+    "ast_hash": "ffaa60deb98df59792a8e5a91e11c176",
+    "semantic_hash": "ffaa60deb98df59792a8e5a91e11c176"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Custom/Satisfy_24.h": {
+    "mtime": 1794485890.0718625,
+    "seen": 1794508044.3122442,
+    "ast_hash": "f7e0d85596f7e33f09d340a22f2de6f2",
+    "semantic_hash": "f7e0d85596f7e33f09d340a22f2de6f2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Custom/Yellowtail_32.h": {
+    "mtime": 1794485890.0718625,
+    "seen": 1794508044.3122988,
+    "ast_hash": "a5dbd4c8671207c15167bdc9ee85b868",
+    "semantic_hash": "a5dbd4c8671207c15167bdc9ee85b868"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font16.c": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3123531,
+    "ast_hash": "6f2582a7ae6856c34b17eb28272c5731",
+    "semantic_hash": "6f2582a7ae6856c34b17eb28272c5731"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font16.h": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3124034,
+    "ast_hash": "7a2f580add5333c18d7a2b0875d161ca",
+    "semantic_hash": "7a2f580add5333c18d7a2b0875d161ca"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font32rle.c": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3124692,
+    "ast_hash": "ba3f1638c4757c7ca4a3051329feb4ba",
+    "semantic_hash": "ba3f1638c4757c7ca4a3051329feb4ba"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font32rle.h": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3125305,
+    "ast_hash": "285c7923e20f2956bb273c841e3b1770",
+    "semantic_hash": "285c7923e20f2956bb273c841e3b1770"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font64rle.c": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3125808,
+    "ast_hash": "cc87d776d58138d7116c143c0ada72ac",
+    "semantic_hash": "cc87d776d58138d7116c143c0ada72ac"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font64rle.h": {
+    "mtime": 1794485890.0787368,
+    "seen": 1794508044.3126295,
+    "ast_hash": "6cbce02cae7cd21a0c7ad35dde354af4",
+    "semantic_hash": "6cbce02cae7cd21a0c7ad35dde354af4"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font72rle.c": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.31268,
+    "ast_hash": "2c74d00bbf79cc3555ee3122a1662c03",
+    "semantic_hash": "2c74d00bbf79cc3555ee3122a1662c03"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font72rle.h": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.3127306,
+    "ast_hash": "0296257ca422baaec6f04809141495e7",
+    "semantic_hash": "0296257ca422baaec6f04809141495e7"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font72x53rle.c": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.3127813,
+    "ast_hash": "d1f1e0d775b7277e12433526773b5639",
+    "semantic_hash": "d1f1e0d775b7277e12433526773b5639"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font72x53rle.h": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.3128304,
+    "ast_hash": "bdc479426889f0dcf9f4c03cda01c6fa",
+    "semantic_hash": "bdc479426889f0dcf9f4c03cda01c6fa"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font7srle.c": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.3128812,
+    "ast_hash": "fe7f792876717115841b5f9996a430c9",
+    "semantic_hash": "fe7f792876717115841b5f9996a430c9"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/Font7srle.h": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.3129296,
+    "ast_hash": "1f8539396752cc8fa895cceda1a90c27",
+    "semantic_hash": "1f8539396752cc8fa895cceda1a90c27"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMono12pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3129795,
+    "ast_hash": "cc345a0a44d021182cb8ce8d4c474844",
+    "semantic_hash": "cc345a0a44d021182cb8ce8d4c474844"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMono18pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3130348,
+    "ast_hash": "06bbbb081af4d7857993ada987b0decf",
+    "semantic_hash": "06bbbb081af4d7857993ada987b0decf"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMono24pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3130887,
+    "ast_hash": "9310830958a693d8857623a0098ec4b3",
+    "semantic_hash": "9310830958a693d8857623a0098ec4b3"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMono9pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3131416,
+    "ast_hash": "d57bfeb6c1dcf6c2ecfb6ae8e21008e8",
+    "semantic_hash": "d57bfeb6c1dcf6c2ecfb6ae8e21008e8"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold12pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3131967,
+    "ast_hash": "923ce5eb21fe972ae388c55d470e868e",
+    "semantic_hash": "923ce5eb21fe972ae388c55d470e868e"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold18pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3132513,
+    "ast_hash": "cf592d471bc985e9ad76d123b88d4a03",
+    "semantic_hash": "cf592d471bc985e9ad76d123b88d4a03"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold24pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3133056,
+    "ast_hash": "c6f39a3854b86fad065e1bf8a2db7710",
+    "semantic_hash": "c6f39a3854b86fad065e1bf8a2db7710"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBold9pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3133585,
+    "ast_hash": "f5f061c53a12419ddcf6ba0d9af8b228",
+    "semantic_hash": "f5f061c53a12419ddcf6ba0d9af8b228"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique12pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3134124,
+    "ast_hash": "348538df3023597280ff4a94bf72578f",
+    "semantic_hash": "348538df3023597280ff4a94bf72578f"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique18pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3134806,
+    "ast_hash": "248484848aeb7d3f76d25bfe67a8124e",
+    "semantic_hash": "248484848aeb7d3f76d25bfe67a8124e"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique24pt7b.h": {
+    "mtime": 1794485890.072293,
+    "seen": 1794508044.3135343,
+    "ast_hash": "88acf8853110ff04f541091182543bbd",
+    "semantic_hash": "88acf8853110ff04f541091182543bbd"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique9pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3135872,
+    "ast_hash": "1c47ea0511037c70465b99014a142fd2",
+    "semantic_hash": "1c47ea0511037c70465b99014a142fd2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique12pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3136425,
+    "ast_hash": "61c6e55a13d18512b44e7401a5047f0a",
+    "semantic_hash": "61c6e55a13d18512b44e7401a5047f0a"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique18pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3136978,
+    "ast_hash": "0c3c345b366b8efe37c2b068c864b8a2",
+    "semantic_hash": "0c3c345b366b8efe37c2b068c864b8a2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique24pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3137524,
+    "ast_hash": "87182ae8704808f37a72412c1c893cd3",
+    "semantic_hash": "87182ae8704808f37a72412c1c893cd3"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique9pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3138077,
+    "ast_hash": "b8548ae642f2184a53b4055541a33dd0",
+    "semantic_hash": "b8548ae642f2184a53b4055541a33dd0"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSans12pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3138628,
+    "ast_hash": "30dfb251c3b02a6ffaca02b0af4ba129",
+    "semantic_hash": "30dfb251c3b02a6ffaca02b0af4ba129"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSans18pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.313918,
+    "ast_hash": "b404dc4739db35c5f7c433a94ae76a18",
+    "semantic_hash": "b404dc4739db35c5f7c433a94ae76a18"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSans24pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.313972,
+    "ast_hash": "982da2b8bb8862198bf7ccbdf904f290",
+    "semantic_hash": "982da2b8bb8862198bf7ccbdf904f290"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSans9pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3140242,
+    "ast_hash": "d048e883a1d1e1dcba4f7e409fd5a994",
+    "semantic_hash": "d048e883a1d1e1dcba4f7e409fd5a994"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold12pt7b.h": {
+    "mtime": 1794485890.073293,
+    "seen": 1794508044.3140779,
+    "ast_hash": "d6bf286a360520d64aee6e87bfd67df4",
+    "semantic_hash": "d6bf286a360520d64aee6e87bfd67df4"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold18pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.314131,
+    "ast_hash": "2e769a35dd360bf316e2b3f3927dd072",
+    "semantic_hash": "2e769a35dd360bf316e2b3f3927dd072"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold24pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3141842,
+    "ast_hash": "d55dda46ab6bb0b8fef2120f13f95a9f",
+    "semantic_hash": "d55dda46ab6bb0b8fef2120f13f95a9f"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBold9pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3142405,
+    "ast_hash": "b67fa5d17eccba4a1b4b48829e1e443b",
+    "semantic_hash": "b67fa5d17eccba4a1b4b48829e1e443b"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique12pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3143098,
+    "ast_hash": "d1e5573e0effaa87851f3592f30065db",
+    "semantic_hash": "d1e5573e0effaa87851f3592f30065db"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique18pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3143642,
+    "ast_hash": "7ec66e3e3e0c5ac104741d9d3020f0fe",
+    "semantic_hash": "7ec66e3e3e0c5ac104741d9d3020f0fe"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique24pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3144183,
+    "ast_hash": "87d72481a0bc59f8cab9aa77b2533045",
+    "semantic_hash": "87d72481a0bc59f8cab9aa77b2533045"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique9pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3144968,
+    "ast_hash": "1399e657696f81079b9c5c44c110c1f9",
+    "semantic_hash": "1399e657696f81079b9c5c44c110c1f9"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique12pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.314577,
+    "ast_hash": "b8b26742fb8f0e63aa48e245acb189e8",
+    "semantic_hash": "b8b26742fb8f0e63aa48e245acb189e8"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique18pt7b.h": {
+    "mtime": 1794485890.074293,
+    "seen": 1794508044.3146334,
+    "ast_hash": "f82d7ad2f7528157a02b3394a062d0ca",
+    "semantic_hash": "f82d7ad2f7528157a02b3394a062d0ca"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique24pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.3146884,
+    "ast_hash": "88aa0ccaeae658c370dcb155b8dc3fad",
+    "semantic_hash": "88aa0ccaeae658c370dcb155b8dc3fad"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSansOblique9pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.3147428,
+    "ast_hash": "9c08b745e824b23407537d58af6befe5",
+    "semantic_hash": "9c08b745e824b23407537d58af6befe5"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerif12pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.314799,
+    "ast_hash": "3dad2543633b66263e239504db2c6ed2",
+    "semantic_hash": "3dad2543633b66263e239504db2c6ed2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerif18pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.3148546,
+    "ast_hash": "ae9d1a80412733fcd36a1cb8991a695d",
+    "semantic_hash": "ae9d1a80412733fcd36a1cb8991a695d"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerif24pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.314909,
+    "ast_hash": "42f47a4fd86dab977eef42781ad30fec",
+    "semantic_hash": "42f47a4fd86dab977eef42781ad30fec"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerif9pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.314963,
+    "ast_hash": "0644d6b6a1fbedc8c9b40c1070842336",
+    "semantic_hash": "0644d6b6a1fbedc8c9b40c1070842336"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold12pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.3150182,
+    "ast_hash": "2a5d499c4b6f6389448ba230c774b781",
+    "semantic_hash": "2a5d499c4b6f6389448ba230c774b781"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold18pt7b.h": {
+    "mtime": 1794485890.075293,
+    "seen": 1794508044.315073,
+    "ast_hash": "116b333029d92bcb4cf9f6e12eb065af",
+    "semantic_hash": "116b333029d92bcb4cf9f6e12eb065af"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold24pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3151276,
+    "ast_hash": "05f0adf71880944834ea0bbc2c241c39",
+    "semantic_hash": "05f0adf71880944834ea0bbc2c241c39"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBold9pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3151824,
+    "ast_hash": "c1ee3f7a9ffdde0e8fbbaab3d75168a0",
+    "semantic_hash": "c1ee3f7a9ffdde0e8fbbaab3d75168a0"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic12pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3152359,
+    "ast_hash": "e520a9f7fb593e9568ebbb7d0702ae77",
+    "semantic_hash": "e520a9f7fb593e9568ebbb7d0702ae77"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic18pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3152893,
+    "ast_hash": "50ebb591a4027648bfff7a8d5e607db2",
+    "semantic_hash": "50ebb591a4027648bfff7a8d5e607db2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic24pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3153424,
+    "ast_hash": "326b31594fa0b690f99a10663d1c50a7",
+    "semantic_hash": "326b31594fa0b690f99a10663d1c50a7"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic9pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3153963,
+    "ast_hash": "980df1345b9a835edb4e6a2371f9e3f9",
+    "semantic_hash": "980df1345b9a835edb4e6a2371f9e3f9"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic12pt7b.h": {
+    "mtime": 1794485890.076293,
+    "seen": 1794508044.3154628,
+    "ast_hash": "4c5b7610f50894879ac3a196c32eb4f0",
+    "semantic_hash": "4c5b7610f50894879ac3a196c32eb4f0"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic18pt7b.h": {
+    "mtime": 1794485890.077293,
+    "seen": 1794508044.3155234,
+    "ast_hash": "7743bfab48afc22c7cb241f7079181c2",
+    "semantic_hash": "7743bfab48afc22c7cb241f7079181c2"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic24pt7b.h": {
+    "mtime": 1794485890.077293,
+    "seen": 1794508044.315577,
+    "ast_hash": "49696c737694a64ff38209d55b271030",
+    "semantic_hash": "49696c737694a64ff38209d55b271030"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic9pt7b.h": {
+    "mtime": 1794485890.077293,
+    "seen": 1794508044.3156333,
+    "ast_hash": "b0d7d59e131d7a1a69899b2eee53373e",
+    "semantic_hash": "b0d7d59e131d7a1a69899b2eee53373e"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/TomThumb.h": {
+    "mtime": 1794485890.077293,
+    "seen": 1794508044.3156886,
+    "ast_hash": "e76fb4c7e52f358ddc6eceeba7ba5c76",
+    "semantic_hash": "e76fb4c7e52f358ddc6eceeba7ba5c76"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/GFXFF/gfxfont.h": {
+    "mtime": 1794485890.077293,
+    "seen": 1794508044.3157437,
+    "ast_hash": "b9fa481cf0dd240fe9bde1bbb6e016d0",
+    "semantic_hash": "b9fa481cf0dd240fe9bde1bbb6e016d0"
+  },
+  "menu_preview/lib/TFT_eSPI/Fonts/glcdfont.c": {
+    "mtime": 1794485890.079293,
+    "seen": 1794508044.315798,
+    "ast_hash": "36441bca98e5d228f0e14447aa52c32a",
+    "semantic_hash": "36441bca98e5d228f0e14447aa52c32a"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32.c": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3158484,
+    "ast_hash": "b290eb09101ed684700e2aeb8e08207a",
+    "semantic_hash": "b290eb09101ed684700e2aeb8e08207a"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32.h": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3158998,
+    "ast_hash": "f9536c64f955d5c3aefac3f59c0d8a36",
+    "semantic_hash": "f9536c64f955d5c3aefac3f59c0d8a36"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_C3.c": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3159516,
+    "ast_hash": "b0293c6ddbce8f7b4317d90c1ee0cd17",
+    "semantic_hash": "b0293c6ddbce8f7b4317d90c1ee0cd17"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_C3.h": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.316004,
+    "ast_hash": "34b21c8058634c97bf7f6799fae096d2",
+    "semantic_hash": "34b21c8058634c97bf7f6799fae096d2"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_S3.c": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3160539,
+    "ast_hash": "589a97b47fde794052a9b7dbddb8fe30",
+    "semantic_hash": "589a97b47fde794052a9b7dbddb8fe30"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP32_S3.h": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3161037,
+    "ast_hash": "fbad99a0f22bfd91d81a1ad672d73690",
+    "semantic_hash": "fbad99a0f22bfd91d81a1ad672d73690"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP8266.c": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3161533,
+    "ast_hash": "29db0d445f756c6b3d4065315413acd9",
+    "semantic_hash": "29db0d445f756c6b3d4065315413acd9"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_ESP8266.h": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3162036,
+    "ast_hash": "2680019e480e78e2ebcec6af8f5bc777",
+    "semantic_hash": "2680019e480e78e2ebcec6af8f5bc777"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_Generic.c": {
+    "mtime": 1794485890.0805132,
+    "seen": 1794508044.3162537,
+    "ast_hash": "91611630eca805daebd9fb73ce16833b",
+    "semantic_hash": "91611630eca805daebd9fb73ce16833b"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_Generic.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.316304,
+    "ast_hash": "75d6e2e6c92d87f79f5858cadbf9fb53",
+    "semantic_hash": "75d6e2e6c92d87f79f5858cadbf9fb53"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_RP2040.c": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.316354,
+    "ast_hash": "9aece05b6452aef6d1ce0ae5a4ff267b",
+    "semantic_hash": "9aece05b6452aef6d1ce0ae5a4ff267b"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_RP2040.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.3164036,
+    "ast_hash": "ead736a1af45b6f5b90ca86f47e258ca",
+    "semantic_hash": "ead736a1af45b6f5b90ca86f47e258ca"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_STM32.c": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.3164663,
+    "ast_hash": "45eb8883c153ca2a6b7d7de8ced1eaaf",
+    "semantic_hash": "45eb8883c153ca2a6b7d7de8ced1eaaf"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/TFT_eSPI_STM32.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.3165312,
+    "ast_hash": "570319f91a3f8b8a6df5c4cc642dda31",
+    "semantic_hash": "570319f91a3f8b8a6df5c4cc642dda31"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/pio_16bit_parallel.pio.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.316582,
+    "ast_hash": "3e760619f9cc8e622d744b30b9311bef",
+    "semantic_hash": "3e760619f9cc8e622d744b30b9311bef"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/pio_8bit_parallel.pio.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.3166318,
+    "ast_hash": "250ece072a1acafbd456f8b354484d1f",
+    "semantic_hash": "250ece072a1acafbd456f8b354484d1f"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/pio_8bit_parallel_18bpp.pio.h": {
+    "mtime": 1794485890.0812929,
+    "seen": 1794508044.3166814,
+    "ast_hash": "80ddccc7621dc926ad8f8b4072898e0e",
+    "semantic_hash": "80ddccc7621dc926ad8f8b4072898e0e"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/pio_SPI.pio.h": {
+    "mtime": 1794485890.082293,
+    "seen": 1794508044.3167312,
+    "ast_hash": "cf8a46941f56ffe3ea3bb39f61ccc252",
+    "semantic_hash": "cf8a46941f56ffe3ea3bb39f61ccc252"
+  },
+  "menu_preview/lib/TFT_eSPI/Processors/pio_SPI_18bit.pio.h": {
+    "mtime": 1794485890.082293,
+    "seen": 1794508044.3167808,
+    "ast_hash": "c89c79ab6e3d7ab9fa986d3e15c963cb",
+    "semantic_hash": "c89c79ab6e3d7ab9fa986d3e15c963cb"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/EPD_Defines.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3168297,
+    "ast_hash": "724e25fa70f9ed4d878d3ee9b02a72cd",
+    "semantic_hash": "724e25fa70f9ed4d878d3ee9b02a72cd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/GC9A01_Defines.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3168795,
+    "ast_hash": "2aef86d0b7db0a6d78b300a9e7ff46ac",
+    "semantic_hash": "2aef86d0b7db0a6d78b300a9e7ff46ac"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/GC9A01_Init.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3169293,
+    "ast_hash": "2d4d2d4156b47229998b8440fe125c0e",
+    "semantic_hash": "2d4d2d4156b47229998b8440fe125c0e"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/GC9A01_Rotation.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3169787,
+    "ast_hash": "7d00a3bd8153f87d06aa8e314e5aeae6",
+    "semantic_hash": "7d00a3bd8153f87d06aa8e314e5aeae6"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357B_Defines.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3170288,
+    "ast_hash": "d47607531f258f3fa90dd1e2d591118e",
+    "semantic_hash": "d47607531f258f3fa90dd1e2d591118e"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357B_Init.h": {
+    "mtime": 1794485890.0829704,
+    "seen": 1794508044.3170772,
+    "ast_hash": "9adf411a0279955c860d8373022dcfa8",
+    "semantic_hash": "9adf411a0279955c860d8373022dcfa8"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357B_Rotation.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.317126,
+    "ast_hash": "1abb6d80eaf51346f9ed34663c38c13b",
+    "semantic_hash": "1abb6d80eaf51346f9ed34663c38c13b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357C_Defines.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3171763,
+    "ast_hash": "d47607531f258f3fa90dd1e2d591118e",
+    "semantic_hash": "d47607531f258f3fa90dd1e2d591118e"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357C_Init.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3172257,
+    "ast_hash": "dfb5a338f9a4a9b25db4a7815d7e2d88",
+    "semantic_hash": "dfb5a338f9a4a9b25db4a7815d7e2d88"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357C_Rotation.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3172753,
+    "ast_hash": "1abb6d80eaf51346f9ed34663c38c13b",
+    "semantic_hash": "1abb6d80eaf51346f9ed34663c38c13b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357D_Defines.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3173246,
+    "ast_hash": "9a7a9e28f9ba043a9430a258f958c5ab",
+    "semantic_hash": "9a7a9e28f9ba043a9430a258f958c5ab"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357D_Init.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3173738,
+    "ast_hash": "6c946bc281e1cafbf8345b67ac64c814",
+    "semantic_hash": "6c946bc281e1cafbf8345b67ac64c814"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/HX8357D_Rotation.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3174226,
+    "ast_hash": "c1740a9fed8731e77170574cd8fe4e64",
+    "semantic_hash": "c1740a9fed8731e77170574cd8fe4e64"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9163_Defines.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.317478,
+    "ast_hash": "00f8b742515971a4c6f685b7e5620693",
+    "semantic_hash": "00f8b742515971a4c6f685b7e5620693"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9163_Init.h": {
+    "mtime": 1794485890.083293,
+    "seen": 1794508044.3175273,
+    "ast_hash": "13ee1d4c2da49bae04eb1d187fa311f3",
+    "semantic_hash": "13ee1d4c2da49bae04eb1d187fa311f3"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9163_Rotation.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3175774,
+    "ast_hash": "9e8b9d98321bb0a10ef1fb1277d4029a",
+    "semantic_hash": "9e8b9d98321bb0a10ef1fb1277d4029a"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9225_Defines.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3176267,
+    "ast_hash": "5794d2517a4dbd78675f8bcd8de56b51",
+    "semantic_hash": "5794d2517a4dbd78675f8bcd8de56b51"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9225_Init.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.317676,
+    "ast_hash": "3446996aa36b9232f9f517ee0142bfbb",
+    "semantic_hash": "3446996aa36b9232f9f517ee0142bfbb"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9225_Rotation.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3177252,
+    "ast_hash": "79fbc97b0f08c214b48e24015719ec5d",
+    "semantic_hash": "79fbc97b0f08c214b48e24015719ec5d"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9341_Defines.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.317775,
+    "ast_hash": "27a535a0ed9e3bb7bff2851d81a70f69",
+    "semantic_hash": "27a535a0ed9e3bb7bff2851d81a70f69"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9341_Init.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3178232,
+    "ast_hash": "e1bd148c37493b247f65ef695667b9bb",
+    "semantic_hash": "e1bd148c37493b247f65ef695667b9bb"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9341_Rotation.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3178716,
+    "ast_hash": "b6deaadb2067aab8857b5f3bfe923793",
+    "semantic_hash": "b6deaadb2067aab8857b5f3bfe923793"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9481_Defines.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3179197,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9481_Init.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3179681,
+    "ast_hash": "3f078e7bbbbfbc762cb35449f8bc54d5",
+    "semantic_hash": "3f078e7bbbbfbc762cb35449f8bc54d5"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9481_Rotation.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3180168,
+    "ast_hash": "c6525a8beae7d53a51c4a121aa808c22",
+    "semantic_hash": "c6525a8beae7d53a51c4a121aa808c22"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9486_Defines.h": {
+    "mtime": 1794485890.084293,
+    "seen": 1794508044.3180668,
+    "ast_hash": "7cc54f8799e4715b702c02487fe1d69d",
+    "semantic_hash": "7cc54f8799e4715b702c02487fe1d69d"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9486_Init.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.318116,
+    "ast_hash": "b63e310d0121bb73b211890c684732bd",
+    "semantic_hash": "b63e310d0121bb73b211890c684732bd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9486_Rotation.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.3181639,
+    "ast_hash": "1d97bebc029a275fedaed8668a0ad5a3",
+    "semantic_hash": "1d97bebc029a275fedaed8668a0ad5a3"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9488_Defines.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.3182132,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9488_Init.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.318261,
+    "ast_hash": "d012cdf9c2abf5df3077c82a6a6d743b",
+    "semantic_hash": "d012cdf9c2abf5df3077c82a6a6d743b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ILI9488_Rotation.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.3183105,
+    "ast_hash": "49d881a799cd8fc118a50d05ef9d085a",
+    "semantic_hash": "49d881a799cd8fc118a50d05ef9d085a"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/R61581_Defines.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.3183603,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/R61581_Init.h": {
+    "mtime": 1794485890.085293,
+    "seen": 1794508044.3184104,
+    "ast_hash": "edf13a6280379651329f8bab187bb3a3",
+    "semantic_hash": "edf13a6280379651329f8bab187bb3a3"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/R61581_Rotation.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.3184702,
+    "ast_hash": "1880a80bc5366fbf24843de5971a6c25",
+    "semantic_hash": "1880a80bc5366fbf24843de5971a6c25"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68120_Defines.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.31852,
+    "ast_hash": "70b9b41e54a79792fbba803837d8fe4b",
+    "semantic_hash": "70b9b41e54a79792fbba803837d8fe4b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68120_Init.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.31857,
+    "ast_hash": "6c2344990af9fb0b1cbd40b4b7fe6ed4",
+    "semantic_hash": "6c2344990af9fb0b1cbd40b4b7fe6ed4"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68120_Rotation.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.3186202,
+    "ast_hash": "df84f135ad47dbf80bc83d5e006f2b11",
+    "semantic_hash": "df84f135ad47dbf80bc83d5e006f2b11"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68140_Defines.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.3186698,
+    "ast_hash": "6c315ab4d11b6ae08b49b8168571e340",
+    "semantic_hash": "6c315ab4d11b6ae08b49b8168571e340"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68140_Init.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.318719,
+    "ast_hash": "559d90ca9d02d547e0bf9b352d8a5725",
+    "semantic_hash": "559d90ca9d02d547e0bf9b352d8a5725"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/RM68140_Rotation.h": {
+    "mtime": 1794485890.086293,
+    "seen": 1794508044.3187675,
+    "ast_hash": "cb72dcd26fe2687af50d5b76a65354e8",
+    "semantic_hash": "cb72dcd26fe2687af50d5b76a65354e8"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/S6D02A1_Defines.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3188167,
+    "ast_hash": "46d36acb3467878be6ac1f0b128c9c04",
+    "semantic_hash": "46d36acb3467878be6ac1f0b128c9c04"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/S6D02A1_Init.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.318866,
+    "ast_hash": "043d2085f013e4c712054f70a2957a8b",
+    "semantic_hash": "043d2085f013e4c712054f70a2957a8b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/S6D02A1_Rotation.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3189137,
+    "ast_hash": "e47713692e59773f5065855fced3d0dd",
+    "semantic_hash": "e47713692e59773f5065855fced3d0dd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1351_Defines.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3189619,
+    "ast_hash": "2d35c17561bd3a81772f59bd049e6bdf",
+    "semantic_hash": "2d35c17561bd3a81772f59bd049e6bdf"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1351_Init.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3190105,
+    "ast_hash": "954b932e1c4544bdcece0ad844764312",
+    "semantic_hash": "954b932e1c4544bdcece0ad844764312"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1351_Rotation.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.319058,
+    "ast_hash": "3983b85e773f5b7efc0fceac3bb0ccdd",
+    "semantic_hash": "3983b85e773f5b7efc0fceac3bb0ccdd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1963_Defines.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3191063,
+    "ast_hash": "7c5c595fb61cf06101ac8ded66bc63a2",
+    "semantic_hash": "7c5c595fb61cf06101ac8ded66bc63a2"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1963_Init.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3191552,
+    "ast_hash": "be637860eab77495b68e65a7892aed49",
+    "semantic_hash": "be637860eab77495b68e65a7892aed49"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/SSD1963_Rotation.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.3192039,
+    "ast_hash": "86e7e3b3b782cf6ecde77beb80aa0b7b",
+    "semantic_hash": "86e7e3b3b782cf6ecde77beb80aa0b7b"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7735_Defines.h": {
+    "mtime": 1794485890.087293,
+    "seen": 1794508044.319253,
+    "ast_hash": "fddc16d9595abe60a910365c3313b978",
+    "semantic_hash": "fddc16d9595abe60a910365c3313b978"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7735_Init.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.3193023,
+    "ast_hash": "ff3c433c2cc3bfdaed28a859b9cd64c7",
+    "semantic_hash": "ff3c433c2cc3bfdaed28a859b9cd64c7"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7735_Rotation.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.319351,
+    "ast_hash": "455d1589a4500d27e3d5d0a041dab5ff",
+    "semantic_hash": "455d1589a4500d27e3d5d0a041dab5ff"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_2_Defines.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.3194005,
+    "ast_hash": "5010a578eb52a8593fd4f2e2ca77e575",
+    "semantic_hash": "5010a578eb52a8593fd4f2e2ca77e575"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_2_Init.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.319458,
+    "ast_hash": "fe3cd5b4e6db098246bcd6c937ef385d",
+    "semantic_hash": "fe3cd5b4e6db098246bcd6c937ef385d"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_2_Rotation.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.3195133,
+    "ast_hash": "03b8b00f58276dd97a9f8d7c84f115dd",
+    "semantic_hash": "03b8b00f58276dd97a9f8d7c84f115dd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_Defines.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.3195639,
+    "ast_hash": "adfcb028006d5f2cb558e6d4075bab38",
+    "semantic_hash": "adfcb028006d5f2cb558e6d4075bab38"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_Init.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.319614,
+    "ast_hash": "0157b4fa7bcb868d3cc3b4309d53d4bc",
+    "semantic_hash": "0157b4fa7bcb868d3cc3b4309d53d4bc"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7789_Rotation.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.3196633,
+    "ast_hash": "03b8b00f58276dd97a9f8d7c84f115dd",
+    "semantic_hash": "03b8b00f58276dd97a9f8d7c84f115dd"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7796_Defines.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.319713,
+    "ast_hash": "50460b5d686c9ba1c36e1c6f88a78902",
+    "semantic_hash": "50460b5d686c9ba1c36e1c6f88a78902"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7796_Init.h": {
+    "mtime": 1794485890.088293,
+    "seen": 1794508044.319764,
+    "ast_hash": "326dc16b21fbb0b2aa2ac7fc18b3c351",
+    "semantic_hash": "326dc16b21fbb0b2aa2ac7fc18b3c351"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_Drivers/ST7796_Rotation.h": {
+    "mtime": 1794485890.089293,
+    "seen": 1794508044.3198137,
+    "ast_hash": "17a0cb94a100e01491b16fc7a407bb67",
+    "semantic_hash": "17a0cb94a100e01491b16fc7a407bb67"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_config.h": {
+    "mtime": 1794485890.347615,
+    "seen": 1794508044.3198643,
+    "ast_hash": "439c8b931340a6f9099807f7e2586454",
+    "semantic_hash": "439c8b931340a6f9099807f7e2586454"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_eSPI.cpp": {
+    "mtime": 1794485890.347615,
+    "seen": 1794508044.3199124,
+    "ast_hash": "74f9f37a4da0ae02bd86c57616d14aaa",
+    "semantic_hash": "74f9f37a4da0ae02bd86c57616d14aaa"
+  },
+  "menu_preview/lib/TFT_eSPI/TFT_eSPI.h": {
+    "mtime": 1794485890.347615,
+    "seen": 1794508044.3199587,
+    "ast_hash": "678e0442451b2039cab0bcb98979f793",
+    "semantic_hash": "678e0442451b2039cab0bcb98979f793"
+  },
+  "menu_preview/lib/TFT_eSPI/Tools/Create_Smooth_Font/Create_font/FontFiles/Final-Frontier28.h": {
+    "mtime": 1794485890.0900078,
+    "seen": 1794508044.320006,
+    "ast_hash": "97284428ba36961e6bda9876bb54e22e",
+    "semantic_hash": "97284428ba36961e6bda9876bb54e22e"
+  },
+  "menu_preview/lib/TFT_eSPI/Tools/bmp2array4bit/bmp2array4bit.py": {
+    "mtime": 1794485890.0909195,
+    "seen": 1794508044.3200746,
+    "ast_hash": "f17cc78db5d6571b65a3469fcc3199d4",
+    "semantic_hash": "f17cc78db5d6571b65a3469fcc3199d4"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setup.h": {
+    "mtime": 1794485890.347615,
+    "seen": 1794508044.3201306,
+    "ast_hash": "e7e981c70c1f5288d4837fb42614c65a",
+    "semantic_hash": "e7e981c70c1f5288d4837fb42614c65a"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setup_Select.h": {
+    "mtime": 1794485890.3482926,
+    "seen": 1794508044.320177,
+    "ast_hash": "688dc52445f63f7124a7793cd27afd78",
+    "semantic_hash": "688dc52445f63f7124a7793cd27afd78"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup0_Sprite.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3202238,
+    "ast_hash": "93c91fa67cdb26cb71d7a233798ce249",
+    "semantic_hash": "93c91fa67cdb26cb71d7a233798ce249"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup100_RP2040_ILI9488_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3202753,
+    "ast_hash": "9eb72aed80e8e4478d9eb578600270c4",
+    "semantic_hash": "9eb72aed80e8e4478d9eb578600270c4"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup101_RP2040_ILI9481_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3203266,
+    "ast_hash": "8b561dc2656db848d9061246fa277e96",
+    "semantic_hash": "8b561dc2656db848d9061246fa277e96"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup102_RP2040_ILI9341_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.320377,
+    "ast_hash": "c1ca6374e881347ce9a3689767e45135",
+    "semantic_hash": "c1ca6374e881347ce9a3689767e45135"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup103_RP2040_ILI9486_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3204265,
+    "ast_hash": "986199a73ab3df297b5b32a91d2ca38e",
+    "semantic_hash": "986199a73ab3df297b5b32a91d2ca38e"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup104_RP2040_ST7796_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3205044,
+    "ast_hash": "db1f5394840e7033313eff6986d99c11",
+    "semantic_hash": "db1f5394840e7033313eff6986d99c11"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup105_RP2040_ST7796_16bit_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3205574,
+    "ast_hash": "72b4901e44fe66c8dc783079ea426e68",
+    "semantic_hash": "72b4901e44fe66c8dc783079ea426e68"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup106_RP2040_ILI9481_16bit_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3206086,
+    "ast_hash": "5f963dcd6da277d6d0273dac89434c0a",
+    "semantic_hash": "5f963dcd6da277d6d0273dac89434c0a"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup107_RP2040_ILI9341_16bit_parallel.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3206587,
+    "ast_hash": "f020db951ffe483d5f93b8d14df00b14",
+    "semantic_hash": "f020db951ffe483d5f93b8d14df00b14"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup108_RP2040_ST7735.h": {
+    "mtime": 1794485890.0914469,
+    "seen": 1794508044.3207095,
+    "ast_hash": "deb192660d0b0b1052c76b0d83cd1985",
+    "semantic_hash": "deb192660d0b0b1052c76b0d83cd1985"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup10_RPi_touch_ILI9486.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3207598,
+    "ast_hash": "311eb6784bfa037c147f2e9a2510949e",
+    "semantic_hash": "311eb6784bfa037c147f2e9a2510949e"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup11_RPi_touch_ILI9486.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3208091,
+    "ast_hash": "a76a10e152b56642ddbbc7f97aa6b402",
+    "semantic_hash": "a76a10e152b56642ddbbc7f97aa6b402"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup12_M5Stack_Basic_Core.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3208601,
+    "ast_hash": "ff91167a463795f9823a620f768ebfa1",
+    "semantic_hash": "ff91167a463795f9823a620f768ebfa1"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup135_ST7789.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3209107,
+    "ast_hash": "166faab742b5697b864396d16f7feab6",
+    "semantic_hash": "166faab742b5697b864396d16f7feab6"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup136_LilyGo_TTV.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3209598,
+    "ast_hash": "cdc1e119219dbaa58beb4f97d6bb38a4",
+    "semantic_hash": "cdc1e119219dbaa58beb4f97d6bb38a4"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup137_LilyGo_TDisplay_RP2040.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3210232,
+    "ast_hash": "a752739c5498fa5c880330e488eef269",
+    "semantic_hash": "a752739c5498fa5c880330e488eef269"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup138_Pico_Explorer_Base_RP2040_ST7789.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.321092,
+    "ast_hash": "82ab100f5325ba6ab16a7f645baf1014",
+    "semantic_hash": "82ab100f5325ba6ab16a7f645baf1014"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup13_ILI9481_Parallel.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3211436,
+    "ast_hash": "98e674434ae671f6214a608f124c6856",
+    "semantic_hash": "98e674434ae671f6214a608f124c6856"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup14_ILI9341_Parallel.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.3211932,
+    "ast_hash": "a6a89152393fdcf48644eb0d74ecab03",
+    "semantic_hash": "a6a89152393fdcf48644eb0d74ecab03"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup15_HX8357D.h": {
+    "mtime": 1794485890.092293,
+    "seen": 1794508044.321242,
+    "ast_hash": "990332a441542bebed43fa64d6d874aa",
+    "semantic_hash": "990332a441542bebed43fa64d6d874aa"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup16_ILI9488_Parallel.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3212907,
+    "ast_hash": "b6781f5b7c07d04081f9f293b6d81ccb",
+    "semantic_hash": "b6781f5b7c07d04081f9f293b6d81ccb"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup17_ePaper.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3213396,
+    "ast_hash": "27c0eb9c0ba9f992788a10d2ee6a0072",
+    "semantic_hash": "27c0eb9c0ba9f992788a10d2ee6a0072"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup18_ST7789.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3213897,
+    "ast_hash": "a93a4ccd32a20537585d520253f9c33b",
+    "semantic_hash": "a93a4ccd32a20537585d520253f9c33b"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup19_RM68140_Parallel.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3214393,
+    "ast_hash": "6523ea0ef58b74b8239be86a3ec118c2",
+    "semantic_hash": "6523ea0ef58b74b8239be86a3ec118c2"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup1_ILI9341.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3215642,
+    "ast_hash": "96249f78af851c9e1d458df442b4932f",
+    "semantic_hash": "96249f78af851c9e1d458df442b4932f"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup200_GC9A01.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3216155,
+    "ast_hash": "0bfc60172800e3ea654993d3ab6cd1a5",
+    "semantic_hash": "0bfc60172800e3ea654993d3ab6cd1a5"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup201_WT32_SC01.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3216648,
+    "ast_hash": "c12cc6c0d3ec318d5f190f89e906a78c",
+    "semantic_hash": "c12cc6c0d3ec318d5f190f89e906a78c"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup202_SSD1351_128.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3217154,
+    "ast_hash": "883311dcf893a9e35fcaaf72255f634f",
+    "semantic_hash": "883311dcf893a9e35fcaaf72255f634f"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup203_ST7789.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3217652,
+    "ast_hash": "d9aff04f47134e82db7e9e70f2261d36",
+    "semantic_hash": "d9aff04f47134e82db7e9e70f2261d36"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup204_ESP32_TouchDown.h": {
+    "mtime": 1794485890.093293,
+    "seen": 1794508044.3218153,
+    "ast_hash": "23b3d11f33ae32e78263c2d4c94aaba3",
+    "semantic_hash": "23b3d11f33ae32e78263c2d4c94aaba3"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup205_ESP32_TouchDown_S3.h": {
+    "mtime": 1794485890.0942929,
+    "seen": 1794508044.3218644,
+    "ast_hash": "c67372786fb3f703e3f5a2f6227c9333",
+    "semantic_hash": "c67372786fb3f703e3f5a2f6227c9333"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup206_LilyGo_T_Display_S3.h": {
+    "mtime": 1794485890.0942929,
+    "seen": 1794508044.3219142,
+    "ast_hash": "4f1004370821743f886b45a165098676",
+    "semantic_hash": "4f1004370821743f886b45a165098676"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup207_LilyGo_T_HMI.h": {
+    "mtime": 1794485890.0942929,
+    "seen": 1794508044.3219633,
+    "ast_hash": "088252214d6c2087ac7c607ada49ca32",
+    "semantic_hash": "088252214d6c2087ac7c607ada49ca32"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup209_LilyGo_T_Dongle_S3.h": {
+    "mtime": 1794485890.0942929,
+    "seen": 1794508044.3220146,
+    "ast_hash": "a955ad42bb1527ea935a277c1c4c9786",
+    "semantic_hash": "a955ad42bb1527ea935a277c1c4c9786"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup20_ILI9488.h": {
+    "mtime": 1794485890.0942929,
+    "seen": 1794508044.3220642,
+    "ast_hash": "43b7e3098e34fd52a360c0835ba2c643",
+    "semantic_hash": "43b7e3098e34fd52a360c0835ba2c643"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup210_LilyGo_T_Embed_S3.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.322114,
+    "ast_hash": "c8ddac1f1108092d23dcd21d0358d91e",
+    "semantic_hash": "c8ddac1f1108092d23dcd21d0358d91e"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup211_LilyGo_T_QT_Pro_S3.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.322164,
+    "ast_hash": "c461de5ebeab36e20c510c13694e09c7",
+    "semantic_hash": "c461de5ebeab36e20c510c13694e09c7"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup212_LilyGo_T_PicoPro.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.3222146,
+    "ast_hash": "45fa5762830ebd54bfd4767126aafffc",
+    "semantic_hash": "45fa5762830ebd54bfd4767126aafffc"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup213_LilyGo_T_Beam_Shield.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.322276,
+    "ast_hash": "46389b78912f040e96830cd2784089c4",
+    "semantic_hash": "46389b78912f040e96830cd2784089c4"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup21_ILI9488.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.322349,
+    "ast_hash": "0f9f5f3844903c4308dde50df2d50550",
+    "semantic_hash": "0f9f5f3844903c4308dde50df2d50550"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup22_TTGO_T4.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.3224008,
+    "ast_hash": "28de23cd93ec4d41ce1b4a036fb5c6b1",
+    "semantic_hash": "28de23cd93ec4d41ce1b4a036fb5c6b1"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup22_TTGO_T4_v1.3.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.3224616,
+    "ast_hash": "51b8296562bf1384f7ff1c6cbcc1a95a",
+    "semantic_hash": "51b8296562bf1384f7ff1c6cbcc1a95a"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup23_TTGO_TM.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.322526,
+    "ast_hash": "ebb8f42ee418bfe800070ab53697149c",
+    "semantic_hash": "ebb8f42ee418bfe800070ab53697149c"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup24_ST7789.h": {
+    "mtime": 1794485890.095293,
+    "seen": 1794508044.3225758,
+    "ast_hash": "abb09e16b5d1be26fcf1c5327014f80f",
+    "semantic_hash": "abb09e16b5d1be26fcf1c5327014f80f"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup250_ESP32_S3_Box_Lite.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3226256,
+    "ast_hash": "d6c6d70170990e01512b2ff2fd7ddeb1",
+    "semantic_hash": "d6c6d70170990e01512b2ff2fd7ddeb1"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup251_ESP32_S3_Box.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3226757,
+    "ast_hash": "fdcb8de4230ed74362f1672da66d4f91",
+    "semantic_hash": "fdcb8de4230ed74362f1672da66d4f91"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup25_TTGO_T_Display.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3227265,
+    "ast_hash": "5de33d433739a1fe190b82dec060be10",
+    "semantic_hash": "5de33d433739a1fe190b82dec060be10"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup26_TTGO_T_Wristband.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.322776,
+    "ast_hash": "680063e2aedd23c3beea99aa02cc5e64",
+    "semantic_hash": "680063e2aedd23c3beea99aa02cc5e64"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup27_RPi_ST7796_ESP32.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3228257,
+    "ast_hash": "73ac6a177175a26284a6b2f4feb59b6b",
+    "semantic_hash": "73ac6a177175a26284a6b2f4feb59b6b"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup28_RPi_ST7796_ESP8266.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3228748,
+    "ast_hash": "2e354fb3704d631648ce762d7ede4e97",
+    "semantic_hash": "2e354fb3704d631648ce762d7ede4e97"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup29_ILI9341_STM32.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.322926,
+    "ast_hash": "99b8f26b34860d6c7b5e63dc27e400d5",
+    "semantic_hash": "99b8f26b34860d6c7b5e63dc27e400d5"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup29b_ILI9341_STM32.h": {
+    "mtime": 1794485890.096293,
+    "seen": 1794508044.3229766,
+    "ast_hash": "379d3ba2b7016d4aaa59d39200547e72",
+    "semantic_hash": "379d3ba2b7016d4aaa59d39200547e72"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup2_ST7735.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.323026,
+    "ast_hash": "31b2b6ec7d4663e8373f9e608ca4faf6",
+    "semantic_hash": "31b2b6ec7d4663e8373f9e608ca4faf6"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup301_BW16_ST7735.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3230748,
+    "ast_hash": "5fbdbe57cf74dcc1873322ae2df0a882",
+    "semantic_hash": "5fbdbe57cf74dcc1873322ae2df0a882"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup302_Waveshare_ESP32S3_GC9A01.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3231242,
+    "ast_hash": "21120155d77233dedf7d9aced7285927",
+    "semantic_hash": "21120155d77233dedf7d9aced7285927"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup30_ILI9341_Parallel_STM32.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3231735,
+    "ast_hash": "601840de42e64d309869affc69a06e86",
+    "semantic_hash": "601840de42e64d309869affc69a06e86"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup31_ST7796_Parallel_STM32.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3232234,
+    "ast_hash": "95fe9e83fe682fa6a02c80516025b662",
+    "semantic_hash": "95fe9e83fe682fa6a02c80516025b662"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup32_ILI9341_STM32F103.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3232732,
+    "ast_hash": "df48eff171ea331b09bcfeb924c589cf",
+    "semantic_hash": "df48eff171ea331b09bcfeb924c589cf"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup33_RPi_ILI9486_STM32.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.323322,
+    "ast_hash": "c16b7565dd8cb452a399679729938368",
+    "semantic_hash": "c16b7565dd8cb452a399679729938368"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup34_ILI9481_Parallel_STM32.h": {
+    "mtime": 1794485890.097293,
+    "seen": 1794508044.3233707,
+    "ast_hash": "af3c0f330b470a1baad5bc52b1fb55c2",
+    "semantic_hash": "af3c0f330b470a1baad5bc52b1fb55c2"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup35_ILI9341_STM32_Port_Bus.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3234198,
+    "ast_hash": "2ae7f162158f9c119b0b7e434ca0ebb4",
+    "semantic_hash": "2ae7f162158f9c119b0b7e434ca0ebb4"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup36_RPi_touch_ST7796.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3234887,
+    "ast_hash": "88a4fc4cdb5c2336e192c57330237c03",
+    "semantic_hash": "88a4fc4cdb5c2336e192c57330237c03"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup3_ILI9163.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3235493,
+    "ast_hash": "d44731d9cae5805b0aaecf87dad14b69",
+    "semantic_hash": "d44731d9cae5805b0aaecf87dad14b69"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup42_ILI9341_ESP32.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3235993,
+    "ast_hash": "e41cafd6b577ce54294a4e576d8b6c68",
+    "semantic_hash": "e41cafd6b577ce54294a4e576d8b6c68"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup43_ST7735.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3236482,
+    "ast_hash": "a20576c008ebf0f8d615c18f4a5f358a",
+    "semantic_hash": "a20576c008ebf0f8d615c18f4a5f358a"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup44_TTGO_CameraPlus.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.323697,
+    "ast_hash": "fae31f242e1523a4157f2c82194ba407",
+    "semantic_hash": "fae31f242e1523a4157f2c82194ba407"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup45_TTGO_T_Watch.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.3237479,
+    "ast_hash": "cbd2c9549c4e5a90229aab8fa6978a28",
+    "semantic_hash": "cbd2c9549c4e5a90229aab8fa6978a28"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup46_GC9A01_ESP32.h": {
+    "mtime": 1794485890.0982928,
+    "seen": 1794508044.323797,
+    "ast_hash": "761daa29432bc0d7e10ff5dc0a448aa7",
+    "semantic_hash": "761daa29432bc0d7e10ff5dc0a448aa7"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup47_ST7735.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.323846,
+    "ast_hash": "4d2e28a573c0eb47331d119c43a5d555",
+    "semantic_hash": "4d2e28a573c0eb47331d119c43a5d555"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup4_S6D02A1.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3238952,
+    "ast_hash": "e74f5088a7cadf370454cef823f90802",
+    "semantic_hash": "e74f5088a7cadf370454cef823f90802"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup50_SSD1963_Parallel.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3239443,
+    "ast_hash": "0d0df0b402f41132d72e78b5dc1a98ca",
+    "semantic_hash": "0d0df0b402f41132d72e78b5dc1a98ca"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup51_LilyPi_ILI9481.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.323994,
+    "ast_hash": "2db4b240f8f6655d4fb53886d545d5ac",
+    "semantic_hash": "2db4b240f8f6655d4fb53886d545d5ac"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup52_LilyPi_ST7796.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3240442,
+    "ast_hash": "bae20935adccc15035170d74e9695ddb",
+    "semantic_hash": "bae20935adccc15035170d74e9695ddb"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup5_RPi_ILI9486.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3240936,
+    "ast_hash": "3dd4e42dac554d0c1b04aa4ae85c3433",
+    "semantic_hash": "3dd4e42dac554d0c1b04aa4ae85c3433"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup60_RP2040_ILI9341.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3241427,
+    "ast_hash": "56d0491436a42cce45215651b5315789",
+    "semantic_hash": "56d0491436a42cce45215651b5315789"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup60_RP2040_RPI_MHS.h": {
+    "mtime": 1794485890.099293,
+    "seen": 1794508044.3241932,
+    "ast_hash": "db93ca90f8fa63213e36fd26f4c68cb5",
+    "semantic_hash": "db93ca90f8fa63213e36fd26f4c68cb5"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup61_RP2040_ILI9341_PIO_SPI.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3242428,
+    "ast_hash": "9a1899b4d29dc6e6b6b3e6c85990b7b1",
+    "semantic_hash": "9a1899b4d29dc6e6b6b3e6c85990b7b1"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup62_RP2040_Nano_Connect_ILI9341.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3242936,
+    "ast_hash": "01ccb780edc39a4917b70967d3ad0f96",
+    "semantic_hash": "01ccb780edc39a4917b70967d3ad0f96"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup66_Seeed_XIAO_Round.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3243592,
+    "ast_hash": "cfe74e30409567391c40d7cae800028c",
+    "semantic_hash": "cfe74e30409567391c40d7cae800028c"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup6_RPi_Wr_ILI9486.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3244104,
+    "ast_hash": "4075f8ea905754231c2d784efc8295e6",
+    "semantic_hash": "4075f8ea905754231c2d784efc8295e6"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70_ESP32_S2_ILI9341.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.324478,
+    "ast_hash": "0ef57d3d0bdb2157d9bfa46fe2039054",
+    "semantic_hash": "0ef57d3d0bdb2157d9bfa46fe2039054"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70b_ESP32_S3_ILI9341.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3245344,
+    "ast_hash": "ce7d42768ad297b10891267bad57e1d3",
+    "semantic_hash": "ce7d42768ad297b10891267bad57e1d3"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3245835,
+    "ast_hash": "b2e001f085c7dd3b72fee8ff1b0f6d01",
+    "semantic_hash": "b2e001f085c7dd3b72fee8ff1b0f6d01"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70d_ILI9488_S3_Parallel.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3246336,
+    "ast_hash": "9321ce70cc437ca6245a67c3e9cd43e0",
+    "semantic_hash": "9321ce70cc437ca6245a67c3e9cd43e0"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70f_ESP32_S2_ST7735.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.3246832,
+    "ast_hash": "a10cd2e5ada6f990777084f5b0d3d7a5",
+    "semantic_hash": "a10cd2e5ada6f990777084f5b0d3d7a5"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup70h_ESP32_S3_GC9A01.h": {
+    "mtime": 1794485890.100293,
+    "seen": 1794508044.324734,
+    "ast_hash": "b19b71e784e70431fd62b8c845a315f8",
+    "semantic_hash": "b19b71e784e70431fd62b8c845a315f8"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup71_ESP32_S2_ST7789.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3247852,
+    "ast_hash": "5563362800aba8c9d0f40ec92aae0abf",
+    "semantic_hash": "5563362800aba8c9d0f40ec92aae0abf"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup72_ESP32_ST7789_172x320.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3248355,
+    "ast_hash": "07c80909cd5e7ad1177482de6d555bd5",
+    "semantic_hash": "07c80909cd5e7ad1177482de6d555bd5"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup7_ST7735_128x128.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3248868,
+    "ast_hash": "d30dff3b8a64571ecd0546fafa7b159a",
+    "semantic_hash": "d30dff3b8a64571ecd0546fafa7b159a"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup8_ILI9163_128x128.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3249376,
+    "ast_hash": "9358f8de474e097abf7e3f21d14d7a82",
+    "semantic_hash": "9358f8de474e097abf7e3f21d14d7a82"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/Setup9_ST7735_Overlap.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3249881,
+    "ast_hash": "0fb8f401e8c302ac26becc78ba6d4843",
+    "semantic_hash": "0fb8f401e8c302ac26becc78ba6d4843"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/SetupX_Template.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3250382,
+    "ast_hash": "b60c41116c359178361397e6e847ed3e",
+    "semantic_hash": "b60c41116c359178361397e6e847ed3e"
+  },
+  "menu_preview/lib/TFT_eSPI/User_Setups/User_Custom_Fonts.h": {
+    "mtime": 1794485890.1012928,
+    "seen": 1794508044.3250897,
+    "ast_hash": "fb11191535465b58af8678840b1e9256",
+    "semantic_hash": "fb11191535465b58af8678840b1e9256"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg1.h": {
+    "mtime": 1794485890.1040304,
+    "seen": 1794508044.3251393,
+    "ast_hash": "787f3303a104a9a1dd808b22b28adc54",
+    "semantic_hash": "787f3303a104a9a1dd808b22b28adc54"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg2.h": {
+    "mtime": 1794485890.1040304,
+    "seen": 1794508044.3252048,
+    "ast_hash": "132ab4fb5153a74917935af6350690af",
+    "semantic_hash": "132ab4fb5153a74917935af6350690af"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg3.h": {
+    "mtime": 1794485890.1040304,
+    "seen": 1794508044.3252642,
+    "ast_hash": "66517b0c45dfb248f8272facd0fb87c3",
+    "semantic_hash": "66517b0c45dfb248f8272facd0fb87c3"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/160 x 128/TFT_flash_jpg/jpeg4.h": {
+    "mtime": 1794485890.1040304,
+    "seen": 1794508044.3253224,
+    "ast_hash": "03be4ef7cc2ce917ae0ae4d267681375",
+    "semantic_hash": "03be4ef7cc2ce917ae0ae4d267681375"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/320 x 240/All_Free_Fonts_Demo/Free_Fonts.h": {
+    "mtime": 1794485890.1045399,
+    "seen": 1794508044.325382,
+    "ast_hash": "98785bb084524aa81c1b07e4ccafa4ec",
+    "semantic_hash": "98785bb084524aa81c1b07e4ccafa4ec"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/320 x 240/Free_Font_Demo/Free_Fonts.h": {
+    "mtime": 1794485890.1047661,
+    "seen": 1794508044.3254428,
+    "ast_hash": "88114979c5e0bee415de29306d0a7b71",
+    "semantic_hash": "88114979c5e0bee415de29306d0a7b71"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/Free_Font_Demo/Free_Fonts.h": {
+    "mtime": 1794485890.1083248,
+    "seen": 1794508044.3255312,
+    "ast_hash": "f472b3f4dddbba1bdc5afac828031d8a",
+    "semantic_hash": "f472b3f4dddbba1bdc5afac828031d8a"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg1.h": {
+    "mtime": 1794485890.109745,
+    "seen": 1794508044.3255928,
+    "ast_hash": "84545d1729bb8473d34e2241645d5610",
+    "semantic_hash": "84545d1729bb8473d34e2241645d5610"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg2.h": {
+    "mtime": 1794485890.109745,
+    "seen": 1794508044.3256543,
+    "ast_hash": "9f0a527ad373fa00688e804f5de70e90",
+    "semantic_hash": "9f0a527ad373fa00688e804f5de70e90"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg3.h": {
+    "mtime": 1794485890.109745,
+    "seen": 1794508044.3257124,
+    "ast_hash": "67802cd620309e0ae85594ce5851566d",
+    "semantic_hash": "67802cd620309e0ae85594ce5851566d"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/TFT_flash_jpg/jpeg4.h": {
+    "mtime": 1794485890.109745,
+    "seen": 1794508044.3257697,
+    "ast_hash": "6d348fd4b58d9e29e61bfff507a31e5a",
+    "semantic_hash": "6d348fd4b58d9e29e61bfff507a31e5a"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/480 x 320/TFT_ring_meter/Alert.h": {
+    "mtime": 1794485890.110086,
+    "seen": 1794508044.3258276,
+    "ast_hash": "1a1a1cd6cd6128c12e2e5c8082f9608b",
+    "semantic_hash": "1a1a1cd6cd6128c12e2e5c8082f9608b"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/DMA test/Flash_Jpg_DMA/panda.h": {
+    "mtime": 1794485890.1108377,
+    "seen": 1794508044.325887,
+    "ast_hash": "dcb34ab5cc5cc14aa17843d7a37490eb",
+    "semantic_hash": "dcb34ab5cc5cc14aa17843d7a37490eb"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/DMA test/boing_ball/graphic.h": {
+    "mtime": 1794485890.1110277,
+    "seen": 1794508044.325947,
+    "ast_hash": "b054bb9746f1f553c1e1dabdb9c1ce9c",
+    "semantic_hash": "b054bb9746f1f553c1e1dabdb9c1ce9c"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/GUI Widgets/Buttons/Button_demo/Free_Fonts.h": {
+    "mtime": 1794485890.1114664,
+    "seen": 1794508044.3260062,
+    "ast_hash": "952ae57542288218f5d0312b66e151d0",
+    "semantic_hash": "952ae57542288218f5d0312b66e151d0"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/GUI Widgets/Sliders/Slider_demo/Free_Fonts.h": {
+    "mtime": 1794485890.1118903,
+    "seen": 1794508044.3260744,
+    "ast_hash": "952ae57542288218f5d0312b66e151d0",
+    "semantic_hash": "952ae57542288218f5d0312b66e151d0"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/config.h": {
+    "mtime": 1794485890.1842928,
+    "seen": 1794508044.3261392,
+    "ast_hash": "d625f88773377956c98540644d728b05",
+    "semantic_hash": "d625f88773377956c98540644d728b05"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/catEye.h": {
+    "mtime": 1794485890.112326,
+    "seen": 1794508044.3262002,
+    "ast_hash": "902ea4baf5f172440726d3ffdef59879",
+    "semantic_hash": "902ea4baf5f172440726d3ffdef59879"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/defaultEye.h": {
+    "mtime": 1794485890.182293,
+    "seen": 1794508044.3262668,
+    "ast_hash": "1d72c1202ac87b929a7e65d3bcbbe916",
+    "semantic_hash": "1d72c1202ac87b929a7e65d3bcbbe916"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/doeEye.h": {
+    "mtime": 1794485890.182293,
+    "seen": 1794508044.3263304,
+    "ast_hash": "1e86ce5d31aca8cccdbdcab46464b0ed",
+    "semantic_hash": "1e86ce5d31aca8cccdbdcab46464b0ed"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/dragonEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.3263924,
+    "ast_hash": "809c1b2f99e02456f0df14a1f7f69fd6",
+    "semantic_hash": "809c1b2f99e02456f0df14a1f7f69fd6"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/goatEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.3264596,
+    "ast_hash": "06af6993b27dc725c30dfbd36e8f1987",
+    "semantic_hash": "06af6993b27dc725c30dfbd36e8f1987"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/logo.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.3265235,
+    "ast_hash": "04a84576b7263b7b6090de9089387bb7",
+    "semantic_hash": "04a84576b7263b7b6090de9089387bb7"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/naugaEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.326587,
+    "ast_hash": "6c616e1a78e53c5e9c7e230857996f01",
+    "semantic_hash": "6c616e1a78e53c5e9c7e230857996f01"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/newtEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.3266518,
+    "ast_hash": "efc43d39fddc4f20a8bd2a9d76ea8742",
+    "semantic_hash": "efc43d39fddc4f20a8bd2a9d76ea8742"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/noScleraEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.326715,
+    "ast_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30",
+    "semantic_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/owlEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.326779,
+    "ast_hash": "37b24b223db768ade319d858d4041ff8",
+    "semantic_hash": "37b24b223db768ade319d858d4041ff8"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/data/terminatorEye.h": {
+    "mtime": 1794485890.1832929,
+    "seen": 1794508044.3268423,
+    "ast_hash": "a63a6b2aef6f898e798369f8bbee8f79",
+    "semantic_hash": "a63a6b2aef6f898e798369f8bbee8f79"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user.cpp": {
+    "mtime": 1794485890.1842928,
+    "seen": 1794508044.3269076,
+    "ast_hash": "644142070b59c17bb98904d7fd6fa2dd",
+    "semantic_hash": "644142070b59c17bb98904d7fd6fa2dd"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user_bat.cpp": {
+    "mtime": 1794485890.1842928,
+    "seen": 1794508044.3269694,
+    "ast_hash": "7ea504677ac26c041e36c91b0d207fc0",
+    "semantic_hash": "7ea504677ac26c041e36c91b0d207fc0"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_1/user_xmas.cpp": {
+    "mtime": 1794485890.1842928,
+    "seen": 1794508044.3270283,
+    "ast_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf",
+    "semantic_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/config.h": {
+    "mtime": 1794485890.1872928,
+    "seen": 1794508044.3270874,
+    "ast_hash": "5d88d3926ec6e56eeb2f122e628fb0e4",
+    "semantic_hash": "5d88d3926ec6e56eeb2f122e628fb0e4"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/catEye.h": {
+    "mtime": 1794485890.1849418,
+    "seen": 1794508044.3271472,
+    "ast_hash": "902ea4baf5f172440726d3ffdef59879",
+    "semantic_hash": "902ea4baf5f172440726d3ffdef59879"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/defaultEye.h": {
+    "mtime": 1794485890.1852927,
+    "seen": 1794508044.32721,
+    "ast_hash": "1d72c1202ac87b929a7e65d3bcbbe916",
+    "semantic_hash": "1d72c1202ac87b929a7e65d3bcbbe916"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/doeEye.h": {
+    "mtime": 1794485890.1852927,
+    "seen": 1794508044.3272734,
+    "ast_hash": "1e86ce5d31aca8cccdbdcab46464b0ed",
+    "semantic_hash": "1e86ce5d31aca8cccdbdcab46464b0ed"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/dragonEye.h": {
+    "mtime": 1794485890.1852927,
+    "seen": 1794508044.3273351,
+    "ast_hash": "809c1b2f99e02456f0df14a1f7f69fd6",
+    "semantic_hash": "809c1b2f99e02456f0df14a1f7f69fd6"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/goatEye.h": {
+    "mtime": 1794485890.1852927,
+    "seen": 1794508044.3273983,
+    "ast_hash": "06af6993b27dc725c30dfbd36e8f1987",
+    "semantic_hash": "06af6993b27dc725c30dfbd36e8f1987"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/logo.h": {
+    "mtime": 1794485890.1852927,
+    "seen": 1794508044.3274732,
+    "ast_hash": "04a84576b7263b7b6090de9089387bb7",
+    "semantic_hash": "04a84576b7263b7b6090de9089387bb7"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/naugaEye.h": {
+    "mtime": 1794485890.186293,
+    "seen": 1794508044.3275454,
+    "ast_hash": "6c616e1a78e53c5e9c7e230857996f01",
+    "semantic_hash": "6c616e1a78e53c5e9c7e230857996f01"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/newtEye.h": {
+    "mtime": 1794485890.186293,
+    "seen": 1794508044.327608,
+    "ast_hash": "efc43d39fddc4f20a8bd2a9d76ea8742",
+    "semantic_hash": "efc43d39fddc4f20a8bd2a9d76ea8742"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/noScleraEye.h": {
+    "mtime": 1794485890.186293,
+    "seen": 1794508044.3276706,
+    "ast_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30",
+    "semantic_hash": "83aaa62ffa24c2ec0f7ed0a79c8c8b30"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/owlEye.h": {
+    "mtime": 1794485890.186293,
+    "seen": 1794508044.327734,
+    "ast_hash": "37b24b223db768ade319d858d4041ff8",
+    "semantic_hash": "37b24b223db768ade319d858d4041ff8"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/data/terminatorEye.h": {
+    "mtime": 1794485890.186293,
+    "seen": 1794508044.327796,
+    "ast_hash": "a63a6b2aef6f898e798369f8bbee8f79",
+    "semantic_hash": "a63a6b2aef6f898e798369f8bbee8f79"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user.cpp": {
+    "mtime": 1794485890.1872928,
+    "seen": 1794508044.3278587,
+    "ast_hash": "644142070b59c17bb98904d7fd6fa2dd",
+    "semantic_hash": "644142070b59c17bb98904d7fd6fa2dd"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user_bat.cpp": {
+    "mtime": 1794485890.1872928,
+    "seen": 1794508044.3279178,
+    "ast_hash": "7ea504677ac26c041e36c91b0d207fc0",
+    "semantic_hash": "7ea504677ac26c041e36c91b0d207fc0"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Animated_Eyes_2/user_xmas.cpp": {
+    "mtime": 1794485890.1872928,
+    "seen": 1794508044.3279762,
+    "ast_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf",
+    "semantic_hash": "920afd2c1ef90bf177f9ba3a7ef07bdf"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/defaultEye.h": {
+    "mtime": 1794485890.189123,
+    "seen": 1794508044.3280358,
+    "ast_hash": "5d222bbe574aba1d477652199b570196",
+    "semantic_hash": "5d222bbe574aba1d477652199b570196"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/dragonEye.h": {
+    "mtime": 1794485890.189123,
+    "seen": 1794508044.328097,
+    "ast_hash": "d1e9af48a8d00aaf6b791675ddfef4c6",
+    "semantic_hash": "d1e9af48a8d00aaf6b791675ddfef4c6"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/goatEye.h": {
+    "mtime": 1794485890.189123,
+    "seen": 1794508044.3281565,
+    "ast_hash": "c15c85eb83e4d52690144aade3f6f535",
+    "semantic_hash": "c15c85eb83e4d52690144aade3f6f535"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/ESP8266_uncannyEyes/noScleraEye.h": {
+    "mtime": 1794485890.189293,
+    "seen": 1794508044.328216,
+    "ast_hash": "bd18cfefaf233f8f458b259c18556b22",
+    "semantic_hash": "bd18cfefaf233f8f458b259c18556b22"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/Local_Custom_Fonts/MyFont.h": {
+    "mtime": 1794485890.189898,
+    "seen": 1794508044.3282752,
+    "ast_hash": "a1a83b981862b433aaa8bed890caee05",
+    "semantic_hash": "a1a83b981862b433aaa8bed890caee05"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Alert.h": {
+    "mtime": 1794485890.19024,
+    "seen": 1794508044.328358,
+    "ast_hash": "eb015a5f23016535aec96e38986914ce",
+    "semantic_hash": "eb015a5f23016535aec96e38986914ce"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Close.h": {
+    "mtime": 1794485890.19024,
+    "seen": 1794508044.3284197,
+    "ast_hash": "a6b953defa2ce70256707754a72eeb79",
+    "semantic_hash": "a6b953defa2ce70256707754a72eeb79"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/TFT_Flash_Bitmap/Info.h": {
+    "mtime": 1794485890.19024,
+    "seen": 1794508044.328502,
+    "ast_hash": "bfcb84a24ce5b9955831543266593f80",
+    "semantic_hash": "bfcb84a24ce5b9955831543266593f80"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Generic/drawXBitmap/xbm.h": {
+    "mtime": 1794485890.191622,
+    "seen": 1794508044.3285618,
+    "ast_hash": "620b3236586b7662c91da46e6c0e87f6",
+    "semantic_hash": "620b3236586b7662c91da46e6c0e87f6"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/PNG Images/Flash_PNG/panda.h": {
+    "mtime": 1794485890.1917658,
+    "seen": 1794508044.3286228,
+    "ast_hash": "aab56d9a47a6b5e150f503b64aabf95f",
+    "semantic_hash": "aab56d9a47a6b5e150f503b64aabf95f"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/PNG Images/Flash_transparent_PNG/SpongeBob.h": {
+    "mtime": 1794485890.192136,
+    "seen": 1794508044.3286834,
+    "ast_hash": "07bbdb751653da020213defc79956178",
+    "semantic_hash": "07bbdb751653da020213defc79956178"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_1_Array/NotoSansBold15.h": {
+    "mtime": 1794485890.1930256,
+    "seen": 1794508044.328744,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_1_Array/NotoSansBold36.h": {
+    "mtime": 1794485890.1930256,
+    "seen": 1794508044.328813,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_2_Array/NotoSansBold15.h": {
+    "mtime": 1794485890.1932688,
+    "seen": 1794508044.328877,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_2_Array/NotoSansBold36.h": {
+    "mtime": 1794485890.1932688,
+    "seen": 1794508044.3289409,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansBold15.h": {
+    "mtime": 1794485890.1936414,
+    "seen": 1794508044.3290036,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansBold36.h": {
+    "mtime": 1794485890.1936414,
+    "seen": 1794508044.329066,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_3_Array/NotoSansMonoSCB20.h": {
+    "mtime": 1794485890.1936414,
+    "seen": 1794508044.3291295,
+    "ast_hash": "91b5cd93eaf2a573bc0d65da7b79a4bf",
+    "semantic_hash": "91b5cd93eaf2a573bc0d65da7b79a4bf"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_4_Array/NotoSansBold15.h": {
+    "mtime": 1794485890.1939635,
+    "seen": 1794508044.3291943,
+    "ast_hash": "e9f731aab85dbde8f801e1201f48d560",
+    "semantic_hash": "e9f731aab85dbde8f801e1201f48d560"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Font_Demo_4_Array/NotoSansBold36.h": {
+    "mtime": 1794485890.1939635,
+    "seen": 1794508044.3292572,
+    "ast_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574",
+    "semantic_hash": "c3e49d8b79f1b543a0d9ed84f5bc0574"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Print_Smooth_Font/Final_Frontier_28.h": {
+    "mtime": 1794485890.1941757,
+    "seen": 1794508044.3293211,
+    "ast_hash": "06a5a05067549f1a3e71f86d45eee7ff",
+    "semantic_hash": "06a5a05067549f1a3e71f86d45eee7ff"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_gradient/NotoSansBold15.h": {
+    "mtime": 1794485890.1942964,
+    "seen": 1794508044.3293855,
+    "ast_hash": "91194109f7e3415102927a71124f752f",
+    "semantic_hash": "91194109f7e3415102927a71124f752f"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_gradient/NotoSansBold36.h": {
+    "mtime": 1794485890.1942964,
+    "seen": 1794508044.3294613,
+    "ast_hash": "8093cf3379b5ff2266022d88505b4b1e",
+    "semantic_hash": "8093cf3379b5ff2266022d88505b4b1e"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_reading_TFT/NotoSansBold15.h": {
+    "mtime": 1794485890.1944687,
+    "seen": 1794508044.3295434,
+    "ast_hash": "6f366cdca9cbd945b813ae6decd9f515",
+    "semantic_hash": "6f366cdca9cbd945b813ae6decd9f515"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Smooth_font_reading_TFT/NotoSansBold36.h": {
+    "mtime": 1794485890.1944687,
+    "seen": 1794508044.3296077,
+    "ast_hash": "eb54c2f9f35c7c49626c789874de8c6e",
+    "semantic_hash": "eb54c2f9f35c7c49626c789874de8c6e"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Final_Frontier_28.h": {
+    "mtime": 1794485890.1946836,
+    "seen": 1794508044.3296704,
+    "ast_hash": "37ed33d9d7f68e350c7e6b675c9b8459",
+    "semantic_hash": "37ed33d9d7f68e350c7e6b675c9b8459"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Latin_Hiragana_24.h": {
+    "mtime": 1794485890.1946836,
+    "seen": 1794508044.3297362,
+    "ast_hash": "f8b86ea45de18a8b35834a26025c563b",
+    "semantic_hash": "f8b86ea45de18a8b35834a26025c563b"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Fonts/FLASH_Array/Unicode_test/Unicode_Test_72.h": {
+    "mtime": 1794485890.1946836,
+    "seen": 1794508044.3298001,
+    "ast_hash": "50c792256e44f1eafe60e574b183da21",
+    "semantic_hash": "50c792256e44f1eafe60e574b183da21"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Graphics/Anti-aliased_Clock/NTP_Time.h": {
+    "mtime": 1794485890.3401682,
+    "seen": 1794508044.329863,
+    "ast_hash": "b9dff80774ba490bdd29d2ce3b35200c",
+    "semantic_hash": "b9dff80774ba490bdd29d2ce3b35200c"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Graphics/Anti-aliased_Clock/NotoSansBold15.h": {
+    "mtime": 1794485890.3401682,
+    "seen": 1794508044.3299243,
+    "ast_hash": "5a7e6672d2ee9e1f99cacb0fe2148d15",
+    "semantic_hash": "5a7e6672d2ee9e1f99cacb0fe2148d15"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Smooth Graphics/Arc_meter_demo/NotoSans_Bold.h": {
+    "mtime": 1794485890.340409,
+    "seen": 1794508044.3299847,
+    "ast_hash": "439126619f258074b1f3c6047a64402d",
+    "semantic_hash": "439126619f258074b1f3c6047a64402d"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Animated_dial/NotoSansBold36.h": {
+    "mtime": 1794485890.342426,
+    "seen": 1794508044.330046,
+    "ast_hash": "24eebbb3446d02379f97ffd011ce4d5c",
+    "semantic_hash": "24eebbb3446d02379f97ffd011ce4d5c"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Animated_dial/dial.h": {
+    "mtime": 1794485890.342426,
+    "seen": 1794508044.330109,
+    "ast_hash": "74ea3a346c7afdca0f11350babef7039",
+    "semantic_hash": "74ea3a346c7afdca0f11350babef7039"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Orrery/astronomy.c": {
+    "mtime": 1794485890.3432493,
+    "seen": 1794508044.3301685,
+    "ast_hash": "c17005a9dc9b66355b9d92dca0dd32f6",
+    "semantic_hash": "c17005a9dc9b66355b9d92dca0dd32f6"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Orrery/astronomy.h": {
+    "mtime": 1794485890.3432493,
+    "seen": 1794508044.3302295,
+    "ast_hash": "6fab2c25565afae7ecf3e4115a1599d2",
+    "semantic_hash": "6fab2c25565afae7ecf3e4115a1599d2"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Sprite_image_4bit/sample_images.h": {
+    "mtime": 1794485890.3452709,
+    "seen": 1794508044.3302884,
+    "ast_hash": "1e99e247676a512cdf1802b620615834",
+    "semantic_hash": "1e99e247676a512cdf1802b620615834"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/Sprite/Sprite_image_4bit/starImage.cpp": {
+    "mtime": 1794485890.3452709,
+    "seen": 1794508044.3303483,
+    "ast_hash": "40351b67e57b4d2bc90e464536f76578",
+    "semantic_hash": "40351b67e57b4d2bc90e464536f76578"
+  },
+  "menu_preview/lib/TFT_eSPI/examples/ePaper/Floyd_Steinberg/EPD_Support.h": {
+    "mtime": 1794485890.347615,
+    "seen": 1794508044.3304093,
+    "ast_hash": "6e10ede1497c1415ccd7629f6ccfc55d",
+    "semantic_hash": "6e10ede1497c1415ccd7629f6ccfc55d"
+  },
+  "menu_preview/lib/TFT_eSPI/library.json": {
+    "mtime": 1794485890.3482926,
+    "seen": 1794508044.3305142,
+    "ast_hash": "7b6989847c08fedb388c8ec79fddf674",
+    "semantic_hash": "7b6989847c08fedb388c8ec79fddf674",
+    "ast_empty": true
+  },
+  "menu_preview/src/home_icons.h": {
+    "mtime": 1794486500.9781406,
+    "seen": 1794508044.3305192,
+    "ast_hash": "d87f3889927ee430a56fc51fae2934df",
+    "semantic_hash": "d87f3889927ee430a56fc51fae2934df"
+  },
+  "menu_preview/src/home_wallpaper.h": {
+    "mtime": 1794485890.3522925,
+    "seen": 1794508044.3305671,
+    "ast_hash": "c44706ed91658d156ca621b5373c8a7b",
+    "semantic_hash": "c44706ed91658d156ca621b5373c8a7b"
+  },
+  "menu_preview/src/main.cpp": {
+    "mtime": 1794487771.683162,
+    "seen": 1794508044.3306112,
+    "ast_hash": "a2e72d832502f803cc8c62bdb02b34eb",
+    "semantic_hash": "a2e72d832502f803cc8c62bdb02b34eb"
+  },
+  "menu_preview/src/music_player.cpp": {
+    "mtime": 1794488824.2979553,
+    "seen": 1794508044.3306541,
+    "ast_hash": "d81004bec3a1cf49e90214411d848f56",
+    "semantic_hash": "d81004bec3a1cf49e90214411d848f56"
+  },
+  "menu_preview/tools/make_icons.py": {
+    "mtime": 1794486500.4602737,
+    "seen": 1794508044.3306978,
+    "ast_hash": "54da3361af76370c7ec4678136324374",
+    "semantic_hash": "54da3361af76370c7ec4678136324374"
+  },
+  "price.py": {
+    "mtime": 1794372838.5506947,
+    "seen": 1794508044.3307412,
+    "ast_hash": "8e69e5ab08ad19fd4cecd560e7d01dc1",
+    "semantic_hash": "8e69e5ab08ad19fd4cecd560e7d01dc1"
+  },
+  "src/Petme8x8.h": {
+    "mtime": 1791603147.9904497,
+    "seen": 1794508044.3307788,
+    "ast_hash": "1500586b937d044d0840272b55344b93",
+    "semantic_hash": "1500586b937d044d0840272b55344b93"
+  },
+  "src/birthday.cpp": {
+    "mtime": 1793233213.0306895,
+    "seen": 1794508044.3308246,
+    "ast_hash": "5a283fdbc6a34c78e82711693f6f9ea7",
+    "semantic_hash": "5a283fdbc6a34c78e82711693f6f9ea7"
+  },
+  "src/birthday.h": {
+    "mtime": 1793205801.7217646,
+    "seen": 1794508044.3308656,
+    "ast_hash": "443e28998f19ca046f29d14e57b0a60d",
+    "semantic_hash": "443e28998f19ca046f29d14e57b0a60d"
+  },
+  "src/birthday_code.h": {
+    "mtime": 1793205801.8147645,
+    "seen": 1794508044.3309052,
+    "ast_hash": "e1467413bf8ac932eb9d39f0fafa6391",
+    "semantic_hash": "e1467413bf8ac932eb9d39f0fafa6391"
+  },
+  "src/buttons.cpp": {
+    "mtime": 1794485454.7457426,
+    "seen": 1794508044.3309438,
+    "ast_hash": "420c2d1be195e58077e04ecbfc8a2a15",
+    "semantic_hash": "420c2d1be195e58077e04ecbfc8a2a15"
+  },
+  "src/buttons.h": {
+    "mtime": 1793235965.5669134,
+    "seen": 1794508044.330982,
+    "ast_hash": "bc5ff6924624c02012c3fbb2b9a36186",
+    "semantic_hash": "bc5ff6924624c02012c3fbb2b9a36186"
+  },
+  "src/camera_viewer.cpp": {
+    "mtime": 1793199255.2125041,
+    "seen": 1794508044.3310199,
+    "ast_hash": "70274d3c33a407b098d52e4cc993dfb2",
+    "semantic_hash": "70274d3c33a407b098d52e4cc993dfb2"
+  },
+  "src/config.h": {
+    "mtime": 1794485454.7300365,
+    "seen": 1794508044.331059,
+    "ast_hash": "00b860a0d8942b5bcb5e37a61e2f6e7d",
+    "semantic_hash": "00b860a0d8942b5bcb5e37a61e2f6e7d"
+  },
+  "src/crystal_cave_world.h": {
+    "mtime": 1793265802.7429638,
+    "seen": 1794508044.3310976,
+    "ast_hash": "f56873fc05ce9147ca59f69d39611662",
+    "semantic_hash": "f56873fc05ce9147ca59f69d39611662"
+  },
+  "src/galaga_background_240x320.h": {
+    "mtime": 1792993783.6571512,
+    "seen": 1794508044.3311374,
+    "ast_hash": "82634043269b66de7aaaa528d5f50ce3",
+    "semantic_hash": "82634043269b66de7aaaa528d5f50ce3"
+  },
+  "src/game.h": {
+    "mtime": 1793540364.9640746,
+    "seen": 1794508044.3311784,
+    "ast_hash": "2004c13e1c2c256e66412c9b0f5c776a",
+    "semantic_hash": "2004c13e1c2c256e66412c9b0f5c776a"
+  },
+  "src/home_icons.h": {
+    "mtime": 1794491228.8731227,
+    "seen": 1794508044.3312194,
+    "ast_hash": "d87f3889927ee430a56fc51fae2934df",
+    "semantic_hash": "d87f3889927ee430a56fc51fae2934df"
+  },
+  "src/home_wallpaper.h": {
+    "mtime": 1793159563.1425612,
+    "seen": 1794508044.3312585,
+    "ast_hash": "c44706ed91658d156ca621b5373c8a7b",
+    "semantic_hash": "c44706ed91658d156ca621b5373c8a7b"
+  },
+  "src/icons.h": {
+    "mtime": 1791603147.9904497,
+    "seen": 1794508044.3312979,
+    "ast_hash": "6e4d25c81c0fab74cf279d2fe57afa2f",
+    "semantic_hash": "6e4d25c81c0fab74cf279d2fe57afa2f"
+  },
+  "src/images.h": {
+    "mtime": 1791603147.9904497,
+    "seen": 1794508044.331336,
+    "ast_hash": "83ca87ec83cb5560fb777b53052a6d07",
+    "semantic_hash": "83ca87ec83cb5560fb777b53052a6d07"
+  },
+  "src/life.cpp": {
+    "mtime": 1794491124.063998,
+    "seen": 1794508044.3313744,
+    "ast_hash": "c128f4b863cc36ea5d148314a144d27a",
+    "semantic_hash": "c128f4b863cc36ea5d148314a144d27a"
+  },
+  "src/life_guide.h": {
+    "mtime": 1793122122.0909455,
+    "seen": 1794508044.3314116,
+    "ast_hash": "57b4c2c7dead8ea156c46f53b2e4c23b",
+    "semantic_hash": "57b4c2c7dead8ea156c46f53b2e4c23b"
+  },
+  "src/life_input.cpp": {
+    "mtime": 1793203837.8315945,
+    "seen": 1794508044.3314614,
+    "ast_hash": "dfffe37bf169a4f51db39dbef3718519",
+    "semantic_hash": "dfffe37bf169a4f51db39dbef3718519"
+  },
+  "src/life_model.h": {
+    "mtime": 1793122121.9819455,
+    "seen": 1794508044.3315148,
+    "ast_hash": "b9ac36bc7f97b45c394bda34b9605ac0",
+    "semantic_hash": "b9ac36bc7f97b45c394bda34b9605ac0"
+  },
+  "src/life_patterns.h": {
+    "mtime": 1793121362.9486783,
+    "seen": 1794508044.3315527,
+    "ast_hash": "274f0878e804ec2fcc3ebde5dca22c85",
+    "semantic_hash": "274f0878e804ec2fcc3ebde5dca22c85"
+  },
+  "src/mandelbrot.cpp": {
+    "mtime": 1794491170.8164952,
+    "seen": 1794508044.3315935,
+    "ast_hash": "f2ef438e0d26d3196013ef7e20ea75ec",
+    "semantic_hash": "f2ef438e0d26d3196013ef7e20ea75ec"
+  },
+  "src/modern_icons_40x40.h": {
+    "mtime": 1793120201.0586686,
+    "seen": 1794508044.3316326,
+    "ast_hash": "4c0ec9e32c32febfdf685dccd39516b2",
+    "semantic_hash": "4c0ec9e32c32febfdf685dccd39516b2"
+  },
+  "src/retro_icons_40x40.h": {
+    "mtime": 1791605475.2030246,
+    "seen": 1794508044.3316731,
+    "ast_hash": "f1694ec0fbe3329fc6808b5bbdf0cb39",
+    "semantic_hash": "f1694ec0fbe3329fc6808b5bbdf0cb39"
+  },
+  "src/rocket_demo.cpp": {
+    "mtime": 1793269570.369199,
+    "seen": 1794508044.3317122,
+    "ast_hash": "b17617f63d7b000d4bbd02bd62ff388e",
+    "semantic_hash": "b17617f63d7b000d4bbd02bd62ff388e"
+  },
+  "src/rocket_demo.h": {
+    "mtime": 1793267843.2607558,
+    "seen": 1794508044.3317528,
+    "ast_hash": "c2d788214c186bbdd1c3b25d75179a9f",
+    "semantic_hash": "c2d788214c186bbdd1c3b25d75179a9f"
+  },
+  "src/rocket_demo_frames.h": {
+    "mtime": 1793268981.3136911,
+    "seen": 1794508044.3317914,
+    "ast_hash": "3f724e9dd7963a5a6e11650e43f1a973",
+    "semantic_hash": "3f724e9dd7963a5a6e11650e43f1a973"
+  },
+  "src/run_background_240x320.h": {
+    "mtime": 1793522222.1851535,
+    "seen": 1794508044.3318305,
+    "ast_hash": "fbae6835554b54e5a2b97dbfc0f54466",
+    "semantic_hash": "fbae6835554b54e5a2b97dbfc0f54466"
+  },
+  "src/run_clouds.h": {
+    "mtime": 1793522222.5810354,
+    "seen": 1794508044.3318691,
+    "ast_hash": "b3fb7a35edd7d670ed2d5ac3a94f7d4a",
+    "semantic_hash": "b3fb7a35edd7d670ed2d5ac3a94f7d4a"
+  },
+  "src/snake_background_240x320.h": {
+    "mtime": 1792993807.3970249,
+    "seen": 1794508044.3319094,
+    "ast_hash": "3a4086366750a7c45d410f4f9940e1d2",
+    "semantic_hash": "3a4086366750a7c45d410f4f9940e1d2"
+  },
+  "src/tetris_input.cpp": {
+    "mtime": 1793202690.0880969,
+    "seen": 1794508044.3319497,
+    "ast_hash": "19abe8dd3c10ffb4c2cb6ce75a7faf2e",
+    "semantic_hash": "19abe8dd3c10ffb4c2cb6ce75a7faf2e"
+  },
+  "src/tetris_input.h": {
+    "mtime": 1793179059.9759462,
+    "seen": 1794508044.331989,
+    "ast_hash": "4b89639172f3a76ede91935cb5993770",
+    "semantic_hash": "4b89639172f3a76ede91935cb5993770"
+  },
+  "src/ui_kit.cpp": {
+    "mtime": 1794491271.5685256,
+    "seen": 1794508044.3320282,
+    "ast_hash": "979931c000626910971b757fff6ddc96",
+    "semantic_hash": "979931c000626910971b757fff6ddc96"
+  },
+  "src/ui_kit.h": {
+    "mtime": 1794491271.5674949,
+    "seen": 1794508044.3320673,
+    "ast_hash": "032ddebc5954aedd5fba220246b5c3a0",
+    "semantic_hash": "032ddebc5954aedd5fba220246b5c3a0"
+  },
+  "src/vampire_runner_sprites.h": {
+    "mtime": 1793520318.932469,
+    "seen": 1794508044.3321059,
+    "ast_hash": "aaef618f6ee33d588113ebc59b62bf7a",
+    "semantic_hash": "aaef618f6ee33d588113ebc59b62bf7a"
+  },
+  "tools/build_crystal_world.py": {
+    "mtime": 1793266124.5784495,
+    "seen": 1794508044.332147,
+    "ast_hash": "002298d33c3985450c7a3ac0d226c96f",
+    "semantic_hash": "002298d33c3985450c7a3ac0d226c96f"
+  },
+  "tools/build_home_assets.py": {
+    "mtime": 1793159535.1769314,
+    "seen": 1794508044.3321874,
+    "ast_hash": "a5090018a96ba0ec22e64583300a49c8",
+    "semantic_hash": "a5090018a96ba0ec22e64583300a49c8"
+  },
+  "tools/build_rocket_demo.py": {
+    "mtime": 1793268964.695633,
+    "seen": 1794508044.332227,
+    "ast_hash": "b62f138390a947d25748fe902e6da95f",
+    "semantic_hash": "b62f138390a947d25748fe902e6da95f"
+  },
+  "tools/build_run_scene.py": {
+    "mtime": 1793522220.9893591,
+    "seen": 1794508044.3322682,
+    "ast_hash": "c431f7a2ea620b749df2360cb40ced1a",
+    "semantic_hash": "c431f7a2ea620b749df2360cb40ced1a"
+  },
+  "tools/build_runner_sprite.py": {
+    "mtime": 1793520318.7146363,
+    "seen": 1794508044.3323064,
+    "ast_hash": "2a34f5badbb8aefb6da98d77594aa75a",
+    "semantic_hash": "2a34f5badbb8aefb6da98d77594aa75a"
+  },
+  "tools/check_life.py": {
+    "mtime": 1793122653.3617618,
+    "seen": 1794508044.3323452,
+    "ast_hash": "b1859f96bd68fbfecd89e1d8bd632a40",
+    "semantic_hash": "b1859f96bd68fbfecd89e1d8bd632a40"
+  },
+  "tools/check_life_input.py": {
+    "mtime": 1793122653.362772,
+    "seen": 1794508044.3323848,
+    "ast_hash": "790b4b3d08aa95cebafc251a88ed1fc9",
+    "semantic_hash": "790b4b3d08aa95cebafc251a88ed1fc9"
+  },
+  "tools/check_minesweeper.py": {
+    "mtime": 1793120304.5842254,
+    "seen": 1794508044.3324232,
+    "ast_hash": "9ad440a652550352941c5d9da494249a",
+    "semantic_hash": "9ad440a652550352941c5d9da494249a"
+  },
+  "tools/check_tetris_controls.py": {
+    "mtime": 1793179229.1599703,
+    "seen": 1794508044.3324764,
+    "ast_hash": "3c1d1f03ed0128fafb48c0414feb1dc0",
+    "semantic_hash": "3c1d1f03ed0128fafb48c0414feb1dc0"
+  },
+  "tools/check_tetris_input.py": {
+    "mtime": 1793179105.33795,
+    "seen": 1794508044.3325148,
+    "ast_hash": "f347cb31db0972397ea3eeff84545957",
+    "semantic_hash": "f347cb31db0972397ea3eeff84545957"
+  },
+  "tools/extract_science_icons.py": {
+    "mtime": 1793120198.5713239,
+    "seen": 1794508044.3325536,
+    "ast_hash": "a35ef65da778d2e95361faff8309c53b",
+    "semantic_hash": "a35ef65da778d2e95361faff8309c53b"
+  },
+  "tools/generate_menu_icons.py": {
+    "mtime": 1793120186.9073348,
+    "seen": 1794508044.332594,
+    "ast_hash": "2a0688e8d275f4b90849fb7c597b1310",
+    "semantic_hash": "2a0688e8d275f4b90849fb7c597b1310"
+  },
+  "tools/make_icons.py": {
+    "mtime": 1794491228.8761227,
+    "seen": 1794508044.3326323,
+    "ast_hash": "54da3361af76370c7ec4678136324374",
+    "semantic_hash": "54da3361af76370c7ec4678136324374"
+  },
+  "touch_test/src/main.cpp": {
+    "mtime": 1794185680.094305,
+    "seen": 1794508044.3326702,
+    "ast_hash": "ba8740eece85270f3f1e455b3442c272",
+    "semantic_hash": "ba8740eece85270f3f1e455b3442c272"
+  },
+  "video_test/src/main.cpp": {
+    "mtime": 1794243512.027387,
+    "seen": 1794508044.332715,
+    "ast_hash": "cb3b3fe1d4a9ff64adcf7bb2891f7a8b",
+    "semantic_hash": "cb3b3fe1d4a9ff64adcf7bb2891f7a8b"
+  },
+  "video_test/assets/gameconsole-video-320x240-hq.avi": {
+    "mtime": 1794243435.891145,
+    "seen": 1794508044.3327599,
+    "ast_hash": "e8b2fd388ddd85faa7da7c24e3b6686f",
+    "semantic_hash": "e8b2fd388ddd85faa7da7c24e3b6686f"
+  },
+  "video_test/assets/gameconsole-video-320x240-max.avi": {
+    "mtime": 1794243855.2262392,
+    "seen": 1794508044.3328056,
+    "ast_hash": "92f8fc67b891ca8bb3e3e39496064e50",
+    "semantic_hash": "92f8fc67b891ca8bb3e3e39496064e50"
+  },
+  "video_test/assets/gameconsole-video-320x240.avi": {
+    "mtime": 1794243013.053831,
+    "seen": 1794508044.3328502,
+    "ast_hash": "e94b98b1fbe5b3430ed65991a5baf857",
+    "semantic_hash": "e94b98b1fbe5b3430ed65991a5baf857"
+  },
+  "video_test/assets/gameconsole-video.avi": {
+    "mtime": 1794242041.7379208,
+    "seen": 1794508044.3328943,
+    "ast_hash": "1d39f412ba69ed0a4ec49f9f1ac860de",
+    "semantic_hash": "1d39f412ba69ed0a4ec49f9f1ac860de"
+  }
+}

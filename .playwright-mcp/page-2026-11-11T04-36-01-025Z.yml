@@ -1,0 +1,31 @@
+- generic [active] [ref=f10e1]:
+  - heading "🎮 Game Console — Launcher UI Mockup" [level=1] [ref=f10e2]
+  - generic [ref=f10e3]:
+    - generic [ref=f10e4]:
+      - button "✨ New design" [ref=f10e5] [cursor=pointer]
+      - button "Current firmware" [ref=f10e6] [cursor=pointer]
+    - generic [ref=f10e7]:
+      - generic [ref=f10e8]: Accent
+      - generic [ref=f10e9] [cursor=pointer]
+      - generic [ref=f10e10] [cursor=pointer]
+      - generic [ref=f10e11] [cursor=pointer]
+      - generic [ref=f10e12] [cursor=pointer]
+      - generic [ref=f10e13] [cursor=pointer]
+  - generic [ref=f10e16]:
+    - generic [ref=f10e18]:
+      - generic [ref=f10e19]: GC
+      - generic [ref=f10e20]:
+        - generic [ref=f10e21]: GAME CONSOLE
+        - generic [ref=f10e22]: RETRO EDITION
+      - generic [ref=f10e23]: 11 GAMES
+    - generic [ref=f10e24]:
+      - generic [ref=f10e25] [cursor=pointer]: Tetris
+      - generic [ref=f10e33] [cursor=pointer]: Snake
+      - generic [ref=f10e41] [cursor=pointer]: Breakout
+      - generic [ref=f10e52] [cursor=pointer]: Run
+      - generic [ref=f10e61] [cursor=pointer]: Galaga
+      - generic [ref=f10e67] [cursor=pointer]: Puzzle
+      - generic [ref=f10e76] [cursor=pointer]: Tic-Tac
+      - generic [ref=f10e83] [cursor=pointer]: Pong
+      - generic [ref=f10e91] [cursor=pointer]: Mines
+  - generic [ref=f10e101]: ←→↑↓ move · Enter open (Shoot) · [] switch page · click tiles with the mouse

@@ -1,0 +1,944 @@
+#include "game.h"
+#include "home_icons.h"
+#include "home_wallpaper.h"
+#include "config.h"
+#include "birthday.h"
+#include "birthday_code.h"
+
+// Define apps
+struct App {
+  const char* label;
+  int x_coord;
+  int y_coord;
+  const uint16_t* img;
+  int gameIndex; // Positive indices launch a game/app; -1 opens a utility.
+};
+
+App Apps[] = {
+  {"Tetris",   0, 0, tetris_home_icon,   1},
+  {"Snake",    0, 0, snake_home_icon,    2},
+  {"Breakout", 0, 0, breakout_home_icon, 3},
+  {"Run",      0, 0, run_home_icon,      4},
+  {"Galaga",   0, 0, galaga_home_icon,   5},
+  {"Puzzle",   0, 0, tetris_home_icon,   6},
+  {"Tic-Tac",  0, 0, tic_tac_home_icon,  7},
+  {"Pong",     0, 0, pong_home_icon,     8},
+  {"Mines",    0, 0, mines_home_icon,    9},
+  {"Conway's", 0, 0, life_home_icon,    10},
+  {"Mandel",   0, 0, mandelbrot_home_icon,11},
+  {"Sound",    0, 0, sound_home_icon,   -1},
+  {"Settings", 0, 0, settings_home_icon,-1},
+  {"Info",     0, 0, about_home_icon,   -1}
+};
+
+const int APP_COUNT = sizeof(Apps) / sizeof(App);
+
+// Phone-style launcher: three rows of floating icons over a fixed wallpaper.
+// All composition is done in a small sprite before pixels reach the display.
+constexpr int PORTRAIT_W = 240, PORTRAIT_H = 320;
+constexpr int COLS = 3, VISIBLE_ROWS = 3;
+constexpr int APPS_PER_PAGE = COLS * VISIBLE_ROWS;
+constexpr int PAGE_COUNT = (APP_COUNT + APPS_PER_PAGE - 1) / APPS_PER_PAGE;
+constexpr int TILE_W = 72, TILE_H = 76, ICON_SIZE = 52;
+constexpr int START_Y = 68, ROW_PITCH = 75, COL_PITCH = 76, MARGIN_LEFT = 8;
+#define MENU_ACCENT UI_CYAN
+#define MENU_ACCENT_DIM UI_PURPLE
+static_assert(MARGIN_LEFT * 2 + TILE_W * COLS + 4 * (COLS - 1) == PORTRAIT_W,
+              "Launcher columns must fit the display");
+static_assert(START_Y >= 58 + 10, "First row must clear the title panel");
+static_assert(START_Y + (VISIBLE_ROWS - 1) * ROW_PITCH + TILE_H <= 294,
+              "Third row must clear the page dots");
+constexpr int ICON_TOP = 8;
+static_assert(10 + ICON_SIZE <= TILE_W && ICON_TOP + ICON_SIZE < 61, "Icon and label must not overlap");
+
+int selectedApp = 0;
+int homePage = 0;
+TFT_eSprite launcherTile(&tft);
+
+static uint16_t homeBlend(uint16_t a, uint16_t b, int amount) {
+  int r = (((a >> 11) & 31) * (255 - amount) + ((b >> 11) & 31) * amount) / 255;
+  int g = (((a >> 5) & 63) * (255 - amount) + ((b >> 5) & 63) * amount) / 255;
+  int blue = ((a & 31) * (255 - amount) + (b & 31) * amount) / 255;
+  return (r << 11) | (g << 5) | blue;
+}
+
+static uint16_t homeSwap(uint16_t color) { return (color >> 8) | (color << 8); }
+
+void getTileCoordinates(int index, int &x, int &y) {
+  int slot = index % APPS_PER_PAGE;
+  x = MARGIN_LEFT + (slot % COLS) * COL_PITCH;
+  y = START_Y + (slot / COLS) * ROW_PITCH;
+}
+
+static bool prepareLauncherTile() {
+  if (launcherTile.created()) return true;
+  launcherTile.setColorDepth(16);
+  return launcherTile.createSprite(TILE_W, TILE_H) != nullptr;
+}
+
+static void drawLauncherLabel(const char *label) {
+  launcherTile.setTextFont(1);
+  launcherTile.setTextDatum(MC_DATUM);
+  launcherTile.setTextColor(0x0842);
+  launcherTile.drawString(label, TILE_W / 2 + 1, 66);
+  launcherTile.setTextColor(TFT_WHITE);
+  launcherTile.drawString(label, TILE_W / 2, 65);
+}
+
+static void drawLauncherBorder() {
+  launcherTile.drawRoundRect(0, 0, TILE_W, TILE_H, 13, 0x0844);
+  launcherTile.drawRoundRect(1, 1, TILE_W - 2, TILE_H - 2, 12, TFT_WHITE);
+  launcherTile.drawRoundRect(2, 2, TILE_W - 4, TILE_H - 4, 11, TFT_WHITE);
+  launcherTile.drawRoundRect(3, 3, TILE_W - 6, TILE_H - 6, 10, UI_CYAN);
+}
+
+void drawAppTile(int index, bool selected) {
+  if (index < 0 || index >= APP_COUNT || index / APPS_PER_PAGE != homePage) return;
+  int x, y;
+  getTileCoordinates(index, x, y);
+  Apps[index].x_coord = x;
+  Apps[index].y_coord = y;
+  if (!prepareLauncherTile()) return;
+  auto *pixels = static_cast<uint16_t *>(launcherTile.getPointer());
+  for (int ty = 0; ty < TILE_H; ++ty) {
+    uint16_t tint = homeBlend(UI_CYAN, UI_PURPLE, ty * 255 / (TILE_H - 1));
+    for (int tx = 0; tx < TILE_W; ++tx) {
+      uint16_t color = home_wallpaper[(y + ty) * PORTRAIT_W + x + tx];
+      if (selected) {
+        int dx = tx < 13 ? 13 - tx : tx > TILE_W - 14 ? tx - (TILE_W - 14) : 0;
+        int dy = ty < 13 ? 13 - ty : ty > TILE_H - 14 ? ty - (TILE_H - 14) : 0;
+        if (dx * dx + dy * dy <= 13 * 13) color = homeBlend(color, tint, 135);
+      }
+      pixels[ty * TILE_W + tx] = homeSwap(color);
+    }
+  }
+  // Composite the transparent RGB565 icon directly into the finished tile.
+  // No dark clearing rectangle or old card remains around an unselected app.
+  if (Apps[index].img) {
+    for (int iy = 0; iy < ICON_SIZE; ++iy) {
+      for (int ix = 0; ix < ICON_SIZE; ++ix) {
+        uint16_t color = Apps[index].img[iy * ICON_SIZE + ix];
+        if (color != 0xF81F) pixels[(iy + ICON_TOP) * TILE_W + ix + 10] = homeSwap(color);
+      }
+    }
+  }
+  drawLauncherLabel(Apps[index].label);
+  if (selected) drawLauncherBorder();
+  launcherTile.pushSprite(x, y);
+}
+
+void drawPageDots() {
+  constexpr int WIDTH = 72, HEIGHT = 16, LEFT = 84, TOP = 300;
+  uint16_t pixels[WIDTH * HEIGHT];
+  int firstCenter = WIDTH / 2 - (PAGE_COUNT - 1) * 9;
+  for (int y = 0; y < HEIGHT; ++y) {
+    for (int x = 0; x < WIDTH; ++x) {
+      uint16_t color = home_wallpaper[(TOP + y) * PORTRAIT_W + LEFT + x];
+      for (int p = 0; p < PAGE_COUNT; ++p) {
+        int dx = x - (firstCenter + p * 18), dy = y - 8;
+        int distance = dx * dx + dy * dy;
+        if (distance <= 16) color = homeBlend(color, 0x0844, 70);
+        if (distance <= 9) color = p == homePage ? TFT_WHITE : homeBlend(color, 0x2104, 100);
+      }
+      pixels[y * WIDTH + x] = color;
+    }
+  }
+  tft.setSwapBytes(true);
+  tft.pushImage(LEFT, TOP, WIDTH, HEIGHT, pixels);
+}
+
+void drawLauncherTitle() {
+  constexpr int WIDTH = 224, HEIGHT = 46, LEFT = 8, TOP = 12;
+  TFT_eSprite header(&tft);
+  header.setColorDepth(16);
+  auto *pixels = static_cast<uint16_t *>(header.createSprite(WIDTH, HEIGHT));
+  if (!pixels) return;
+  for (int y = 0; y < HEIGHT; ++y) {
+    for (int x = 0; x < WIDTH; ++x) {
+      uint16_t tint = homeBlend(uiHeaderStart, uiHeaderEnd,
+                               (x + y) * 255 / (WIDTH + HEIGHT - 2));
+      uint16_t color = home_wallpaper[(TOP + y) * PORTRAIT_W + LEFT + x];
+      int dx = x < 9 ? 9 - x : x > WIDTH - 10 ? x - (WIDTH - 10) : 0;
+      int dy = y < 9 ? 9 - y : y > HEIGHT - 10 ? y - (HEIGHT - 10) : 0;
+      if (dx * dx + dy * dy <= 81) color = tint;
+      pixels[y * WIDTH + x] = homeSwap(color);
+    }
+  }
+  header.drawRoundRect(0, 0, WIDTH, HEIGHT, 9, homeBlend(uiHeaderStart, TFT_WHITE, 90));
+  header.fillRoundRect(8, 10, 3, 26, 1, 0x18C5);
+  header.setTextDatum(TL_DATUM);
+  header.setTextFont(2);
+  header.setTextColor(0x18C5);
+  header.drawString("GAME", 20, 5);
+  header.drawString("CONSOLE", 20, 23);
+  header.drawFastVLine(156, 10, 26, homeBlend(uiHeaderEnd, 0x18C5, 55));
+  int playable = 0;
+  for (int i = 0; i < APP_COUNT; ++i) if (Apps[i].gameIndex > 0) ++playable;
+  char count[8];
+  snprintf(count, sizeof(count), "%02d", playable);
+  header.setTextDatum(TR_DATUM);
+  header.setTextFont(4);
+  header.setTextColor(0x18C5);
+  header.drawString(count, 208, 3);
+  header.setTextFont(1);
+  header.setTextColor(0x18C5);
+  header.drawString("PLAYABLE", 208, 33);
+  header.pushSprite(LEFT, TOP);
+}
+
+void redrawVisibleTiles() {
+  tft.setSwapBytes(true);
+  tft.pushImage(0, 0, PORTRAIT_W, PORTRAIT_H, home_wallpaper);
+  drawLauncherTitle();
+  int start = homePage * APPS_PER_PAGE;
+  int end = min(start + APPS_PER_PAGE, APP_COUNT);
+  for (int i = start; i < end; ++i) drawAppTile(i, i == selectedApp);
+  drawPageDots();
+}
+
+// Draw moving foreground over a stationary wallpaper, using native RGB565
+// throughout. Only small text/border masks and one eight-row strip are cached;
+// two full-page frame buffers would consume too much memory on this console.
+static void composeSlidingPage(uint16_t *strip, int stripY, int lines, int page,
+                               int offset, int selected, const uint8_t *labels,
+                               const uint8_t *border) {
+  constexpr int LABEL_TOP = 60, LABEL_H = 12;
+  int end = min((page + 1) * APPS_PER_PAGE, APP_COUNT);
+  for (int index = page * APPS_PER_PAGE; index < end; ++index) {
+    int baseX, baseY;
+    getTileCoordinates(index, baseX, baseY);
+    baseX += offset;
+    int x0 = max(0, baseX), x1 = min(PORTRAIT_W, baseX + TILE_W);
+    int y0 = max(stripY, baseY), y1 = min(stripY + lines, baseY + TILE_H);
+    if (x0 >= x1 || y0 >= y1) continue;
+    for (int y = y0; y < y1; ++y) {
+      int ty = y - baseY;
+      uint16_t tint = homeBlend(UI_CYAN, UI_PURPLE, ty * 255 / (TILE_H - 1));
+      for (int x = x0; x < x1; ++x) {
+        int tx = x - baseX, pos = (y - stripY) * PORTRAIT_W + x;
+        uint16_t color = strip[pos];
+        if (index == selected) {
+          int dx = tx < 13 ? 13 - tx : tx > TILE_W - 14 ? tx - (TILE_W - 14) : 0;
+          int dy = ty < 13 ? 13 - ty : ty > TILE_H - 14 ? ty - (TILE_H - 14) : 0;
+          if (dx * dx + dy * dy <= 169) color = homeBlend(color, tint, 135);
+        }
+        if (ty >= ICON_TOP && ty < ICON_TOP + ICON_SIZE && tx >= 10 && tx < 10 + ICON_SIZE) {
+          uint16_t ink = Apps[index].img[(ty - ICON_TOP) * ICON_SIZE + tx - 10];
+          if (ink != 0xF81F) color = ink;
+        }
+        if (ty >= LABEL_TOP && ty < LABEL_TOP + LABEL_H) {
+          uint8_t ink = labels[index * TILE_W * LABEL_H + (ty - LABEL_TOP) * TILE_W + tx];
+          if (ink) color = ink == 2 ? TFT_WHITE : 0x0842;
+        }
+        if (index == selected) {
+          uint8_t ink = border[ty * TILE_W + tx];
+          if (ink) color = ink == 1 ? 0x0844 : ink == 2 ? TFT_WHITE : UI_CYAN;
+        }
+        strip[pos] = color;
+      }
+    }
+  }
+}
+
+void slideLauncherPage(int oldPage, int newPage, int oldSelected) {
+  constexpr int LABEL_TOP = 60, LABEL_H = 12, STRIP_H = 8;
+  constexpr int VIEW_H = (VISIBLE_ROWS - 1) * ROW_PITCH + TILE_H;
+  constexpr int MASK_BYTES = APP_COUNT * TILE_W * LABEL_H + TILE_W * TILE_H;
+  auto *masks = static_cast<uint8_t *>(malloc(MASK_BYTES));
+  auto *strip = static_cast<uint16_t *>(malloc(PORTRAIT_W * STRIP_H * sizeof(uint16_t)));
+  if (!masks || !strip || !prepareLauncherTile()) {
+    free(masks); free(strip);
+    redrawVisibleTiles();
+    return;
+  }
+  auto *labels = masks;
+  auto *border = masks + APP_COUNT * TILE_W * LABEL_H;
+  auto *tile = static_cast<uint16_t *>(launcherTile.getPointer());
+  for (int i = 0; i < APP_COUNT; ++i) {
+    launcherTile.fillSprite(0xF81F);
+    drawLauncherLabel(Apps[i].label);
+    for (int y = 0; y < LABEL_H; ++y)
+      for (int x = 0; x < TILE_W; ++x) {
+        uint16_t ink = tile[(LABEL_TOP + y) * TILE_W + x];
+        labels[i * TILE_W * LABEL_H + y * TILE_W + x] =
+          ink == homeSwap(TFT_WHITE) ? 2 : ink == homeSwap(0x0842) ? 1 : 0;
+      }
+  }
+  launcherTile.fillSprite(0xF81F);
+  drawLauncherBorder();
+  for (int i = 0; i < TILE_W * TILE_H; ++i) {
+    uint16_t ink = tile[i];
+    border[i] = ink == homeSwap(0x0844) ? 1 : ink == homeSwap(TFT_WHITE) ? 2 :
+                ink == homeSwap(UI_CYAN) ? 3 : 0;
+  }
+  int direction = newPage > oldPage ? 1 : -1;
+  unsigned long began = millis();
+  while (true) {
+    unsigned long elapsed = millis() - began;
+    // Finish the transition on new input instead of making the next command
+    // wait through every remaining frame of this relatively expensive draw.
+    int t = (buttonsPendingPress() || Serial.available()) ? 220 : min((int)elapsed, 220);
+    // Cubic ease-out, in fixed point. Always finish at exactly one page width.
+    int remaining = 220 - t;
+    int shift = PORTRAIT_W - (int)((int64_t)PORTRAIT_W * remaining * remaining * remaining /
+                                 (220L * 220L * 220L));
+    int oldOffset = -direction * shift;
+    int newOffset = direction * (PORTRAIT_W - shift);
+    for (int y = START_Y; y < START_Y + VIEW_H; y += STRIP_H) {
+      int lines = min(STRIP_H, START_Y + VIEW_H - y);
+      memcpy(strip, home_wallpaper + y * PORTRAIT_W, PORTRAIT_W * lines * sizeof(uint16_t));
+      composeSlidingPage(strip, y, lines, oldPage, oldOffset, oldSelected, labels, border);
+      composeSlidingPage(strip, y, lines, newPage, newOffset, selectedApp, labels, border);
+      tft.setSwapBytes(true);
+      tft.pushImage(0, y, PORTRAIT_W, lines, strip);
+    }
+    yield();
+    if (t == 220) break;
+  }
+  free(strip); free(masks);
+  drawPageDots();
+}
+
+static void drawAboutInformation() {
+  tft.fillScreen(UI_BG);
+  tft.fillRoundRect(14, 42, 212, 244, 12, UI_PANEL);
+  tft.drawRoundRect(14, 42, 212, 244, 12, UI_SURFACE);
+  
+  tft.fillRect(26, 56, 24, 3, MENU_ACCENT);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextFont(1);
+  tft.setTextColor(UI_MUTED, UI_PANEL);
+  tft.drawString("DEVICE / SPECIFICATIONS", 26, 68);
+  tft.setTextFont(4);
+  tft.setTextColor(UI_TEXT, UI_PANEL);
+  tft.drawString("CONSOLE", 26, 82);
+
+  const char* specs[][2] = {
+    {"CPU ARCH", "ESP32-C3 RISC-V"},
+    {"CLOCK", "160 MHz"},
+    {"DISPLAY", "ILI9341 240x320"},
+    {"ADC INPUT", "ADS1115 16-Bit I2C"},
+    {"AUDIO", "GPIO 10 LEDC PWM"}
+  };
+
+  tft.setTextFont(1);
+  for (int i = 0; i < 5; i++) {
+    int sy = 126 + i * 24;
+    tft.fillRoundRect(24, sy - 2, 192, 20, 4, UI_ICON_BG);
+    tft.setTextDatum(ML_DATUM);
+    tft.setTextColor(UI_MUTED, UI_ICON_BG);
+    tft.drawString(specs[i][0], 30, sy + 7);
+    tft.setTextDatum(MR_DATUM);
+    tft.setTextColor(UI_TEXT, UI_ICON_BG);
+    tft.drawString(specs[i][1], 208, sy + 7);
+  }
+  
+  tft.drawFastHLine(24, 252, 192, UI_SURFACE);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(MENU_ACCENT, UI_PANEL);
+  tft.drawString("PRESS SHOOT TO RETURN", 120, 268);
+  
+}
+
+void showAboutScreen() {
+  Serial.println("[Info] Open");
+  drawAboutInformation();
+  buttonsRequireRelease();
+  BirthdayCode secret;
+  while (true) {
+    int c = findCommand(false);
+    if (Serial.available()) {
+      char key = Serial.read();
+      if (key == 'w' || key == 'W') c = 0;
+      else if (key == 'd' || key == 'D') c = 1;
+      else if (key == 's' || key == 'S') c = 2;
+      else if (key == 'a' || key == 'A') c = 3;
+      else if (key == ' ' || key == 'e' || key == 'E' || key == '\r' || key == '\n') c = 4;
+    }
+    if (c == 4) break;
+    if (secret.press(c, millis())) {
+      showBirthdayScene();
+      drawAboutInformation();
+      buttonsRequireRelease();
+    }
+    delay(2);
+  }
+  menuSetup();
+}
+
+struct SongNote {
+  uint16_t freq;
+  uint16_t duration;
+};
+
+struct Track {
+  const char* title;
+  const char* artist;
+  const SongNote* notes;
+  int noteCount;
+};
+
+// 1. Never Gonna Give You Up (Rick Astley)
+const SongNote rickNotes[] = {
+  {294, 150}, {330, 150}, {392, 150}, {330, 150},
+  {494, 280}, {440, 380}, {0, 140},
+  {294, 150}, {330, 150}, {392, 150}, {330, 150},
+  {440, 280}, {392, 380}, {0, 140},
+  {294, 150}, {330, 150}, {392, 150}, {330, 150},
+  {392, 220}, {440, 200}, {370, 280}, {330, 220}, {294, 380}
+};
+
+// 2. Astronomia / Coffin Dance (Vicetone)
+const SongNote astronomiaNotes[] = {
+  {587, 110}, {587, 110}, {587, 110}, {587, 110},
+  {392, 220}, {494, 220}, {440, 220}, {523, 220},
+  {494, 220}, {392, 220}, {440, 220}, {587, 220},
+  {494, 220}, {392, 220}, {440, 220}, {587, 220}
+};
+
+// 3. Blinding Lights (The Weeknd)
+const SongNote blindingNotes[] = {
+  {698, 170}, {698, 170}, {622, 170}, {698, 220},
+  {784, 220}, {523, 330}, {0, 90},
+  {698, 170}, {698, 170}, {622, 170}, {698, 220},
+  {784, 220}, {523, 330}, {0, 90},
+  {784, 170}, {784, 170}, {698, 170}, {622, 220}, {523, 380}
+};
+
+// 4. Bad Guy (Billie Eilish)
+const SongNote badGuyNotes[] = {
+  {392, 130}, {392, 130}, {392, 130}, {294, 130},
+  {349, 130}, {392, 130}, {0, 130},
+  {392, 130}, {392, 130}, {392, 130}, {294, 130},
+  {349, 130}, {392, 130}, {0, 130},
+  {466, 130}, {440, 130}, {392, 260}
+};
+
+// 5. Despacito (Luis Fonsi) - Extended Chorus & Main Hook
+const SongNote despacitoNotes[] = {
+  // Main iconic intro hook: D5 - C#5 - B4 - F#4
+  {587, 300}, {554, 180}, {494, 200}, {370, 220}, {0, 100},
+  // "Des - pa - ci - to..."
+  {370, 140}, {370, 140}, {370, 140}, {370, 140},
+  {494, 180}, {494, 180}, {494, 180}, {494, 240},
+  {440, 160}, {494, 160}, {392, 360}, {0, 120},
+  // Second phrase: "Quiero respirar tu cuello despacito..."
+  {392, 140}, {392, 140}, {392, 140}, {392, 140},
+  {392, 180}, {494, 180}, {494, 180}, {494, 240},
+  {440, 160}, {392, 160}, {440, 320}, {0, 120},
+  // Third phrase: "Deja que te diga cosas al oído..."
+  {440, 140}, {440, 140}, {440, 140}, {440, 140},
+  {440, 180}, {587, 180}, {587, 180}, {587, 240},
+  {554, 160}, {494, 160}, {440, 280}, {370, 360}
+};
+
+// 6. Tetris Theme A (Korobeiniki)
+const SongNote tetrisNotes[] = {
+  {659, 220}, {494, 120}, {523, 120}, {587, 220}, {523, 120}, {494, 120},
+  {440, 220}, {440, 120}, {523, 120}, {659, 220}, {587, 120}, {523, 120},
+  {494, 280}, {523, 120}, {587, 220}, {659, 220},
+  {523, 220}, {440, 220}, {440, 320}
+};
+
+const Track jukeboxPlaylist[] = {
+  {"Never Gonna Give You Up", "Rick Astley", rickNotes, sizeof(rickNotes)/sizeof(rickNotes[0])},
+  {"Astronomia (Coffin)",     "Vicetone",    astronomiaNotes, sizeof(astronomiaNotes)/sizeof(astronomiaNotes[0])},
+  {"Blinding Lights",         "The Weeknd",  blindingNotes, sizeof(blindingNotes)/sizeof(blindingNotes[0])},
+  {"Bad Guy",                 "Billie Eilish", badGuyNotes, sizeof(badGuyNotes)/sizeof(badGuyNotes[0])},
+  {"Despacito",               "Luis Fonsi",  despacitoNotes, sizeof(despacitoNotes)/sizeof(despacitoNotes[0])},
+  {"Tetris Korobeiniki",      "Retro Classic", tetrisNotes, sizeof(tetrisNotes)/sizeof(tetrisNotes[0])}
+};
+
+const int JUKEBOX_COUNT = sizeof(jukeboxPlaylist)/sizeof(jukeboxPlaylist[0]);
+
+void playSoundTestScreen() {
+  int currentSong = 4; // Default directly to Despacito (Track #5)
+  bool isPlaying = false;
+  
+  auto drawJukeboxUI = [&]() {
+    tft.fillRoundRect(14, 42, 212, 246, 12, UI_PANEL);
+    tft.drawRoundRect(14, 42, 212, 246, 12, UI_SURFACE);
+    
+    tft.fillRect(26, 54, 24, 3, MENU_ACCENT);
+    tft.setTextDatum(TL_DATUM);
+    tft.setTextFont(1);
+    tft.setTextColor(UI_MUTED, UI_PANEL);
+    tft.drawString("AUDIO / CHIPTONE", 26, 64);
+    tft.setTextFont(4);
+    tft.setTextColor(UI_TEXT, UI_PANEL);
+    tft.drawString("JUKEBOX", 26, 76);
+    
+    // Song list
+    tft.setTextFont(1);
+    for (int i = 0; i < JUKEBOX_COUNT; i++) {
+      int y = 108 + i * 23;
+      bool sel = (i == currentSong);
+      
+      if (sel) {
+        tft.fillRoundRect(22, y - 2, 196, 21, 6, UI_ICON_BG);
+        tft.drawRoundRect(22, y - 2, 196, 21, 6, UI_PURPLE);
+        tft.drawRoundRect(23, y - 1, 194, 19, 5, UI_PURPLE);
+        tft.drawRoundRect(24, y, 192, 17, 4, UI_CYAN);
+        tft.setTextColor(UI_TEXT, UI_ICON_BG);
+      } else {
+        tft.fillRoundRect(22, y - 2, 196, 21, 6, UI_ICON_BG);
+        tft.setTextColor(UI_MUTED, UI_ICON_BG);
+      }
+      
+      char buf[36];
+      snprintf(buf, sizeof(buf), "%d. %s", i + 1, jukeboxPlaylist[i].title);
+      tft.setTextDatum(ML_DATUM);
+      tft.drawString(buf, 28, y + 7);
+      if (sel) {
+        tft.setTextDatum(MR_DATUM);
+        tft.drawString(isPlaying ? "||" : ">", 210, y + 7);
+      }
+    }
+    
+    // Status banner at bottom of card
+    tft.drawFastHLine(22, 248, 196, UI_SURFACE);
+    tft.setTextDatum(MC_DATUM);
+    tft.setTextColor(isPlaying ? MENU_ACCENT : UI_MUTED, UI_PANEL);
+    tft.drawString(isPlaying ? "NOW PLAYING" : "SHOOT: PLAY / PAUSE", 120, 258);
+    tft.setTextColor(UI_MUTED, UI_PANEL);
+    tft.drawString("UP/DOWN: PICK  |  LEFT: EXIT", 120, 272);
+  };
+  
+  drawJukeboxUI();
+  delay(250);
+
+  while (true) {
+    int c = findCommand(false);
+    if (Serial.available()) {
+      char sc = Serial.read();
+      if (sc == ' ' || sc == 'x' || sc == 'e') c = 4;
+      else if (sc == 'w') c = 0;
+      else if (sc == 's') c = 2;
+      else if (sc == 'a' || sc == 'q') c = 3;
+    }
+    
+    // Exit back to menu on LEFT (command 3)
+    if (c == 3) {
+      setBuzzerTone(0);
+      playNavClick();
+      break;
+    }
+
+    if (c == 0) { // UP
+      setBuzzerTone(0);
+      isPlaying = false;
+      currentSong = (currentSong - 1 + JUKEBOX_COUNT) % JUKEBOX_COUNT;
+      playNavClick();
+      drawJukeboxUI();
+      delay(150);
+    } else if (c == 2) { // DOWN
+      setBuzzerTone(0);
+      isPlaying = false;
+      currentSong = (currentSong + 1) % JUKEBOX_COUNT;
+      playNavClick();
+      drawJukeboxUI();
+      delay(150);
+    } else if (c == 4) { // SHOOT: Play / Stop
+      if (isPlaying) {
+        setBuzzerTone(0);
+        isPlaying = false;
+        drawJukeboxUI();
+        delay(200);
+      } else {
+        isPlaying = true;
+        drawJukeboxUI();
+        
+        // Play selected track with interactive abort on any button press
+        const Track& trk = jukeboxPlaylist[currentSong];
+        for (int i = 0; i < trk.noteCount; i++) {
+          // Check for button press to stop or change song
+          int interruptCmd = findCommand(false);
+          if (interruptCmd == 4 || interruptCmd == 0 || interruptCmd == 2 || interruptCmd == 3) {
+            setBuzzerTone(0);
+            isPlaying = false;
+            break;
+          }
+          if (Serial.available()) {
+            Serial.read();
+            setBuzzerTone(0);
+            isPlaying = false;
+            break;
+          }
+          
+          uint16_t freq = trk.notes[i].freq;
+          uint16_t dur = trk.notes[i].duration;
+          
+          if (freq > 0) {
+            setBuzzerTone(freq);
+          } else {
+            setBuzzerTone(0);
+          }
+          
+          // Mini visualizer bar in card
+          int barW = map(freq, 200, 900, 10, 180);
+          barW = constrain(barW, 10, 180);
+          tft.fillRect(30, 240, 180, 4, UI_PANEL);
+          if (freq > 0) {
+            tft.fillRect(30, 240, barW, 4, MENU_ACCENT_DIM);
+          }
+          
+          delay(dur);
+          setBuzzerTone(0);
+          delay(20);
+        }
+        
+        setBuzzerTone(0);
+        isPlaying = false;
+        drawJukeboxUI();
+      }
+    }
+    delay(20);
+  }
+  
+  setBuzzerTone(0);
+  menuSetup();
+}
+
+static int readSettingsCommand() {
+  int cmd = findCommand(false);
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'w' || c == 'W') cmd = 0;
+    else if (c == 'd' || c == 'D') cmd = 1;
+    else if (c == 's' || c == 'S') cmd = 2;
+    else if (c == 'a' || c == 'A') cmd = 3;
+    else if (c == ' ' || c == '\n' || c == '\r' || c == 'e' || c == 'E' || c == 'x' || c == 'X') cmd = 4;
+  }
+  return cmd;
+}
+
+
+void drawSettingsRow(int row, bool selected) {
+  const int y = 92 + row * 50;
+  const uint16_t fill = UI_ICON_BG;
+  const uint16_t ink = UI_TEXT;
+
+  tft.fillRoundRect(22, y, 196, 44, 9, fill);
+  tft.drawRoundRect(22, y, 196, 44, 9, selected ? UI_PURPLE : UI_SURFACE);
+  if (selected) {
+    tft.drawRoundRect(23, y + 1, 194, 42, 8, UI_PURPLE);
+    tft.drawRoundRect(24, y + 2, 192, 40, 7, UI_CYAN);
+  }
+
+  tft.setTextFont(1);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextColor(selected ? UI_TEXT : UI_MUTED, fill);
+  const char* section = row == 0 ? "APPEARANCE" : row == 1 ? "SYSTEM AUDIO" : "GAME DATA";
+  tft.drawString(section, 32, y + 5);
+
+  tft.setTextFont(2);
+  tft.setTextDatum(ML_DATUM);
+  tft.setTextColor(ink, fill);
+  const char* title = row == 0 ? "THEME" : row == 1 ? "SOUND" : "RESET SCORES";
+  tft.drawString(title, 32, y + 29);
+
+  tft.setTextDatum(MR_DATUM);
+  if (row == 0) {
+    tft.setTextFont(1);
+    tft.drawString(themeName(activeTheme), 207, y + 29);
+  } else if (row == 1) {
+    tft.setTextFont(2);
+    tft.drawString(soundEnabled ? "ON" : "OFF", 207, y + 29);
+  } else {
+    tft.setTextFont(1);
+    tft.setTextColor(UI_RED, fill);
+    tft.drawString("SHOOT", 207, y + 29);
+  }
+}
+
+static void drawSettingsHeader() {
+  // Live preview of the same opaque gradient used by the launcher title.
+  for (int x = 24; x < 216; ++x)
+    tft.drawFastVLine(x, 23, 63, homeBlend(uiHeaderStart, uiHeaderEnd, (x - 24) * 255 / 191));
+  tft.fillRoundRect(28, 32, 3, 42, 1, 0x18C5);
+  tft.setTextDatum(TL_DATUM);
+  tft.setTextFont(1);
+  tft.setTextColor(0x18C5);
+  tft.drawString("CONSOLE / PERSONALIZE", 38, 26);
+  tft.setTextFont(4);
+  tft.setTextColor(0x18C5);
+  tft.drawString("SETTINGS", 38, 42);
+  tft.setTextFont(1);
+  tft.setTextColor(0x18C5);
+  tft.drawString("Title + focus accent", 38, 71);
+}
+
+static void drawSettingsPalette() {
+  // Compact palette indicators remain visible below the setting cards.
+  tft.fillRect(30, 241, 180, 15, UI_PANEL);
+  for (int i = 0; i < THEME_COUNT; ++i) {
+    const uint16_t swatches[] = {0x7DFF, 0x4DDF, 0xCB5F, 0xFB75,
+                                0xCFE8, 0xFD8B, 0x67D4, 0xC638};
+    int x = 43 + i * 22;
+    tft.fillCircle(x, 249, 3, swatches[i]);
+    if (i == activeTheme) tft.drawCircle(x, 248, 5, UI_TEXT);
+  }
+}
+
+static void drawSettingsFooter() {
+  tft.drawFastHLine(24, 258, 192, UI_SURFACE);
+  tft.fillRect(24, 262, 192, 42, UI_PANEL);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextFont(1);
+  tft.setTextColor(UI_TEXT, UI_PANEL);
+  tft.drawString("UP / DOWN    SELECT", 120, 270);
+  tft.setTextColor(UI_CYAN, UI_PANEL);
+  tft.drawString("LEFT / RIGHT    CHANGE", 120, 284);
+  tft.setTextColor(UI_GREEN, UI_PANEL);
+  tft.drawString("SHOOT    ACTION / EXIT", 120, 298);
+}
+
+static void refreshSettingsTheme(int selectedRow) {
+  // Theme changes affect the header and accent colors, but the neutral panel
+  // stays identical. Updating these regions in place avoids a visible black
+  // frame between the old and new themes.
+  drawSettingsHeader();
+  drawSettingsRow(0, selectedRow == 0);
+  drawSettingsRow(1, selectedRow == 1);
+  drawSettingsRow(2, selectedRow == 2);
+  drawSettingsPalette();
+  drawSettingsFooter();
+}
+
+void drawSettingsScreen(int selectedRow) {
+  tft.fillScreen(UI_BG);
+  tft.fillRoundRect(12, 12, 216, 296, 14, UI_PANEL);
+  tft.drawRoundRect(12, 12, 216, 296, 14, UI_SURFACE);
+  refreshSettingsTheme(selectedRow);
+}
+
+static void drawResetScoresConfirmation(int choice) {
+  tft.fillScreen(UI_BG);
+  tft.fillRoundRect(22, 68, 196, 184, 12, UI_PANEL);
+  tft.drawRoundRect(22, 68, 196, 184, 12, UI_RED);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextFont(4);
+  tft.setTextColor(UI_TEXT, UI_PANEL);
+  tft.drawString("RESET?", 120, 99);
+  tft.setTextFont(1);
+  tft.setTextColor(UI_MUTED, UI_PANEL);
+  tft.drawString("Clear scores for all 9 games", 120, 132);
+  const char* labels[] = {"CANCEL", "RESET SCORES"};
+  for (int i = 0; i < 2; ++i) {
+    int y = 157 + i * 39;
+    uint16_t fill = i == choice ? (i == 1 ? UI_RED : UI_CYAN) : UI_ICON_BG;
+    tft.fillRoundRect(43, y, 154, 31, 7, fill);
+    tft.drawRoundRect(43, y, 154, 31, 7,
+                      i == choice ? UI_TEXT : UI_SURFACE);
+    tft.setTextFont(2);
+    tft.setTextColor(i == choice ? 0x0000 : UI_MUTED, fill);
+    tft.drawString(labels[i], 120, y + 15);
+  }
+}
+
+static bool confirmResetScores() {
+  int choice = 0;
+  drawResetScoresConfirmation(choice);
+  buttonsRequireRelease();
+  while (true) {
+    int cmd = readSettingsCommand();
+    if (cmd >= 0 && cmd <= 3) {
+      choice = 1 - choice;
+      playNavClick();
+      drawResetScoresConfirmation(choice);
+    } else if (cmd == 4) {
+      playSelectTone();
+      buttonsRequireRelease();
+      return choice == 1;
+    }
+    delay(12);
+  }
+}
+
+void showSettingsScreen() {
+  int selectedRow = 0;
+  drawSettingsScreen(selectedRow);
+  delay(220);
+
+  while (true) {
+    int cmd = readSettingsCommand();
+
+    if (cmd == 0 || cmd == 2) {
+      int previousRow = selectedRow;
+      selectedRow = (selectedRow + (cmd == 0 ? 2 : 1)) % 3;
+      playNavClick();
+      drawSettingsRow(previousRow, false);
+      drawSettingsRow(selectedRow, true);
+    } else if (cmd == 1 || cmd == 3) {
+      if (selectedRow == 0) {
+        int direction = (cmd == 1) ? 1 : -1;
+        applyThemePreset((activeTheme + direction + THEME_COUNT) % THEME_COUNT, false);
+        playNavClick();
+        refreshSettingsTheme(selectedRow);
+      } else if (selectedRow == 1) {
+        setSoundEnabled(!soundEnabled, false);
+        playNavClick();
+        drawSettingsRow(selectedRow, true);
+      }
+    } else if (cmd == 4) {
+      if (selectedRow == 2) {
+        if (confirmResetScores()) {
+          resetAllGameScores();
+          tft.fillScreen(UI_BG);
+          tft.setTextDatum(MC_DATUM);
+          tft.setTextFont(2);
+          tft.setTextColor(UI_GREEN, UI_BG);
+          tft.drawString("SCORES RESET", 120, 154);
+          delay(650);
+        }
+        drawSettingsScreen(selectedRow);
+      } else {
+        applyThemePreset(activeTheme, true);
+        setSoundEnabled(soundEnabled, true);
+        playSelectTone();
+        menuSetup();
+        return;
+      }
+    }
+    delay(16);
+  }
+}
+
+void showNotice(const char* name) {
+  tft.fillRoundRect(20, 100, 200, 120, 12, UI_PANEL);
+  tft.drawRoundRect(20, 100, 200, 120, 12, UI_SURFACE);
+  tft.fillRect(36, 114, 20, 3, MENU_ACCENT);
+  tft.setTextColor(UI_TEXT, UI_PANEL);
+  tft.setTextFont(4);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(name, 120, 138);
+  tft.setTextColor(UI_MUTED, UI_PANEL);
+  tft.setTextFont(1);
+  tft.drawString("Feature Coming Soon", 120, 168);
+  tft.drawFastHLine(36, 186, 168, UI_SURFACE);
+  tft.setTextColor(MENU_ACCENT, UI_PANEL);
+  tft.drawString("PRESS SHOOT TO RETURN", 120, 202);
+  delay(300);
+  while (true) {
+    int c = findCommand(false);
+    if (Serial.available()) {
+      Serial.read();
+      break;
+    }
+    if (c == 4 || c == 0 || c == 1 || c == 2 || c == 3) break;
+    delay(20);
+  }
+  menuSetup();
+}
+
+void menuSetup() {
+  Serial.println("[Menu] Opening phone launcher (9 apps per page)...");
+  tft.setRotation(2); // Vertical (Portrait) mode: 240x320
+  buttonsRequireRelease();
+  selectedApp = 0;
+  homePage = 0;
+  redrawVisibleTiles();
+}
+
+void menuLoop() {
+  // Check inputs
+  int cmd = findCommand(false);
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'i' || c == 'I') buttonsPrintDiagnostics();
+    if (c == 'r' || c == 'R') buttonsRecordFor(180000);
+    if (c == 'w' || c == 'W') cmd = 0;       // UP
+    else if (c == 'd' || c == 'D') cmd = 1;  // RIGHT
+    else if (c == 's' || c == 'S') cmd = 2;  // DOWN
+    else if (c == 'a' || c == 'A') cmd = 3;  // LEFT
+    else if (c == ' ' || c == '\n' || c == '\r' || c == 'e' || c == 'E' || c == 'x' || c == 'X') cmd = 4; // SELECT
+  }
+
+  if (cmd == -1) return;
+
+  int newSelected = selectedApp;
+  const int currentPage = selectedApp / APPS_PER_PAGE;
+  const int pageStart = currentPage * APPS_PER_PAGE;
+  const int pageEnd = min(pageStart + APPS_PER_PAGE, APP_COUNT);
+  const int pageSlot = selectedApp - pageStart;
+  const int pageRow = pageSlot / COLS;
+  const int pageColumn = pageSlot % COLS;
+
+  switch (cmd) {
+    case 0: // UP
+      if (pageRow > 0) newSelected = selectedApp - COLS;
+      break;
+
+    case 2: // DOWN
+      if (pageRow + 1 < VISIBLE_ROWS && selectedApp + COLS < pageEnd)
+        newSelected = selectedApp + COLS;
+      break;
+
+    case 1: // RIGHT
+      if (pageColumn + 1 < COLS && selectedApp + 1 < pageEnd) {
+        newSelected = selectedApp + 1;
+      } else if (currentPage + 1 < PAGE_COUNT) {
+        // At the right edge, enter the next page on the same row. The final
+        // page may be incomplete, so select its last available app if needed.
+        int nextPageStart = (currentPage + 1) * APPS_PER_PAGE;
+        newSelected = min(nextPageStart + pageRow * COLS, APP_COUNT - 1);
+      }
+      break;
+
+    case 3: // LEFT
+      if (pageColumn > 0) {
+        newSelected = selectedApp - 1;
+      } else if (currentPage > 0) {
+        // At the left edge, return to the rightmost app on the matching row.
+        int previousPageStart = (currentPage - 1) * APPS_PER_PAGE;
+        int previousPageEnd = min(previousPageStart + APPS_PER_PAGE, APP_COUNT);
+        newSelected = min(previousPageStart + pageRow * COLS + COLS - 1,
+                          previousPageEnd - 1);
+      }
+      break;
+
+    case 4: // SELECT
+      {
+        launcherTile.deleteSprite();
+        playSelectTone();
+        int target = Apps[selectedApp].gameIndex;
+        if (target > 0) {
+          Serial.printf("[Menu] Launching Game %d: %s\n", target, Apps[selectedApp].label);
+          switchGame(target);
+          return;
+        } else if ((strcasecmp(Apps[selectedApp].label, "info") == 0 || strcasecmp(Apps[selectedApp].label, "about") == 0)) {
+          showAboutScreen();
+          return;
+        } else if (strcasecmp(Apps[selectedApp].label, "sound") == 0) {
+          playSoundTestScreen();
+          return;
+        } else if (strcasecmp(Apps[selectedApp].label, "settings") == 0) {
+          showSettingsScreen();
+          return;
+        } else {
+          showNotice(Apps[selectedApp].label);
+          return;
+        }
+      }
+      break;
+  }
+
+  if (newSelected != selectedApp) {
+    unsigned long renderStarted = millis();
+    playNavClick();
+    int oldSelected = selectedApp;
+    selectedApp = newSelected;
+    int nextPage = selectedApp / APPS_PER_PAGE;
+    if (nextPage != homePage) {
+      int oldPage = homePage;
+      homePage = nextPage;
+      slideLauncherPage(oldPage, nextPage, oldSelected);
+    } else {
+      drawAppTile(oldSelected, false);
+      drawAppTile(selectedApp, true);
+    }
+    if (Serial.availableForWrite() >= 96)
+      Serial.printf("[Menu] focus=%d command=%d render=%lums\n", selectedApp,
+                    cmd, (unsigned long)(millis() - renderStarted));
+  }
+}
