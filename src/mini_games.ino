@@ -144,7 +144,7 @@ static bool commonPause(int cmd, void (*draw)(), void (*start)()) {
     pause("PAUSED");
   } else if (cmd == 4) {
     playSelectTone();
-    if (pauseChoice == 0) { showResumeCountdown(draw); resetInput(); phase = PLAY; }
+    if (pauseChoice == 0) { showResumeCountdown(draw); resetInput(); phase = PLAY; audio::play(audio::Cue::Resume); }
     else if (pauseChoice == 1) start();
     else if (pauseChoice == 2) {
       showGameHighScores();
@@ -156,6 +156,7 @@ static bool commonPause(int cmd, void (*draw)(), void (*start)()) {
 }
 
 static void enterPause() {
+  audio::play(audio::Cue::Pause);
   buttonsRequireRelease();
   pauseChoice = 0;
   phase = PAUSE;
@@ -243,6 +244,7 @@ static void start() {
 static void finish() {
   outcome = winner();
   if (!outcome) return;
+  audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Death : audio::Cue::Draw);
   mini::phase = mini::FINISH;
   if (outcome == 1 && !recorded) {
     currentGame.recordScore(100);
@@ -292,7 +294,7 @@ void ticTacToeLoop() {
     if (millis() - tic::cpuAt >= 1000) {
       tic::cpuPending = false;
       int reply = tic::computerTurn();
-      if (reply >= 0) { tic::drawTile(reply); playNavClick(); }
+      if (reply >= 0) { tic::drawTile(reply); audio::play(audio::Cue::CpuMove); }
       mini::footer("Shoot to place", "Hold Shoot to pause");
       tic::finish();
     }
@@ -314,7 +316,7 @@ void ticTacToeLoop() {
     }
   } else if (cmd == 4 && !tic::cells[tic::cursor]) {
     tic::cells[tic::cursor] = 1;
-    playSelectTone();
+    audio::play(audio::Cue::PlayerMove);
     tic::drawTile(tic::cursor);
     tic::finish();
     if (mini::phase == mini::PLAY) {
@@ -485,6 +487,7 @@ static void drawPongPauseMenu() {
 }
 
 static void enterPause() {
+  audio::play(audio::Cue::Pause);
   buttonsRequireRelease();
   mini::resetInput();
   mini::pauseChoice = 0;
@@ -506,6 +509,7 @@ static bool handlePause(int cmd) {
     playSelectTone();
     if (mini::pauseChoice == 0) {
       showResumeCountdown(draw);
+      audio::play(audio::Cue::Resume);
       mini::resetInput();
       mini::phase = mini::PLAY;
       shootWasDown = false;
@@ -536,6 +540,7 @@ static void start() {
 }
 
 static void end() {
+  audio::play(audio::Cue::Death);
   mini::phase = mini::FINISH;
   if (!recorded) { currentGame.recordScore(score); recorded = true; }
   drawGameOver();
@@ -585,12 +590,16 @@ void pongLoop() {
   pong::lastFrame = now;
   pong::ballX += pong::vx * steps;
   pong::ballY += pong::vy * steps;
-  if (pong::ballX <= 20 || pong::ballX >= 220) { pong::vx = -pong::vx; pong::ballX = constrain(pong::ballX, 20.0f, 220.0f); }
+  if (pong::ballX <= 20 || pong::ballX >= 220) {
+    pong::vx = -pong::vx;
+    pong::ballX = constrain(pong::ballX, 20.0f, 220.0f);
+    audio::play(audio::Cue::Wall);
+  }
   if (pong::ballY <= 112) {
     pong::ballY = 112;
     pong::vy = abs(pong::vy);
     ++pong::score;
-    playNavClick();
+    audio::play(audio::Cue::Pickup);
   }
   if (pong::vy > 0 && pong::ballY >= 243 && pong::ballY <= 256 &&
       pong::ballX >= pong::paddleX - 4 && pong::ballX <= pong::paddleX + 56) {
@@ -598,10 +607,11 @@ void pongLoop() {
     pong::vy = -min(5.0f, 2.5f + pong::score * 0.08f);
     pong::vx = constrain((pong::ballX - (pong::paddleX + 26)) / 10.0f, -3.5f, 3.5f);
     if (abs(pong::vx) < 0.6f) pong::vx = 0.6f;
-    playNavClick();
+    audio::play(audio::Cue::Paddle);
   }
   if (pong::ballY > 264) {
     if (--pong::lives <= 0) { pong::end(); return; }
+    audio::play(audio::Cue::Hit);
     pong::serve();
   }
   pong::drawMotion();
@@ -732,6 +742,7 @@ static void start() {
 }
 
 static void finish(bool won) {
+  audio::play(won ? audio::Cue::Win : audio::Cue::Death);
   result = won ? 1 : -1;
   mini::phase = mini::FINISH;
   if (won && !recorded) { currentGame.recordScore(max(1, 1000 - flags * 10)); recorded = true; }
@@ -776,7 +787,7 @@ void minesweeperLoop() {
     bool &flag = mines::flagged[mines::cursor];
     flag = !flag;
     mines::flags += flag ? 1 : -1;
-    playNavClick();
+    audio::play(flag ? audio::Cue::Flag : audio::Cue::Unflag);
     mines::drawTile(mines::cursor);
   } else if (cmd == 4 && !mines::flagged[mines::cursor] && !mines::revealed[mines::cursor]) {
     if (!mines::planted) mines::plant(mines::cursor);
@@ -786,7 +797,7 @@ void minesweeperLoop() {
       mines::finish(false);
     } else {
       mines::uncover(mines::cursor);
-      playSelectTone();
+      audio::play(audio::Cue::Reveal);
       mines::drawDirty();
       if (mines::exposed == mines::COUNT - mines::BOMBS) mines::finish(true);
     }

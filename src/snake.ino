@@ -115,21 +115,11 @@ static bool foodPulse = false;
 // 4. SOUND EFFECTS
 // -----------------------------------------------------------------
 static void playBiteSound() {
-  setBuzzerTone(1175);
-  delay(35);
-  setBuzzerTone(1760);
-  delay(45);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Pickup);
 }
 
 static void playDeathSound() {
-  setBuzzerTone(440);
-  delay(80);
-  setBuzzerTone(330);
-  delay(90);
-  setBuzzerTone(220);
-  delay(140);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Death);
 }
 
 // -----------------------------------------------------------------
@@ -441,6 +431,7 @@ void moveSnake() {
     score++;
     createAppleParticles(foodPos.x, foodPos.y);
     playBiteSound();
+    if (score % 10 == 0) audio::play(audio::Cue::Milestone);
     drawGrassyCell(newHead.x, newHead.y);
 
     if (gameSpeed_ms > 90) {
@@ -612,6 +603,7 @@ void setupSnake() {
 }
 
 void loopSnake() {
+  audio::gameState(gameState);
   if (gameState == 0) {
     handleInput();
     if (gameState != 0) return;

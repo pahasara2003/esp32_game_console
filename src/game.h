@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "config.h"
+#include "audio_kit.h"
 #include "buttons.h"
 #include <functional>
 #include <stdint.h>

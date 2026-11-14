@@ -5,6 +5,10 @@
 #include "tetris_input.h"
 #include "buttons.h"
 #include <Adafruit_ADS1X15.h>
+#include <AudioFileSourcePROGMEM.h>
+#include <AudioGeneratorMP3a.h>
+#include <AudioOutputI2S.h>
+#include <new>
 #include <string.h>
 #include "images.h"
 
@@ -71,6 +75,7 @@ void loadThemePreference() {
   uint8_t savedTheme = prefs.getUChar("theme", 0);
   soundEnabled = prefs.getBool("sound", true);
   prefs.end();
+  audio::load();
   applyThemePreset(savedTheme, false);
 }
 
@@ -143,6 +148,7 @@ Game::Game(int i) {
 
 void Game::recordScore(int score) {
   if (score <= 0) return;
+  if (score > highScores[0]) audio::play(audio::Cue::Record);
   for (int position = 0; position < 5; ++position) {
     if (score <= highScores[position]) continue;
     for (int move = 4; move > position; --move)
@@ -277,6 +283,8 @@ void resetAllGameScores() {
 extern Game currentGame;
 
 void switchGame(int gameIndex) {
+  audio::scene(gameIndex);
+  audio::play(gameIndex == 0 ? audio::Cue::Back : audio::Cue::Open);
   lifeInputEnd();
   tetrisInputEnd();
   buttonsRequireRelease();
@@ -331,21 +339,20 @@ const unsigned long debounce_delay = 180;
 static volatile uint32_t i2sToneFreq = 0;
 static volatile bool i2sHoldReq = false, i2sHeld = false;  // music player owns I2S while held
 static constexpr int I2S_RATE = 22050;
-static constexpr int16_t I2S_AMPLITUDE = 3000;
+
+extern const uint8_t nokiaDataStart[] asm("_binary_assets_nokia_welcome_mp3_start");
+extern const uint8_t nokiaDataEnd[] asm("_binary_assets_nokia_welcome_mp3_end");
+static AudioFileSourcePROGMEM *nokiaFile = nullptr;
+static AudioGeneratorMP3a *nokiaDecoder = nullptr;
+static AudioOutputI2S *nokiaOutput = nullptr;
+static bool nokiaAudioHeld = false;
 
 static void i2sToneTask(void *) {
   int16_t buf[256];
-  uint32_t phase = 0;  // 16.16 fixed point position within one period
   while (true) {
     if (i2sHoldReq) { i2sHeld = true; vTaskDelay(pdMS_TO_TICKS(10)); continue; }
     i2sHeld = false;
-    uint32_t f = i2sToneFreq;
-    uint32_t step = (uint32_t)(((uint64_t)f << 16) / I2S_RATE);
-    for (int i = 0; i < 256; ++i) {
-      if (!f) { buf[i] = 0; continue; }
-      phase += step;
-      buf[i] = (phase & 0x8000) ? I2S_AMPLITUDE : -I2S_AMPLITUDE;
-    }
+    audio::render(buf, 256, i2sToneFreq, soundEnabled);
     size_t written;
     i2s_write(I2S_NUM_0, buf, sizeof(buf), &written, portMAX_DELAY);
   }
@@ -358,6 +365,7 @@ static void initI2SAudio() {
 
 // Hand I2S to the MP3 player: park the tone task, then free the driver.
 void audioReleaseForMusic() {
+  audio::external(true);
   i2sToneFreq = 0;
   i2sHoldReq = true;
   for (int i = 0; i < 50 && !i2sHeld; ++i) delay(5);
@@ -368,6 +376,7 @@ void audioReleaseForMusic() {
 void audioReclaimFromMusic() {
   i2s_driver_uninstall(I2S_NUM_0);
   installI2S();
+  audio::external(false);
   i2sHoldReq = false;
 }
 
@@ -421,25 +430,55 @@ void playToneDirect(unsigned int freq, unsigned long durationMs) {
 }
 
 void playNavClick() {
-  // Crisp retro click/blip via hardware PWM
-  setBuzzerTone(1800);
-  delay(20);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Move);
 }
 
 void playSelectTone() {
-  // Two-tone cheerful affirmation
-  setBuzzerTone(1319); // E6
-  delay(50);
-  setBuzzerTone(1760); // A6
-  delay(80);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Open);
+}
+
+static void stopNokiaMusic() {
+  if (nokiaDecoder) nokiaDecoder->stop();
+  delete nokiaDecoder; nokiaDecoder = nullptr;
+  delete nokiaFile; nokiaFile = nullptr;
+  delete nokiaOutput; nokiaOutput = nullptr;
+  if (nokiaAudioHeld) {
+    audioReclaimFromMusic();
+    nokiaAudioHeld = false;
+  }
+}
+
+void playNokiaSweepSound() {
+  if (!soundEnabled) return;
+  audioReleaseForMusic();
+  nokiaAudioHeld = true;
+  nokiaFile = new (std::nothrow) AudioFileSourcePROGMEM(
+      nokiaDataStart, nokiaDataEnd - nokiaDataStart);
+  nokiaDecoder = new (std::nothrow) AudioGeneratorMP3a();
+  nokiaOutput = new (std::nothrow) AudioOutputI2S(0, AudioOutputI2S::EXTERNAL_I2S, 16);
+  if (!nokiaFile || !nokiaFile->isOpen() || !nokiaDecoder ||
+      !nokiaOutput) {
+    Serial.println("[Audio] System music open failed");
+    stopNokiaMusic();
+    return;
+  }
+  nokiaOutput->SetPinout(I2S_BCLK_PIN, I2S_LRCLK_PIN, I2S_DOUT_PIN);
+  nokiaOutput->SetGain(audio::mediaGain(0.35f));
+  if (!nokiaDecoder->begin(nokiaFile, nokiaOutput)) {
+    Serial.println("[Audio] System music decode failed");
+    stopNokiaMusic();
+    return;
+  }
+  Serial.println("[Audio] Playing embedded Nokia welcome tune (no SD required)");
+}
+
+static void serviceNokiaMusic() {
+  if (nokiaDecoder && nokiaDecoder->isRunning() && !nokiaDecoder->loop())
+    stopNokiaMusic();
 }
 
 void playTetrisDropSound() {
-  // A short descending click that gives the landed piece a little weight.
-  playToneDirect(880, 9);
-  playToneDirect(440, 13);
+  audio::play(audio::Cue::Lock);
 }
 
 void drawBootHand(int tip, bool fromLeft, uint16_t handColor) {
@@ -527,8 +566,8 @@ static void bootDrawIcon(TFT_eSprite *spr, int cx, int cy, int size, float alpha
 
 void playBootAnimation() {
   // Minimal splash: black screen, the app icon scales and fades in, the
-  // name rises into place, a hairline draws out beneath it, then a soft
-  // two-note chime and a gentle fade to black.
+  // name rises into place while the welcome tune plays. Service the decoder
+  // between drawing operations and continuously during each frame's wait.
   const int cx = tft.width() / 2;
   const int top = (tft.height() - 240) / 2;
   const int iconCY = top + 88;
@@ -544,9 +583,12 @@ void playBootAnimation() {
   TFT_eSprite icon(&tft);
   icon.setColorDepth(16);
   const bool buffered = icon.createSprite(S, S) != nullptr;
+  playNokiaSweepSound();
+  const uint32_t musicStarted = millis();
 
   for (int frame = 0; frame <= kFrames; ++frame) {
     const unsigned long frameStart = millis();
+    serviceNokiaMusic();
 
     // Icon: 0..20 scale 0.86 -> 1.0 and fade in.
     if (frame <= 22) {
@@ -561,6 +603,7 @@ void playBootAnimation() {
       }
     }
 
+    serviceNokiaMusic();
     // Title: 12..32 rises 8 px while fading in.
     if (frame >= 12 && frame <= 34) {
       const float t = bootEase(frame, 12, 20);
@@ -570,6 +613,7 @@ void playBootAnimation() {
       tft.drawString("Game Console", cx, titleY + lift, 4);
     }
 
+    serviceNokiaMusic();
     // Hairline: 24..44 grows outward from the centre.
     if (frame >= 24 && frame <= 44) {
       const int half = (int)(28 * bootEase(frame, 24, 20));
@@ -582,26 +626,24 @@ void playBootAnimation() {
       tft.drawString("Ready to play", cx, titleY + 44, 2);
     }
 
-    // Chime: two soft notes, E6 then B6.
-    if (frame == 20) setBuzzerTone(1319);
-    if (frame == 25) setBuzzerTone(0);
-    if (frame == 26) setBuzzerTone(1976);
-    if (frame == 38) setBuzzerTone(0);
-
-    const unsigned long elapsed = millis() - frameStart;
-    if (elapsed < (unsigned long)kFrameMs) delay(kFrameMs - elapsed);
+    while (millis() - frameStart < (unsigned long)kFrameMs) {
+      serviceNokiaMusic();
+      if (nokiaDecoder) yield();
+      else delay(1);
+    }
   }
   setBuzzerTone(0);
-  delay(450);
+  if (buffered) icon.deleteSprite();
+  while (nokiaDecoder && millis() - musicStarted < 10000) {
+    serviceNokiaMusic();
+    yield();
+  }
+  stopNokiaMusic();
 
   // Fade the whole composition to black (redraw icon and text darker).
   for (int step = 1; step <= 10; ++step) {
     const float a = 1.0f - step / 10.0f;
-    if (buffered) {
-      icon.fillSprite(TFT_BLACK);
-      bootDrawIcon(&icon, S / 2, S / 2, 76, a);
-      icon.pushSprite(cx - S / 2, iconCY - S / 2);
-    }
+    bootDrawIcon(nullptr, cx, iconCY, 76, a);
     tft.setTextColor(bootLerp(TFT_BLACK, TFT_WHITE, a), TFT_BLACK);
     tft.drawString("Game Console", cx, titleY, 4);
     tft.drawFastHLine(cx - 28, titleY + 24, 56, bootLerp(TFT_BLACK, grey, a));
@@ -609,7 +651,6 @@ void playBootAnimation() {
     tft.drawString("Ready to play", cx, titleY + 44, 2);
     delay(22);
   }
-  if (buffered) icon.deleteSprite();
   tft.fillScreen(TFT_BLACK);
 }
 void init_interface() {

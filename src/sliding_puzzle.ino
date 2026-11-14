@@ -339,6 +339,7 @@ void puzzleSetup() {
 }
 
 void puzzleLoop() {
+  audio::gameState(gameState);
   int command = findCommand();
   int serialCommand = puzzleSerialCommand();
   if (serialCommand >= 0) command = serialCommand;
@@ -361,13 +362,13 @@ void puzzleLoop() {
   if (gameState == 0) {
     if (command >= 0 && command <= 3) {
       if (slidePuzzleGap(command, true)) {
-        playNavClick();
+        audio::play(audio::Cue::Slide);
         if (puzzleIsSolved()) {
           gameState = 2;
           menu_drawn = false;
-          playSelectTone();
+          audio::play(audio::Cue::Win);
         }
-      }
+      } else audio::play(audio::Cue::Error);
     } else if (command == 4) {
       puzzlePauseSelection = 0;
       gameState = 1;

@@ -646,12 +646,18 @@ void showBirthdayScene() {
         break;
       }
       case GIFT:
-        if (openAt < 0 && (c == 4 || st >= GIFT_AUTO_OPEN)) { openAt = st; PLAY(player, CHIME, 90, 1, now); }
+        if (openAt < 0 && (c == 4 || st >= GIFT_AUTO_OPEN)) {
+          openAt = st; audio::play(audio::Cue::Sparkle);
+          PLAY(player, CHIME, 90, 1, now);
+        }
         if (openAt >= 0 && st >= openAt + 0.95f) go(PARTY, now);
         break;
       case PARTY:
-        if (!songStarted && st >= 0.55f) { PLAY(player, SONG, 155, 2, now); songStarted = true; }
-        if (c == 4 || (songStarted && !player.busy() && st > 9.0f)) go(WISH_S, now);
+        if (!songStarted && st >= 0.55f) { audio::play(audio::Cue::Firework); PLAY(player, SONG, 155, 2, now); songStarted = true; }
+        if (c == 4 || (songStarted && !player.busy() && st > 9.0f)) {
+          if (c == 4) audio::play(audio::Cue::Pop);
+          go(WISH_S, now);
+        }
         break;
       case WISH_S:
         if (blowAt < 0 && st > 1.0f && (c == 4 || st >= WISH_AUTO_BLOW)) { blowAt = st; PLAY(player, BLOW, 70, 1, now); }

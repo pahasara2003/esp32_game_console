@@ -266,6 +266,7 @@ void lifeSetup() {
 
 void lifeLoop() {
   using namespace lifeApp;
+  audio::pauseMusic(mode != RUNNING);
   int cmd = input();
   if (mode == INFO) {
     if (cmd == 4 || cmd == 5) { closeGuide(); return; }
@@ -292,7 +293,7 @@ void lifeLoop() {
       playSelectTone();
       if (option == 4) { switchGame(0); return; }
       if (option == 0) leaveOptions(RUNNING);
-      else if (option == 1) { newRandom(); leaveOptions(RUNNING); }
+      else if (option == 1) { newRandom(); audio::play(audio::Cue::Sparkle); leaveOptions(RUNNING); }
       else if (option == 2) { speed = (speed + 1) % SPEED_COUNT; drawOption(option); drawFooter(); }
       else if (option == 3) {
         mode = INFO; guidePage = 0;
@@ -303,6 +304,7 @@ void lifeLoop() {
     return;
   }
   if (cmd == 5) {
+    audio::play(audio::Cue::Pause);
     optionsReturn = mode;
     mode = OPTIONS; option = 0;
     lifeInputRequireRelease();
@@ -311,6 +313,8 @@ void lifeLoop() {
   }
   if (cmd == 4) {
     mode = mode == RUNNING ? PAUSED : RUNNING;
+    audio::pauseMusic(mode != RUNNING);
+    audio::play(mode == RUNNING ? audio::Cue::Resume : audio::Cue::Pause);
     lastStep = millis();
     resetRate();
     drawState(); drawStats(); drawFooter();
@@ -330,6 +334,7 @@ void lifeLoop() {
       bool wasStable = stable;
       uint16_t previousPopulation = board.population;
       stable = !board.step();
+      if (!wasStable && stable) audio::play(audio::Cue::Draw);
       drawBoard();
       if (wasStable != stable || (previousPopulation == 0) != (board.population == 0)) drawState();
       if (millis() - lastStats >= 200) drawStats();
