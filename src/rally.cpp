@@ -113,7 +113,10 @@ void rallyLoop() {
   float curvature=(center(position+35)-2*center(position)+center(position-35))/(35*35);
   lateral+=steer*(65+speed*.20f)*dt-curvature*speed*speed*dt*.30f;
   lateral=constrain(lateral,-330.f,330.f);
-  if(fabsf(lateral)>175) speed=max(0.f,speed-450*dt);
+  // Grass limits speed but must not cancel the throttle at low speed.
+  // Braking can still stop the car anywhere on the course.
+  if(fabsf(lateral)>175 && speed>180.f)
+    speed=max(180.f,speed-450*dt);
   position+=speed*dt;
   if(position>=length) { position-=length; ++lap; }
   render(steer);
