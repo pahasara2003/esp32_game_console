@@ -10,6 +10,7 @@
 #include <TFT_eSPI.h>
 #include <Wire.h>
 #include <driver/i2s.h>
+#include <new>
 #include "buttons.h"
 
 // Music player app, adapted from display_test/src/main.cpp.
@@ -51,15 +52,20 @@ uint16_t fadeRow[240];                 // scratch row for scaling / compositing
 bool contentReady = false;             // a track's cover/text is currently on screen
 bool playerVisible = false;            // true on the Now Playing screen, false on the playlist
 static void loadLibrary();
+static void loaderTick(bool force);
 static void handleKeys();
 static void drawPlaylist();
 JPEGDEC jpeg;
-PNG png;
-AudioGeneratorMP3a mp3;
+// PNG decoder is ~51 KB, so it only exists while a PNG cover is drawn.
+static PNG *pngDec = nullptr;
+// Decoder (~6 KB) and read buffer (8 KB) exist only while the player is open.
+static AudioGeneratorMP3a *mp3Dec = nullptr;
+#define mp3 (*mp3Dec)
 AudioFileSourceSD *musicFile = nullptr;
 AudioFileSourceBuffer *musicBuffer = nullptr;
 AudioOutputI2S *audioOut = nullptr;
-uint8_t readBuffer[8192];
+static uint8_t *readBuffer = nullptr;
+constexpr size_t READ_BUFFER_SIZE = 8192;
 File artFile;
 uint32_t artStart = 0, artSize = 0, lastProgress = 0, playStarted = 0, pausedAt = 0;
 int previousBar = 0;
@@ -307,7 +313,7 @@ static int pngDraw(PNGDRAW *row) {
   int targetY = row->y * pngDrawHeight / pngHeight;
   if (targetY < 0 || targetY >= pngDrawHeight || targetY == pngLastRow) return 1;
   pngLastRow = targetY;
-  png.getLineAsRGB565(row, pngLine, PNG_RGB565_BIG_ENDIAN, 0x18202c);
+  pngDec->getLineAsRGB565(row, pngLine, PNG_RGB565_BIG_ENDIAN, 0x18202c);
   for (int x = 0; x < pngDrawWidth; ++x)
     pngScaled[x] = pngLine[x * pngWidth / pngDrawWidth];
   int baseX = coverTarget ? 0 : ART_X;
@@ -329,6 +335,9 @@ static bool drawPngCover() {
   artStart = track.artOffset;
   artSize = track.artLength;
   bool ok = false;
+  pngDec = new (std::nothrow) PNG();
+  if (!pngDec) { artFile.close(); return false; }
+  PNG &png = *pngDec;
   if (png.open("embedded", pngOpen, pngClose, pngRead, pngSeek, pngDraw) == PNG_SUCCESS) {
     pngWidth = png.getWidth();
     pngHeight = png.getHeight();
@@ -350,6 +359,8 @@ static bool drawPngCover() {
                   pngWidth, pngHeight, ok, png.getLastError());
     png.close();
   }
+  delete pngDec;
+  pngDec = nullptr;
   artFile.close();
   return ok;
 }
@@ -467,22 +478,23 @@ static void drawTopBar() {
 
 // --- Transport controls: white play disc flanked by clean glyphs ---
 constexpr int CTRL_Y = 290;
+// Selectable controls: Left/Right move the green highlight, Shoot applies it.
+enum { CTRL_LIST, CTRL_PREV, CTRL_PLAY, CTRL_NEXT, CTRL_COUNT };
+static int ctrlSel = CTRL_PLAY;
 static void drawControls(bool isPlaying) {
   const int cy = CTRL_Y;
   screen.fillRect(0, 269, 240, 42, COLOR_BG);
+  auto col = [](int id) { return ctrlSel == id ? COLOR_GREEN : WHITE; };
 
-  // Shuffle (muted)
-  screen.drawLine(17, cy - 5, 33, cy + 5, MUTED);
-  screen.drawLine(17, cy + 5, 33, cy - 5, MUTED);
-  screen.fillTriangle(33, cy - 8, 33, cy - 2, 37, cy - 5, MUTED);
-  screen.fillTriangle(33, cy + 2, 33, cy + 8, 37, cy + 5, MUTED);
+  // Playlist (three lines)
+  for (int i = 0; i < 3; ++i) screen.fillRoundRect(16, cy - 7 + i * 6, 20, 3, 1, col(CTRL_LIST));
 
   // Previous
-  screen.fillRect(62, cy - 8, 3, 16, WHITE);
-  screen.fillTriangle(80, cy - 8, 80, cy + 8, 66, cy, WHITE);
+  screen.fillRect(62, cy - 8, 3, 16, col(CTRL_PREV));
+  screen.fillTriangle(80, cy - 8, 80, cy + 8, 66, cy, col(CTRL_PREV));
 
   // Play / pause
-  screen.fillCircle(120, cy, 20, WHITE);
+  screen.fillCircle(120, cy, 20, col(CTRL_PLAY));
   if (isPlaying) {
     screen.fillRoundRect(112, cy - 8, 5, 16, 1, COLOR_BG);
     screen.fillRoundRect(123, cy - 8, 5, 16, 1, COLOR_BG);
@@ -491,8 +503,8 @@ static void drawControls(bool isPlaying) {
   }
 
   // Next
-  screen.fillTriangle(160, cy - 8, 160, cy + 8, 174, cy, WHITE);
-  screen.fillRect(175, cy - 8, 3, 16, WHITE);
+  screen.fillTriangle(160, cy - 8, 160, cy + 8, 174, cy, col(CTRL_NEXT));
+  screen.fillRect(175, cy - 8, 3, 16, col(CTRL_NEXT));
 
   // Repeat (muted)
   screen.drawRoundRect(206, cy - 5, 16, 11, 3, MUTED);
@@ -1049,7 +1061,7 @@ static bool playTrack(int index, int dir = 1, bool show = true) {
 openAudio:
   musicFile = new AudioFileSourceSD(track.path.c_str());
   if (!musicFile->isOpen()) { status("MP3 OPEN FAILED", TFT_RED); return false; }
-  musicBuffer = new AudioFileSourceBuffer(musicFile, readBuffer, sizeof(readBuffer));
+  musicBuffer = new AudioFileSourceBuffer(musicFile, readBuffer, READ_BUFFER_SIZE);
   // ESP8266Audio's stop() marks I2S off without uninstalling the driver, so
   // begin() would fail to re-install it ("register I2S object ... failed")
   // and leave the amp silent. Uninstall first so every track starts clean.
@@ -1143,12 +1155,14 @@ static void freeSprite(TFT_eSprite *&s) {
 }
 
 static void freePlayer() {
-  mp3.stop();
+  if (mp3Dec) mp3.stop();
   if (musicBuffer) { delete musicBuffer; musicBuffer = nullptr; }
   if (musicFile) { delete musicFile; musicFile = nullptr; }
   freeSprite(coverSprite); freeSprite(nextCoverSprite);
   freeSprite(titleBand.sprite); freeSprite(artistBand.sprite);
   freeSprite(progSpr); freeSprite(rowSpr);
+  delete mp3Dec; mp3Dec = nullptr;
+  free(readBuffer); readBuffer = nullptr;
   contentReady = false;
   paused = false;
 }
@@ -1168,11 +1182,6 @@ static bool trackLoaded() { return musicFile != nullptr; }
 // Read every song's ID3 title/artist once, with a small progress bar.
 static void loadLibrary() {
   if (libraryLoaded) return;
-  screen.fillScreen(BG);
-  screen.setTextDatum(MC_DATUM);
-  screen.setTextColor(WHITE, BG);
-  screen.drawString("Loading library", 120, 146, 2);
-  screen.fillRoundRect(60, 164, 120, 4, 2, COLOR_PROG_BG);
   for (int i = 0; i < songCount; ++i) {
     track = Track();
     track.path = songs[i];
@@ -1181,7 +1190,7 @@ static void loadLibrary() {
     parseId3();
     songTitles[i] = track.title.length() ? track.title : String("Untitled track");
     songArtists[i] = track.artist.length() ? track.artist : String("Unknown artist");
-    screen.fillRoundRect(60, 164, max(4, 120 * (i + 1) / songCount), 4, 2, ACCENT);
+    loaderTick(false);
   }
   track = Track();
   libraryLoaded = true;
@@ -1282,7 +1291,7 @@ static void drawFooter() {
   } else {
     screen.setTextDatum(MC_DATUM);
     screen.setTextColor(MUTED);
-    screen.drawString("Up/Down browse  Shoot play", 120, FOOTER_Y + 17, 2);
+    screen.drawString("< Home   Shoot play   Open >", 120, FOOTER_Y + 17, 2);
   }
 }
 
@@ -1366,26 +1375,119 @@ static void handleKeys() {
   int k = readKey();
   if (k < 0) return;
   if (playerVisible) {
-    if (k == 'a') playTrack((songIndex - 1 + songCount) % songCount, -1);
-    else if (k == 'd') playTrack((songIndex + 1) % songCount, +1);
-    else if (k == 'e' || k == ' ') togglePause();
-    else if (k == 's' || k == 'q') showPlaylist();
+    if (k == 'a' || k == 'd') {
+      ctrlSel = (ctrlSel + (k == 'd' ? 1 : CTRL_COUNT - 1)) % CTRL_COUNT;
+      drawControls(!paused);
+    } else if (k == 'e' || k == ' ') {
+      switch (ctrlSel) {
+        case CTRL_LIST: showPlaylist(); break;
+        case CTRL_PREV: playTrack((songIndex - 1 + songCount) % songCount, -1); break;
+        case CTRL_NEXT: playTrack((songIndex + 1) % songCount, +1); break;
+        default: togglePause(); break;
+      }
+    } else if (k == 's' || k == 'q') showPlaylist();
     return;
   }
   if (k == 'w') moveSelection(-1);
   else if (k == 's') moveSelection(+1);
-  else if (k == 'q') exitRequested = true;
-  else if (k == 'd' && trackLoaded()) showNowPlaying();
-  else if (k == 'e' || k == ' ' || k == 'd') {
-    if (trackLoaded() && listSel == songIndex) {
-      showNowPlaying();
-    } else {
+  else if (k == 'q' || k == 'a') exitRequested = true;
+  else if (k == 'd') {  // open Now Playing with the cover
+    ctrlSel = CTRL_PLAY;
+    if (trackLoaded()) showNowPlaying();
+    else {
       freeSprite(rowSpr);
       playerVisible = true;
       contentReady = false;
       playTrack(listSel, +1, true);
     }
+  } else if (k == 'e' || k == ' ') {  // play here, mini banner at the bottom
+    if (trackLoaded() && listSel == songIndex) { togglePause(); return; }
+    int old = trackLoaded() ? songIndex : -1;
+    playTrack(listSel, +1, false);
+    if (old >= listTop && old < listTop + LIST_ROWS) drawRow(old - listTop);
+    drawRow(listSel - listTop);
+    drawFooter();
   }
+}
+
+// ==========================================================================
+// Loading screen: a spinning arc that grows and shrinks while it cycles
+// colours, with a rotating line of text below. The SD card shares the SPI
+// bus with the display, so it is advanced by loaderTick() between steps
+// instead of from a separate task.
+// ==========================================================================
+constexpr int LD_X = 120, LD_Y = 140, LD_R = 26, LD_W = 5;
+static uint32_t ldStart = 0, ldLast = 0;
+static int ldMsg = -1;
+static const char *const LD_TEXT[] = {
+  "Waking up the SD card", "Looking for your songs", "Reading album tags",
+  "Dusting off the covers", "Tuning the speaker", "Almost there"};
+constexpr int LD_TEXT_N = sizeof(LD_TEXT) / sizeof(LD_TEXT[0]);
+
+// Clockwise arc from a to b (degrees, may wrap past 360).
+static void ldArc(int a, int b, uint16_t col) {
+  a = ((a % 360) + 360) % 360;
+  int len = ((b - a) % 360 + 360) % 360;
+  if (len < 2) return;
+  if (a + len <= 360) screen.drawArc(LD_X, LD_Y, LD_R, LD_R - LD_W, a, a + len, col, BG, true);
+  else {
+    screen.drawArc(LD_X, LD_Y, LD_R, LD_R - LD_W, a, 360, col, BG, true);
+    screen.drawArc(LD_X, LD_Y, LD_R, LD_R - LD_W, 0, a + len - 360, col, BG, true);
+  }
+}
+
+static void loaderTick(bool force) {
+  uint32_t now = millis();
+  if (!force && now - ldLast < 20) return;
+  ldLast = now;
+  uint32_t t = now - ldStart;
+  static const uint16_t cols[] = {0x4C3F, 0xE8E4, 0xFDA0, 0x2DAA};  // blue red yellow green
+  const uint32_t P = 1333;
+  uint32_t cycle = t / P;
+  float ph = (t % P) / (float)P;                       // 0..1 within one grow/shrink
+  float grow = ph < 0.5f ? ph * 2 : 1.0f;              // head runs ahead first half
+  float shrink = ph < 0.5f ? 0.0f : (ph - 0.5f) * 2;   // tail catches up second half
+  grow = grow * grow * (3 - 2 * grow);
+  shrink = shrink * shrink * (3 - 2 * shrink);
+  int base = (int)(t * 0.3f) + (int)cycle * 270;       // steady spin + per-cycle jump
+  int tail = base + (int)(shrink * 270);
+  int head = base + 20 + (int)(grow * 270);
+  ldArc(head, tail + 360, BG);
+  ldArc(tail, head, cols[cycle % 4]);
+
+  int m = min((int)(t / 1500), LD_TEXT_N - 1);
+  if (m != ldMsg) {
+    ldMsg = m;
+    screen.fillRect(0, LD_Y + 44, 240, 22, BG);
+    screen.setTextDatum(MC_DATUM);
+    screen.setTextColor(MUTED, BG);
+    screen.drawString(LD_TEXT[m], 120, LD_Y + 55, 2);
+  }
+  // Animated dots so the line feels alive between messages.
+  int dots = (t / 400) % 4;
+  int w = screen.textWidth(LD_TEXT[m], 2);
+  int x = 120 + w / 2 + 3;
+  screen.fillRect(x, LD_Y + 57, 16, 4, BG);
+  for (int i = 0; i < dots; ++i) screen.fillRect(x + i * 5, LD_Y + 58, 2, 2, MUTED);
+}
+
+static void loaderBegin() {
+  screen.fillScreen(BG);
+  ldStart = millis();
+  ldLast = 0;
+  ldMsg = -1;
+  loaderTick(true);
+}
+
+// Keep the animation up for a moment so it never just flashes.
+static void loaderFinish() {
+  while (millis() - ldStart < 1600) { loaderTick(false); delay(5); }
+}
+
+static void loaderFail(const char *msg) {
+  screen.fillScreen(BG);
+  contentReady = false;
+  status(msg, TFT_RED);
 }
 
 static void musicSetup() {
@@ -1393,8 +1495,7 @@ static void musicSetup() {
   digitalWrite(0, HIGH);
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
-  screen.fillScreen(BG);
-  status("READING SD CARD", MUTED);
+  loaderBegin();
   if (!sdReady) {
     SPI.end();
     SPI.begin(1, 21, 2, SD_CS);
@@ -1402,12 +1503,17 @@ static void musicSetup() {
     sdReady = SD.begin(SD_CS, SPI, 40000000);
   }
   if (!sdReady) {
-    status("SD CARD ERROR", TFT_RED);
+    loaderFail("SD CARD ERROR");
     Serial.println("SD card mount failed");
     return;
   }
+  loaderTick(true);
   if (!songCount) findSongs();
-  if (!songCount) { status("NO MP3 IN /Music", TFT_RED); return; }
+  loaderTick(true);
+  if (!songCount) { loaderFail("NO MP3 IN /Music"); return; }
+  if (!mp3Dec) mp3Dec = new (std::nothrow) AudioGeneratorMP3a();
+  if (!readBuffer) readBuffer = (uint8_t *)malloc(READ_BUFFER_SIZE);
+  if (!mp3Dec || !readBuffer) { loaderFail("NOT ENOUGH MEMORY"); return; }
   if (!audioOut) {
     audioOut = new AudioOutputI2S(0, AudioOutputI2S::EXTERNAL_I2S, 16);
     audioOut->SetPinout(BCLK, LRCLK, DIN);
@@ -1422,7 +1528,9 @@ static void musicSetup() {
   ensureSprite(nextCoverSprite);
   Serial.printf("Heap after sprites: %u bytes\n", (unsigned)ESP.getFreeHeap());
 
+  loaderTick(true);
   loadLibrary();
+  loaderFinish();
   Serial.println("Music player ready: w/s browse, e play, q home");
 }
 
@@ -1453,7 +1561,7 @@ void runMusicPlayer() {
   playerVisible = true;        // so setup/error messages are drawn
   contentReady = false;
   musicSetup();
-  bool ready = libraryLoaded && songCount && audioOut;
+  bool ready = libraryLoaded && songCount && audioOut && mp3Dec && readBuffer;
   if (ready) showPlaylist();
   while (!exitRequested) {
     if (ready) musicLoop();
