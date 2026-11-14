@@ -115,21 +115,11 @@ static bool foodPulse = false;
 // 4. SOUND EFFECTS
 // -----------------------------------------------------------------
 static void playBiteSound() {
-  setBuzzerTone(1175);
-  delay(35);
-  setBuzzerTone(1760);
-  delay(45);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Pickup);
 }
 
 static void playDeathSound() {
-  setBuzzerTone(440);
-  delay(80);
-  setBuzzerTone(330);
-  delay(90);
-  setBuzzerTone(220);
-  delay(140);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Death);
 }
 
 // -----------------------------------------------------------------
@@ -441,6 +431,7 @@ void moveSnake() {
     score++;
     createAppleParticles(foodPos.x, foodPos.y);
     playBiteSound();
+    if (score % 10 == 0) audio::play(audio::Cue::Milestone);
     drawGrassyCell(newHead.x, newHead.y);
 
     if (gameSpeed_ms > 90) {
@@ -473,13 +464,14 @@ void showSnakeMenu() {
   ui::card(8, 52, 224, 236);
   ui::heading(20, 64, "BRICK WALLS", SNAKE_WALL_NAMES[snakeWallLayout]);
   // Downsample the actual playfield art so the preview matches gameplay.
-  static uint16_t preview[96 * 96];
-  for (int y = 0; y < 96; ++y)
-    for (int x = 0; x < 96; ++x)
-      preview[y * 96 + x] = pgm_read_word(&snake_background_240x320[
-          (PLAYFIELD_Y + y * PLAYFIELD_H / 96) * 240 + x * PLAYFIELD_W / 96]);
+  uint16_t previewRow[96];   // one row at a time keeps 18 KB off the heap
   tft.setSwapBytes(true);
-  tft.pushImage(72, 114, 96, 96, preview);
+  for (int y = 0; y < 96; ++y) {
+    for (int x = 0; x < 96; ++x)
+      previewRow[x] = pgm_read_word(&snake_background_240x320[
+          (PLAYFIELD_Y + y * PLAYFIELD_H / 96) * 240 + x * PLAYFIELD_W / 96]);
+    tft.pushImage(72, 114 + y, 96, 1, previewRow);
+  }
   tft.setSwapBytes(false);
   for (int y = 0; y < GRID_ROWS; ++y)
     for (int x = 0; x < GRID_COLS; ++x)
@@ -612,6 +604,7 @@ void setupSnake() {
 }
 
 void loopSnake() {
+  audio::gameState(gameState);
   if (gameState == 0) {
     handleInput();
     if (gameState != 0) return;

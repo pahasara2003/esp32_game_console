@@ -82,6 +82,9 @@ def sound(d):
     d.rectangle(p(20, 12, 24, 36), fill=WH); d.rectangle(p(36, 8, 40, 32), fill=WH)
     d.polygon(p(20,12, 40,6, 40,12, 20,18), fill=WH)
     d.ellipse(p(11, 32, 24, 42), fill=WH); d.ellipse(p(27, 28, 40, 38), fill=WH)
+def videos(d):
+    d.rounded_rectangle(p(8, 13, 44, 39), radius=5*S, fill=WH)
+    d.polygon(p(21,19, 21,33, 33,26), fill=(255,120,0))
 def settings(d):
     for a in range(0, 360, 45):
         r = math.radians(a)
@@ -103,6 +106,7 @@ ICONS = [
  ('life_home_icon',       (0,220,200),(0,130,160),   life),
  ('mandelbrot_home_icon', (40,20,80),(10,5,30),      mandel),
  ('sound_home_icon',      (255,60,90),(220,0,60),    sound),
+ ('videos_home_icon',     (255,170,0),(255,90,0),    videos),
  ('settings_home_icon',   (160,160,175),(90,90,105), settings),
  ('about_home_icon',      (0,140,255),(0,70,220),    info),
 ]
@@ -122,5 +126,5 @@ for name, top, bot, fn in ICONS:
     out.append(f'const uint16_t {name}[2704] PROGMEM = {{')
     for i in range(0, len(px), 16): out.append('  ' + ', '.join(f'0x{v:04X}' for v in px[i:i+16]) + ',')
     out.append('};'); out.append('')
-    Image.composite(im, Image.new('RGB', (N, N), (30, 30, 60)), mask).resize((N*3, N*3), Image.NEAREST).save(f'/tmp/claude-1000/-home-pahasara/0c6ae9f9-f775-4a57-bf70-b7106ece9b07/scratchpad/{name}.png')
+    Image.composite(im, Image.new('RGB', (N, N), (30, 30, 60)), mask).resize((N*3, N*3), Image.NEAREST).save(f'/tmp/claude-1000/-home-pahasara-gameConsole/5a8399be-79e5-4ae1-a092-35d5a2d860bf/scratchpad/{name}.png')
 open('src/home_icons.h', 'w').write('\n'.join(out))
