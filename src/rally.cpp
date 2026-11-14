@@ -28,7 +28,7 @@ void render(int steer) {
   frame.fillSprite(0x8DFA);
   frame.fillTriangle(0,130,65,63,145,130,0x7C51);
   frame.fillTriangle(80,130,180,52,239,130,0x6BCF);
-  frame.fillRect(0,130,240,158,0x84A7);
+  frame.fillRect(0,130,240,158,0x4E60);
   float cameraY = elevation(position) + 120;
   float origin = center(position);
   float tangent = (center(position+20)-origin)/20;
@@ -49,15 +49,19 @@ void render(int steer) {
     for(int y=bottom; y>=top; --y) {
       float f=(y1-y)/(y1-y2);
       float x=x1+(x2-x1)*f, w=190*(s1+(s2-s1)*f);
-      // Broad yellow-green bands and four perspective grid lines replace
-      // 120 texture samples per row. No per-pixel hashes or floating-point floors.
-      frame.drawFastHLine(0,y,240,stripe?0x94C8:0x84A7);
+      // Small, unmistakably green/yellow checks. Draw horizontal cell spans
+      // rather than sampling textures per pixel; skip cells hidden by the road.
+      constexpr uint16_t green = 0x4E60, yellow = 0xFFE0;
+      frame.drawFastHLine(0,y,240,green);
       if(w>20) {
-        for(int side=-1; side<=1; side+=2) {
-          for(int line=2; line<=3; ++line) {
-            int gx=int(x+side*w*line);
-            if(gx>=0 && gx<240) frame.drawPixel(gx,y,0xAD29);
-          }
+        int cell=max(6,min(20,int(w*.12f)));
+        int row=int((position+28500.f/w)/30.f);
+        int offset=int(x)%cell;
+        int column=int(floorf(-x/cell));
+        for(int gx=offset-cell; gx<240; gx+=cell,++column) {
+          if(((column+row)&1)==0 &&
+             (gx<x-w || gx+cell>x+w))
+            span(y,gx,gx+cell-1,yellow);
         }
       }
       span(y,x-w,x+w,0x4A49);
