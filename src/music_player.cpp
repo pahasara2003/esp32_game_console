@@ -259,6 +259,7 @@ static void findSongs() {
     bool found = !entry.isDirectory() && lower.endsWith(".mp3");
     entry.close();
     if (found) songs[songCount++] = String("/Music/") + name.substring(name.lastIndexOf('/') + 1);
+    loaderTick(false);
   }
   folder.close();
 }
@@ -487,11 +488,16 @@ static float ctrlScale[CTRL_COUNT] = {1, 1, 1.15f, 1};
 static float ctrlTarget(int id) { return ctrlSel == id ? (id == CTRL_PLAY ? 1.15f : 1.4f) : 1.0f; }
 
 // One control drawn at scale s around its centre.
+static TFT_eSprite *ctrlSpr = nullptr;  // only alive during an animation
 static void drawCtrl(int id, float s, bool isPlaying) {
-  const int cx = CTRL_CX[id], cy = CTRL_Y;
+  const int bx = CTRL_CX[id] - CTRL_HW[id], by = 266, bw = CTRL_HW[id] * 2 + 1, bh = 49;
+  // Compose off-screen when possible so the control never flashes black.
+  TFT_eSPI &screen = ctrlSpr ? (TFT_eSPI &)*ctrlSpr : ::screen;
+  const int ox = ctrlSpr ? bx : 0, oy = ctrlSpr ? by : 0;
+  const int cx = CTRL_CX[id] - ox, cy = CTRL_Y - oy;
   uint16_t c = ctrlSel == id ? COLOR_GREEN : WHITE;
   auto S = [s](float v) { return (int)lroundf(v * s); };
-  screen.fillRect(cx - CTRL_HW[id], 266, CTRL_HW[id] * 2 + 1, 49, COLOR_BG);
+  screen.fillRect(bx - ox, by - oy, bw, bh, COLOR_BG);
   switch (id) {
     case CTRL_LIST:
       for (int i = -1; i <= 1; ++i)
@@ -515,12 +521,15 @@ static void drawCtrl(int id, float s, bool isPlaying) {
       screen.fillRect(cx + S(6), cy - S(8), max(3, S(3)), S(16), c);
       break;
   }
+  if (ctrlSpr) ctrlSpr->pushSprite(bx, by, 0, 0, bw, bh);
 }
 
 // Ease the old selection down and the new one up (~100 ms).
 static void animateControls(int oldSel, bool isPlaying) {
   float from[CTRL_COUNT];
   for (int i = 0; i < CTRL_COUNT; ++i) from[i] = ctrlScale[i];
+  ctrlSpr = new TFT_eSprite(&::screen);
+  if (!ctrlSpr->createSprite(53, 49)) { delete ctrlSpr; ctrlSpr = nullptr; }
   const int FRAMES = 6;
   for (int f = 1; f <= FRAMES; ++f) {
     float t = f / (float)FRAMES;
@@ -531,6 +540,7 @@ static void animateControls(int oldSel, bool isPlaying) {
     }
     delay(12);
   }
+  if (ctrlSpr) { ctrlSpr->deleteSprite(); delete ctrlSpr; ctrlSpr = nullptr; }
 }
 
 static void drawControls(bool isPlaying) {
@@ -1532,6 +1542,7 @@ static void musicSetup() {
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
   loaderBegin();
+  while (millis() - ldStart < 300) { loaderTick(false); delay(4); }
   if (!sdReady) {
     SPI.end();
     SPI.begin(1, 21, 2, SD_CS);
