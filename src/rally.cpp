@@ -2,7 +2,9 @@
 #include "game.h"
 #include "ui_kit.h"
 #include "rally.h"
+#include "rally_grass.h"
 #include <math.h>
+#include <string.h>
 
 namespace {
 // An 8-bit framebuffer keeps heap usage modest on the C3.
@@ -37,16 +39,17 @@ void carPart(float left,float top,float right,float bottom,uint16_t color,
   frame.fillTriangle(ax,ay,cx,cy,dx,dy,color);
 }
 void render() {
-  frame.fillSprite(0x4E60);
   float cameraX=center(position)+lateral;
-  // Small ground cells drawn as rectangles, anchored in world coordinates.
-  constexpr int cell=18;
-  int gx0=int(floorf((cameraX*mapScale-120)/cell));
-  int gz0=int(floorf((position*mapScale+carY-288)/cell));
-  for(int gz=gz0; gz<=gz0+17; ++gz) {
-    int sy=carY-int(gz*cell-position*mapScale)-cell;
-    for(int gx=gx0; gx<=gx0+14; ++gx) if((gx+gz)&1)
-      frame.fillRect(int(gx*cell-cameraX*mapScale+120),sy,cell,cell,0xFFE0);
+  // Copy the CC0 grass tile into the 8-bit frame at world-aligned coordinates.
+  uint8_t *pixels=static_cast<uint8_t *>(frame.getPointer());
+  int textureX=int(floorf(cameraX*mapScale-120)) & (RALLY_GRASS_SIZE-1);
+  int textureY=int(floorf(position*mapScale+carY));
+  int firstSpan=min(240,RALLY_GRASS_SIZE-textureX);
+  for(int y=0;y<288;++y) {
+    const uint8_t *source=rallyGrass+(((textureY-y)&(RALLY_GRASS_SIZE-1))*RALLY_GRASS_SIZE);
+    uint8_t *row=pixels+y*240;
+    memcpy(row,source+textureX,firstSpan);
+    if(firstSpan<240) memcpy(row+firstSpan,source,240-firstSpan);
   }
   // About 20 road strips instead of 180 perspective segments and scanlines.
   int first=int(floorf((position-320)/80));
@@ -59,6 +62,23 @@ void render() {
     quad(x1,y1,x2,y2,49,(i&1)?TFT_WHITE:0xB986);
     quad(x1,y1,x2,y2,45,0x4A49);
     if(i&1) quad(x1,y1,x2,y2,1,0xD69A);
+  }
+  // Sparse asphalt flecks are fixed to the road, not to screen pixels.
+  int firstGrain=int(floorf((position-300.f)/24.f));
+  for(int nz=firstGrain;nz<firstGrain+52;++nz) {
+    float z=nz*24.f;
+    int sy=carY-int((z-position)*mapScale);
+    float roadX=120+(center(z)-cameraX)*mapScale;
+    for(int nx=-9;nx<=9;++nx) {
+      uint32_t grain=uint32_t(nz)*73856093u ^ uint32_t(nx)*19349663u;
+      grain^=grain>>16;
+      grain*=2246822519u;
+      if((grain&7u)>1u) continue;
+      int sx=int(roadX+nx*18*mapScale)+int((grain>>8)&3u)-1;
+      int y=sy+int((grain>>12)&3u)-1;
+      uint16_t color=(grain&0x18u)==0u?TFT_BLACK:0x6B4D;
+      frame.fillRect(sx,y,(grain&0x20u)?2:1,1,color);
+    }
   }
   float sn=sinf(heading),cs=cosf(heading);
   carPart(-12,-14,12,16,0x2945,sn,cs);
@@ -107,14 +127,16 @@ void rallyLoop() {
   float dt=min(.1f,(now-lastFrame)*.001f); lastFrame=now;
   uint8_t held=buttonsHeld();
   int steer=((held&2)?1:0)-((held&8)?1:0);
-  speed += ((held&4)?-700.f:((held&1)?260.f:120.f))*dt;
-  speed=constrain(speed,0.f,1050.f);
+  bool onRoad=fabsf(lateral)<=175.f;
+  float acceleration=(held&4)?-700.f:((held&1)?(onRoad?140.f:90.f)
+                                                :(onRoad?75.f:-80.f));
+  speed=constrain(speed+acceleration*dt,0.f,600.f);
   // Steering changes both the visible orientation and direction of travel.
   // Limit heading to forward travel for this endless northbound course.
-  heading+=steer*1.5f*dt*(.3f+.7f*speed/1050.f);
+  heading+=steer*2.7f*dt*(.55f+.45f*speed/600.f);
   heading=constrain(heading,-1.25f,1.25f);
-  if(fabsf(lateral)>175 && speed>180.f)
-    speed=max(180.f,speed-450*dt);
+  // Grass drag has no minimum speed; releasing Up lets the car stop completely.
+  if(!onRoad) speed=max(0.f,speed-min(450.f,speed*4.f)*dt);
   float oldCenter=center(position);
   float newPosition=position+cosf(heading)*speed*dt;
   lateral+=sinf(heading)*speed*dt-(center(newPosition)-oldCenter);
