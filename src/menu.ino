@@ -27,7 +27,7 @@ App Apps[] = {
   {"Mines",    0, 0, mines_home_icon,    9},
   {"Conway's", 0, 0, life_home_icon,    10},
   {"Mandel",   0, 0, mandelbrot_home_icon,11},
-  {"Sound",    0, 0, sound_home_icon,   -1},
+  {"Music",    0, 0, sound_home_icon,   -1},
   {"Settings", 0, 0, settings_home_icon,-1},
   {"Info",     0, 0, about_home_icon,   -1}
 };
@@ -812,7 +812,7 @@ void menuLoop() {
         } else if ((strcasecmp(Apps[selectedApp].label, "info") == 0 || strcasecmp(Apps[selectedApp].label, "about") == 0)) {
           showAboutScreen();
           return;
-        } else if (strcasecmp(Apps[selectedApp].label, "sound") == 0) {
+        } else if (strcasecmp(Apps[selectedApp].label, "music") == 0) {
           audioReleaseForMusic();
           runMusicPlayer();
           audioReclaimFromMusic();
