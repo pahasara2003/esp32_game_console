@@ -23,7 +23,7 @@ constexpr uint16_t COLOR_BG         = 0x0000; // Pitch Black OLED
 constexpr uint16_t COLOR_CARD       = 0x10A2; // Dark Slate Card
 constexpr uint16_t COLOR_SURFACE    = 0x18E3; // Elevated Surface
 constexpr uint16_t COLOR_BORDER     = 0x2965; // Border Outline
-constexpr uint16_t COLOR_GREEN      = 0x1DCA; // Spotify Vibrant Green (#1DB954)
+constexpr uint16_t COLOR_GREEN      = 0x7ECA; // yellow-green (#7ED957)
 constexpr uint16_t COLOR_TEXT_WHITE = 0xFFFF; // Crisp White
 constexpr uint16_t COLOR_TEXT_MUTED = 0x9492; // Secondary Gray
 constexpr uint16_t COLOR_TEXT_DIM   = 0x4A49; // Dark Accent Gray
@@ -481,30 +481,65 @@ constexpr int CTRL_Y = 290;
 // Selectable controls: Left/Right move the green highlight, Shoot applies it.
 enum { CTRL_LIST, CTRL_PREV, CTRL_PLAY, CTRL_NEXT, CTRL_COUNT };
 static int ctrlSel = CTRL_PLAY;
+static const int CTRL_CX[CTRL_COUNT] = {26, 71, 120, 169};
+static const int CTRL_HW[CTRL_COUNT] = {22, 22, 26, 22};   // half-width of each redraw box
+static float ctrlScale[CTRL_COUNT] = {1, 1, 1.15f, 1};
+static float ctrlTarget(int id) { return ctrlSel == id ? (id == CTRL_PLAY ? 1.15f : 1.4f) : 1.0f; }
+
+// One control drawn at scale s around its centre.
+static void drawCtrl(int id, float s, bool isPlaying) {
+  const int cx = CTRL_CX[id], cy = CTRL_Y;
+  uint16_t c = ctrlSel == id ? COLOR_GREEN : WHITE;
+  auto S = [s](float v) { return (int)lroundf(v * s); };
+  screen.fillRect(cx - CTRL_HW[id], 266, CTRL_HW[id] * 2 + 1, 49, COLOR_BG);
+  switch (id) {
+    case CTRL_LIST:
+      for (int i = -1; i <= 1; ++i)
+        screen.fillRoundRect(cx - S(10), cy + S(i * 6) - S(1.5f), S(20), max(3, S(3)), 1, c);
+      break;
+    case CTRL_PREV:
+      screen.fillRect(cx - S(9), cy - S(8), max(3, S(3)), S(16), c);
+      screen.fillTriangle(cx + S(9), cy - S(8), cx + S(9), cy + S(8), cx - S(5), cy, c);
+      break;
+    case CTRL_PLAY:
+      screen.fillCircle(cx, cy, S(20), c);
+      if (isPlaying) {
+        screen.fillRoundRect(cx - S(8), cy - S(8), S(5), S(16), 1, COLOR_BG);
+        screen.fillRoundRect(cx + S(3), cy - S(8), S(5), S(16), 1, COLOR_BG);
+      } else {
+        screen.fillTriangle(cx - S(5), cy - S(9), cx - S(5), cy + S(9), cx + S(10), cy, COLOR_BG);
+      }
+      break;
+    case CTRL_NEXT:
+      screen.fillTriangle(cx - S(9), cy - S(8), cx - S(9), cy + S(8), cx + S(5), cy, c);
+      screen.fillRect(cx + S(6), cy - S(8), max(3, S(3)), S(16), c);
+      break;
+  }
+}
+
+// Ease the old selection down and the new one up (~100 ms).
+static void animateControls(int oldSel, bool isPlaying) {
+  float from[CTRL_COUNT];
+  for (int i = 0; i < CTRL_COUNT; ++i) from[i] = ctrlScale[i];
+  const int FRAMES = 6;
+  for (int f = 1; f <= FRAMES; ++f) {
+    float t = f / (float)FRAMES;
+    t = 1 - (1 - t) * (1 - t) * (1 - t);  // ease-out cubic
+    for (int id : {oldSel, ctrlSel}) {
+      ctrlScale[id] = from[id] + (ctrlTarget(id) - from[id]) * t;
+      drawCtrl(id, ctrlScale[id], isPlaying);
+    }
+    delay(12);
+  }
+}
+
 static void drawControls(bool isPlaying) {
   const int cy = CTRL_Y;
-  screen.fillRect(0, 269, 240, 42, COLOR_BG);
-  auto col = [](int id) { return ctrlSel == id ? COLOR_GREEN : WHITE; };
-
-  // Playlist (three lines)
-  for (int i = 0; i < 3; ++i) screen.fillRoundRect(16, cy - 7 + i * 6, 20, 3, 1, col(CTRL_LIST));
-
-  // Previous
-  screen.fillRect(62, cy - 8, 3, 16, col(CTRL_PREV));
-  screen.fillTriangle(80, cy - 8, 80, cy + 8, 66, cy, col(CTRL_PREV));
-
-  // Play / pause
-  screen.fillCircle(120, cy, 20, col(CTRL_PLAY));
-  if (isPlaying) {
-    screen.fillRoundRect(112, cy - 8, 5, 16, 1, COLOR_BG);
-    screen.fillRoundRect(123, cy - 8, 5, 16, 1, COLOR_BG);
-  } else {
-    screen.fillTriangle(115, cy - 9, 115, cy + 9, 130, cy, COLOR_BG);
+  screen.fillRect(0, 266, 240, 49, COLOR_BG);
+  for (int id = 0; id < CTRL_COUNT; ++id) {
+    ctrlScale[id] = ctrlTarget(id);
+    drawCtrl(id, ctrlScale[id], isPlaying);
   }
-
-  // Next
-  screen.fillTriangle(160, cy - 8, 160, cy + 8, 174, cy, col(CTRL_NEXT));
-  screen.fillRect(175, cy - 8, 3, 16, col(CTRL_NEXT));
 
   // Repeat (muted)
   screen.drawRoundRect(206, cy - 5, 16, 11, 3, MUTED);
@@ -1262,7 +1297,7 @@ static void drawScrollbar() {
 
 static void drawPlaylistHeader() {
   for (int y = 0; y < LIST_Y; ++y)
-    screen.drawFastHLine(0, y, 240, lerpColor(0x12C6, BG, (uint8_t)(y * 255 / (LIST_Y - 1))));
+    screen.drawFastHLine(0, y, 240, lerpColor(0x2AC2, BG, (uint8_t)(y * 255 / (LIST_Y - 1))));
   screen.setTextDatum(TL_DATUM);
   screen.setTextColor(WHITE);
   screen.drawString("Library", 16, 12, 4);
@@ -1376,8 +1411,9 @@ static void handleKeys() {
   if (k < 0) return;
   if (playerVisible) {
     if (k == 'a' || k == 'd') {
+      int old = ctrlSel;
       ctrlSel = (ctrlSel + (k == 'd' ? 1 : CTRL_COUNT - 1)) % CTRL_COUNT;
-      drawControls(!paused);
+      animateControls(old, !paused);
     } else if (k == 'e' || k == ' ') {
       switch (ctrlSel) {
         case CTRL_LIST: showPlaylist(); break;
