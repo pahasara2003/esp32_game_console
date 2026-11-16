@@ -21,6 +21,7 @@ App Apps[] = {
   {"Breakout", 0, 0, breakout_home_icon, 3},
   {"Run",      0, 0, run_home_icon,      4},
   {"Galaga",   0, 0, galaga_home_icon,   5},
+  {"Rally",    0, 0, rally_home_icon,   12},
   {"Puzzle",   0, 0, puzzle_home_icon,   6},
   {"Tic-Tac",  0, 0, tic_tac_home_icon,  7},
   {"Pong",     0, 0, pong_home_icon,     8},

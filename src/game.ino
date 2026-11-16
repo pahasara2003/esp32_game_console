@@ -1,3 +1,4 @@
+#include "rally.h"
 #include <Arduino.h>
 #include <Preferences.h>
 #include "game.h"
@@ -14,7 +15,7 @@
 
 
 const char* gameNames[] = { "Menu", "Tetris", "Snake", "Breakout", "Run", "Galaga", "Puzzle",
-                            "TicTacToe", "Pong", "Minesweeper", "Life", "Mandelbrot" };
+                            "TicTacToe", "Pong", "Minesweeper", "Life", "Mandelbrot", "Rally" };
 const int GAME_COUNT = sizeof(gameNames) / sizeof(gameNames[0]);
 Preferences prefs;
 
@@ -134,6 +135,10 @@ Game::Game(int i) {
       gameSetup = mandelbrotSetup;
       gameLoop = mandelbrotLoop;
       break;
+    case 12:
+      gameSetup = rallySetup;
+      gameLoop = rallyLoop;
+      break;
   }
 
   prefs.begin(name, false);
@@ -192,6 +197,7 @@ void showResumeCountdown(void (*redrawScene)()) {
     tft.setTextColor(ui::LABEL, ui::CARD);
     tft.drawString(String(number), centerX, centerY + 2);
     tft.setTextSize(1);
+    audio::play(audio::Cue::Countdown);
     unsigned long started = millis();
     while (millis() - started < 1000) delay(5);
   }
@@ -672,7 +678,7 @@ void init_interface() {
   playBootAnimation();
 
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
-  Wire.setClock(100000);
+  Wire.setClock(400000);  // ADS1115 supports 400 kHz fast mode
   Wire.setTimeOut(20);
   if (!ads.begin(0x48)) {
     Serial.println("[Game] Warning: ADS1115 not detected at 0x48. Check I2C wiring (SDA=10, SCL=20).");
@@ -684,7 +690,7 @@ void init_interface() {
     Serial.println("[Game] ADS1115 ADC initialized at 0x48.");
   }
 
-  pinMode(SHOOT, INPUT_PULLUP);  // external 10k pull-up as well
+  pinMode(RIGHT_BTN, INPUT_PULLUP);  // external 10k pull-up as well
   if (!buttonsBegin()) Serial.println("[Input] ERROR: button scanner could not start");
 }
 

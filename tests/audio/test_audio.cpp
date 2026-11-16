@@ -11,7 +11,7 @@ static void reset() { audio::external(true); audio::external(false); audio::scen
 int main() {
   std::vector<int16_t> out(44100), reference(2205), actual(2205);
   audio::effectsVolume=100; audio::musicVolume=100;
-  for (int cue=0; cue<=int(audio::Cue::Firework); ++cue) {
+  for (int cue=0; cue<=int(audio::Cue::Countdown); ++cue) {
     reset(); audio::play(static_cast<audio::Cue>(cue));
     audio::render(out.data(),out.size(),0,true);
     assert(!silent(out));
@@ -34,5 +34,31 @@ int main() {
   audio::render(out.data(),out.size(),0,true); assert(silent(out));
   audio::external(false); audio::render(out.data(),out.size(),440,false); assert(silent(out));
   reset(); audio::render(out.data(),out.size(),440,true); assert(!silent(out));
+  // Exercise two complete Breakout loops, including all chord/loop boundaries.
+  reset(); audio::scene(3);
+  std::vector<int16_t> calmTrack(22050 * 32);
+  audio::render(calmTrack.data(),calmTrack.size(),0,true);
+  int peak = 0, step = 0;
+  for (size_t i=1; i<calmTrack.size(); ++i) {
+    peak = std::max(peak, std::abs(int(calmTrack[i])));
+    step = std::max(step, std::abs(int(calmTrack[i])-calmTrack[i-1]));
+  }
+  assert(peak > 2200 && peak < 11000); // More presence than the old 1024-peak loop.
+  assert(step < 1500); // Soft waveform and envelopes at note/chord boundaries.
+  audio::pauseMusic(true); audio::render(out.data(),out.size(),0,true); assert(silent(out));
+  audio::pauseMusic(false); audio::musicVolume=0;
+  audio::render(out.data(),out.size(),0,true); assert(silent(out));
+  audio::musicVolume=100;
+  audio::external(true); audio::render(out.data(),out.size(),0,true); assert(silent(out));
+  audio::external(false);
+  // Callback buffer sizes must not change the track or pause position.
+  reset(); audio::scene(3); audio::render(reference.data(),reference.size(),0,true);
+  reset(); audio::scene(3);
+  audio::render(actual.data(),1000,0,true);
+  audio::pauseMusic(true); audio::render(out.data(),out.size(),0,true); assert(silent(out));
+  audio::pauseMusic(false);
+  audio::render(actual.data()+1000,actual.size()-1000,0,true);
+  assert(actual==reference);
+  std::cout << "Breakout levels, envelopes, looping, pause and callback continuity passed\n";
   std::cout << "All cues, termination, priority, mute, music pause and I2S ownership passed\n";
 }

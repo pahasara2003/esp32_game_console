@@ -43,6 +43,14 @@ def galaga(d):
     d.polygon(p(16,30, 8,42, 18,38), fill=(255,60,90)); d.polygon(p(36,30, 44,42, 34,38), fill=(255,60,90))
     d.ellipse(p(23, 18, 29, 24), fill=(0, 200, 255))
     d.polygon(p(22,38, 26,46, 30,38), fill=(255,200,0))
+def rally(d):
+    d.polygon(p(18,4, 34,4, 46,48, 6,48), fill=(70,70,80))
+    for y in range(6, 46, 10): d.line(p(26, y, 26, y + 5), fill=(255,230,0), width=2*S)
+    d.rounded_rectangle(p(17, 18, 35, 44), radius=5*S, fill=(255,40,60))
+    d.rounded_rectangle(p(20, 23, 32, 29), radius=2*S, fill=(150,220,255))
+    d.rounded_rectangle(p(20, 35, 32, 39), radius=S, fill=(150,30,40))
+    for x in (14, 35):
+        for y in (21, 36): d.rounded_rectangle(p(x, y, x + 3, y + 6), radius=S, fill=(20,20,25))
 def puzzle(d):
     for i in range(9):
         if i == 8: continue
@@ -99,6 +107,7 @@ ICONS = [
  ('breakout_home_icon',   (40,60,90),(10,15,35),     breakout),
  ('run_home_icon',        (255,150,0),(255,60,0),    run),
  ('galaga_home_icon',     (30,60,200),(10,10,70),    galaga),
+ ('rally_home_icon',      (60,200,80),(20,120,40),   rally),
  ('puzzle_home_icon',     (255,60,130),(200,0,90),   puzzle),
  ('tic_tac_home_icon',    (0,200,255),(0,100,230),   tictac),
  ('pong_home_icon',       (60,60,70),(15,15,20),     pong),
@@ -126,5 +135,5 @@ for name, top, bot, fn in ICONS:
     out.append(f'const uint16_t {name}[2704] PROGMEM = {{')
     for i in range(0, len(px), 16): out.append('  ' + ', '.join(f'0x{v:04X}' for v in px[i:i+16]) + ',')
     out.append('};'); out.append('')
-    Image.composite(im, Image.new('RGB', (N, N), (30, 30, 60)), mask).resize((N*3, N*3), Image.NEAREST).save(f'/tmp/claude-1000/-home-pahasara-gameConsole/5a8399be-79e5-4ae1-a092-35d5a2d860bf/scratchpad/{name}.png')
+    Image.composite(im, Image.new('RGB', (N, N), (30, 30, 60)), mask).resize((N*3, N*3), Image.NEAREST).save(f'/tmp/claude-1000/-home-pahasara-gameConsole/c6009d38-c9b1-45c1-b9ef-33600e51e150/scratchpad/{name}.png')
 open('src/home_icons.h', 'w').write('\n'.join(out))

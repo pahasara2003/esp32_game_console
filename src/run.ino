@@ -22,11 +22,16 @@ constexpr int RUN_GROUND_Y = 262;
 
 // Runner Character Physics (Vertical Portrait space)
 constexpr int RUNNER_X = 30;
-constexpr int RUNNER_W = VAMPIRE_FRAME_W;
-constexpr int RUNNER_H = VAMPIRE_FRAME_H;
+// Sprite art is 32x48; draw it scaled 5/4 (40x60) with nearest-neighbour.
+constexpr int RUNNER_SCALE_NUM = 5;
+constexpr int RUNNER_SCALE_DEN = 4;
+constexpr int RUNNER_W = VAMPIRE_FRAME_W * RUNNER_SCALE_NUM / RUNNER_SCALE_DEN;
+constexpr int RUNNER_H = VAMPIRE_FRAME_H * RUNNER_SCALE_NUM / RUNNER_SCALE_DEN;
+constexpr int RUNNER_DEATH_W =
+    VAMPIRE_DEAD_FRAME_W * RUNNER_SCALE_NUM / RUNNER_SCALE_DEN;
 // The death effect spreads farther left than the normal 32px character. Its
 // wider canvas is offset so the body remains aligned with the running sprite.
-constexpr int RUNNER_DEATH_X = RUNNER_X - 18;
+constexpr int RUNNER_DEATH_X = RUNNER_X - 22;
 // Gentler ascent and descent, retaining the ~50px peak with ~11% more airtime.
 constexpr float GRAVITY = 0.70f;
 constexpr float JUMP_VELOCITY = -8.75f;
@@ -76,7 +81,7 @@ static bool runPauseReady = false;
 
 // One complete day/night orbit passes through all nine supplied frames. Each
 // segment continuously crossfades into the next, including night back to dawn.
-static constexpr unsigned long RUN_DAY_SEGMENT_MS = 6500;
+static constexpr unsigned long RUN_DAY_SEGMENT_MS = 12000;
 static uint32_t runDayCycleStarted = 0;
 static uint8_t runDayFrame = 0;
 static uint8_t runDayNextFrame = 1;
@@ -161,8 +166,11 @@ static uint16_t runnerBackdropAt(int x, int y) {
   x = constrain(x, 0, RUN_W - 1);
   y = constrain(y, 0, RUN_H - 1);
   int index = y * RUN_W + x;
-  uint8_t phase = useNextRunnerTimePixel(x, y) ? runDayNextFrame : runDayFrame;
-  return pgm_read_word(&run_background_frames[phase][index]);
+  // True colour blend (no dither noise) between the two time-of-day frames.
+  uint16_t a = pgm_read_word(&run_background_frames[runDayFrame][index]);
+  if (runDayBlend == 0) return a;
+  uint16_t b = pgm_read_word(&run_background_frames[runDayNextFrame][index]);
+  return blendRun565(a, b, runDayBlend);
 }
 
 static void restoreRunnerBackdropRect(int x, int y, int w, int h) {
@@ -218,9 +226,12 @@ static void drawRunCloudClipped(uint8_t cloudIndex) {
     int runStart = -1;
     int count = 0;
     for (int sx = sourceLeft; sx < sourceRight; ++sx) {
-      bool useSecond = useNextRunnerTimePixel(x + sx, cloud.y + y);
-      uint16_t color = pgm_read_word(&(
-          useSecond ? secondImage : firstImage)[y * w + sx]);
+      uint16_t color = pgm_read_word(&firstImage[y * w + sx]);
+      if (color != RUN_CLOUD_TRANSPARENT && runDayBlend) {
+        uint16_t next = pgm_read_word(&secondImage[y * w + sx]);
+        if (next != RUN_CLOUD_TRANSPARENT)
+          color = blendRun565(color, next, runDayBlend);
+      }
       if (color != RUN_CLOUD_TRANSPARENT) {
         if (runStart < 0) runStart = sx;
         row[count++] = color;
@@ -240,8 +251,10 @@ static void drawRunCloudClipped(uint8_t cloudIndex) {
 }
 
 static void updateRunnerDayCycleBackdrop() {
-  syncRunnerDayCycle();
-  constexpr int rowsPerUpdate = 4;
+  // Latch the blend level once per full sweep so the whole screen sits at one
+  // uniform tint; each sweep advances it by a barely visible step.
+  if (runDayRenderY == 43) syncRunnerDayCycle();
+  constexpr int rowsPerUpdate = 8;
   int y0 = runDayRenderY;
   int y1 = min(295, y0 + rowsPerUpdate);
   static uint16_t pixels[RUN_W * rowsPerUpdate];
@@ -338,7 +351,11 @@ static void drawRunnerHeader() {
   header.setColorDepth(16);
   if (!header.createSprite(224, 38)) return;
   // Transparent outside the rounded card so the sky shows at the corners.
-  header.fillSprite(VAMPIRE_TRANSPARENT);
+  // Paint the real backdrop behind the card so the corners and any area
+  // around it are refreshed with the current sky, not left stale.
+  for (int y = 0; y < 38; ++y)
+    for (int x = 0; x < 224; ++x)
+      header.drawPixel(x, y, runnerBackdropAt(8 + x, 5 + y));
   header.fillRoundRect(0, 0, 224, 38, 12, ui::CARD);
   header.setTextDatum(ML_DATUM);
   header.setTextColor(ui::LABEL);
@@ -349,9 +366,9 @@ static void drawRunnerHeader() {
   header.drawString("Distance", 212, 3, 2);
   header.setTextColor(RUN_ACCENT);
   header.drawString(String(currentGame.highScores[0]) + " m", 150, 19, 2);
-  header.setTextColor(ui::LABEL);
+  header.setTextColor(score > 0 && score % 50 < 4 ? RUN_ACCENT : ui::LABEL);
   header.drawString(String(score) + " m", 212, 19, 2);
-  header.pushSprite(8, 5, VAMPIRE_TRANSPARENT);
+  header.pushSprite(8, 5);
   header.deleteSprite();
 }
 
@@ -368,23 +385,35 @@ static void drawRunnerBottomBar() {
 // -----------------------------------------------------------------
 // RUNNER SPRITE & OBSTACLE RENDERING
 // -----------------------------------------------------------------
-static void drawRunner(int px, int py, int anim, bool inAir) {
+static void drawRunner(int px, int py, int prevPy, int anim, bool inAir) {
   const uint16_t *frame = inAir
       ? vampire_jump_frames[anim % VAMPIRE_FRAME_COUNT]
       : vampire_run_frames[anim % VAMPIRE_FRAME_COUNT];
   // Compose the character and the exact image behind it in RAM, then transfer
   // one opaque rectangle. This prevents the display from briefly showing the
   // erased background between animation frames.
-  static uint16_t composed[RUNNER_W * RUNNER_H];
-  for (int y = 0; y < RUNNER_H; ++y) {
+  // The pushed area covers both the old and new position, so moving up or
+  // down never shows an erased frame (no flicker while jumping).
+  constexpr int MAX_DY = 24;
+  static uint16_t composed[RUNNER_W * (RUNNER_H + MAX_DY)];
+  int dy = constrain(prevPy - py, -MAX_DY, MAX_DY);
+  int top = dy < 0 ? py + dy : py;
+  int h = RUNNER_H + abs(dy);
+  for (int y = 0; y < h; ++y) {
+    int ly = top + y - py;
     for (int x = 0; x < RUNNER_W; ++x) {
-      uint16_t ink = pgm_read_word(&frame[y * RUNNER_W + x]);
+      uint16_t ink = VAMPIRE_TRANSPARENT;
+      if (ly >= 0 && ly < RUNNER_H) {
+        int sx = x * RUNNER_SCALE_DEN / RUNNER_SCALE_NUM;
+        int sy = ly * RUNNER_SCALE_DEN / RUNNER_SCALE_NUM;
+        ink = pgm_read_word(&frame[sy * VAMPIRE_FRAME_W + sx]);
+      }
       composed[y * RUNNER_W + x] = ink == VAMPIRE_TRANSPARENT
-          ? runnerBackdropAt(px + x, py + y) : ink;
+          ? runnerSceneAt(px + x, top + y) : ink;
     }
   }
   tft.setSwapBytes(true);
-  tft.pushImage(px, py, RUNNER_W, RUNNER_H, composed);
+  tft.pushImage(px, top, RUNNER_W, h, composed);
   tft.setSwapBytes(false);
 }
 
@@ -395,17 +424,19 @@ static void eraseRunner(int px, int py) {
 static void drawRunnerDeathFrame(int py, int frameIndex) {
   const uint16_t *frame = vampire_dead_frames[
       frameIndex % VAMPIRE_DEAD_FRAME_COUNT];
-  static uint16_t composed[VAMPIRE_DEAD_FRAME_PIXELS];
+  static uint16_t composed[RUNNER_DEATH_W * RUNNER_H];
   for (int y = 0; y < RUNNER_H; ++y) {
-    for (int x = 0; x < VAMPIRE_DEAD_FRAME_W; ++x) {
-      uint16_t ink = pgm_read_word(&frame[y * VAMPIRE_DEAD_FRAME_W + x]);
-      composed[y * VAMPIRE_DEAD_FRAME_W + x] =
+    for (int x = 0; x < RUNNER_DEATH_W; ++x) {
+      int sx = x * RUNNER_SCALE_DEN / RUNNER_SCALE_NUM;
+      int sy = y * RUNNER_SCALE_DEN / RUNNER_SCALE_NUM;
+      uint16_t ink = pgm_read_word(&frame[sy * VAMPIRE_DEAD_FRAME_W + sx]);
+      composed[y * RUNNER_DEATH_W + x] =
           ink == VAMPIRE_TRANSPARENT
               ? runnerBackdropAt(RUNNER_DEATH_X + x, py + y) : ink;
     }
   }
   tft.setSwapBytes(true);
-  tft.pushImage(RUNNER_DEATH_X, py, VAMPIRE_DEAD_FRAME_W,
+  tft.pushImage(RUNNER_DEATH_X, py, RUNNER_DEATH_W,
                 RUNNER_H, composed);
   tft.setSwapBytes(false);
 }
@@ -414,7 +445,7 @@ static void playRunnerDeathAnimation(int py) {
   // Remove the last live pose once, then replace each death frame atomically.
   eraseRunner(RUNNER_X, (int)prevRunnerY);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
-                            VAMPIRE_DEAD_FRAME_W, RUNNER_H);
+                            RUNNER_DEATH_W, RUNNER_H);
   audio::play(audio::Cue::Death);
   for (int frame = 0; frame < VAMPIRE_DEAD_FRAME_COUNT; ++frame) {
     drawRunnerDeathFrame(py, frame);
@@ -422,7 +453,7 @@ static void playRunnerDeathAnimation(int py) {
   }
   setBuzzerTone(0);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
-                            VAMPIRE_DEAD_FRAME_W, RUNNER_H);
+                            RUNNER_DEATH_W, RUNNER_H);
 }
 
 static void spawnRunObstacle() {
@@ -433,18 +464,18 @@ static void spawnRunObstacle() {
       obs[i].style = obsType;
       if (obsType == 0) {
         // Short grass-topped brick block.
-        obs[i].w = 12;
-        obs[i].h = 18;
+        obs[i].w = 11;
+        obs[i].h = 24;
         obs[i].color = 0xA347;
       } else if (obsType == 1) {
         // Taller moss-covered stone pillar.
-        obs[i].w = 14;
-        obs[i].h = 28;
+        obs[i].w = 12;
+        obs[i].h = 36;
         obs[i].color = 0x738E;
       } else {
         // Wide weathered brick block.
-        obs[i].w = 22;
-        obs[i].h = 16;
+        obs[i].w = 18;
+        obs[i].h = 20;
         obs[i].color = 0xB3A7;
       }
       obs[i].active = true;
@@ -454,37 +485,51 @@ static void spawnRunObstacle() {
   }
 }
 
-static void drawRunnerObstacle(int index, int x, int y) {
+static uint16_t runnerObstaclePixel(int index, int xx, int yy) {
   const RunObstacle &obstacle = obs[index];
-  // Details stay inside the original obstacle bounds, preserving jump clearance.
-  static uint16_t pixels[22 * 28];
   bool stone = obstacle.style == 1;
   uint16_t base = runnerTimeColor(stone ? RUN_OBS_STONE : RUN_OBS_BRICK);
   uint16_t mortar = runnerTimeColor(RUN_OBS_MORTAR);
   uint16_t highlight = runnerTimeColor(RUN_OBS_HIGHLIGHT);
   uint16_t shadow = runnerTimeColor(RUN_OBS_SHADOW);
-  uint16_t grassTop = runnerTimeColor(RUN_OBS_GRASS_TOP);
-  uint16_t grassMid = runnerTimeColor(RUN_OBS_GRASS_MID);
-  uint16_t grassDark = runnerTimeColor(RUN_OBS_GRASS_DARK);
-  uint16_t grassSpeck = runnerTimeColor(RUN_OBS_GRASS_SPECK);
   if (obstacle.style == 2) base = blendRun565(base, highlight, 44);
+  int brickY = max(0, yy - 4);
+  int row = brickY / 6;
+  int brickX = (xx + (row & 1) * 4) % 8;
+  uint16_t color = base;
+  if (brickY % 6 == 0 || brickX == 0) color = mortar;
+  else if (brickY % 6 == 1) color = highlight;
+  else if (brickY % 6 == 5 || brickX == 7) color = shadow;
+  if (stone && yy > 7 && (xx + yy * 3) % 23 == 0) color = mortar;
+  if (xx == 0 || xx == obstacle.w - 1 || yy == obstacle.h - 1)
+    color = shadow;
+  if (yy < 3 || (yy < 5 && (xx / 2) % 3 == 0)) {
+    color = runnerTimeColor(yy == 0 ? RUN_OBS_GRASS_TOP
+                            : yy == 1 ? RUN_OBS_GRASS_MID
+                                      : RUN_OBS_GRASS_DARK);
+    if ((xx + yy) % 5 == 0) color = runnerTimeColor(RUN_OBS_GRASS_SPECK);
+  }
+  return color;
+}
+
+// Backdrop plus any obstacle at this pixel, so the runner composite never
+// paints sky over a block it overlaps.
+static uint16_t runnerSceneAt(int x, int y) {
+  for (int i = 0; i < MAX_RUN_OBS; ++i) {
+    if (!obs[i].active) continue;
+    int ox = (int)obs[i].x, oy = RUN_GROUND_Y - obs[i].h;
+    if (x >= ox && x < ox + obs[i].w && y >= oy && y < RUN_GROUND_Y)
+      return runnerObstaclePixel(i, x - ox, y - oy);
+  }
+  return runnerBackdropAt(x, y);
+}
+
+static void drawRunnerObstacle(int index, int x, int y) {
+  const RunObstacle &obstacle = obs[index];
+  static uint16_t pixels[28 * 36];
   for (int yy = 0; yy < obstacle.h; ++yy) {
     for (int xx = 0; xx < obstacle.w; ++xx) {
-      int brickY = max(0, yy - 4);
-      int row = brickY / 6;
-      int brickX = (xx + (row & 1) * 4) % 8;
-      uint16_t color = base;
-      if (brickY % 6 == 0 || brickX == 0) color = mortar;
-      else if (brickY % 6 == 1) color = highlight;
-      else if (brickY % 6 == 5 || brickX == 7) color = shadow;
-      // A few chips in the stone faces, fixed to the block as it moves.
-      if (stone && yy > 7 && (xx + yy * 3) % 23 == 0) color = mortar;
-      if (xx == 0 || xx == obstacle.w - 1 || yy == obstacle.h - 1)
-        color = shadow;
-      if (yy < 3 || (yy < 5 && (xx / 2) % 3 == 0)) {
-        color = yy == 0 ? grassTop : yy == 1 ? grassMid : grassDark;
-        if ((xx + yy) % 5 == 0) color = grassSpeck;
-      }
+      uint16_t color = runnerObstaclePixel(index, xx, yy);
       pixels[yy * obstacle.w + xx] = color;
     }
   }
@@ -519,10 +564,10 @@ static void updateAndDrawObstacles() {
       // Collision Check with Runner (AABB with 2px forgiveness)
       // The transparent canvas is wider than her body. Keep collision bounds
       // centered on the visible sprite so the larger art does not feel unfair.
-      int rx = RUNNER_X + 5;
-      int ry = (int)runnerY + 5;
-      int rw = RUNNER_W - 10;
-      int rh = RUNNER_H - 7;
+      int rx = RUNNER_X + 7;
+      int ry = (int)runnerY + 6;
+      int rw = RUNNER_W - 14;
+      int rh = RUNNER_H - 8;
 
       if (curX < rx + rw && curX + obs[i].w > rx &&
           oy < ry + rh && oy + obs[i].h > ry) {
@@ -562,7 +607,7 @@ static void initRunnerGame() {
   drawRunnerHeader();
   drawRunnerBottomBar();
 
-  drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+  drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
 }
 
 // -----------------------------------------------------------------
@@ -615,7 +660,7 @@ static void handleRunnerPause() {
       for (int i = 0; i < MAX_RUN_OBS; ++i)
         if (obs[i].active)
           drawRunnerObstacle(i, (int)obs[i].x, RUN_GROUND_Y - obs[i].h);
-      drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+      drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
       });
       runLastAnimTime = runLastScoreTime = lastObsSpawn = runCloudUpdateAt = millis();
       gameState = 0;
@@ -634,7 +679,7 @@ static void handleRunnerPause() {
       for (int i = 0; i < MAX_RUN_OBS; ++i)
         if (obs[i].active)
           drawRunnerObstacle(i, (int)obs[i].x, RUN_GROUND_Y - obs[i].h);
-      drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+      drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
       drawRunnerPauseMenu();
       runPauseReady = false;
     } else { // Exit
@@ -742,9 +787,8 @@ void runLoop() {
 
     // Redraw the runner without an exposed clear interval. At ground level the
     // opaque composite directly replaces the previous animation frame.
-    if ((int)prevRunnerY != (int)runnerY)
-      eraseRunner(RUNNER_X, (int)prevRunnerY);
-    drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+    drawRunner(RUNNER_X, (int)runnerY, (int)prevRunnerY, legAnimFrame,
+               isJumping);
     prevRunnerY = runnerY;
 
     delay(14); // ~60 FPS smooth motion

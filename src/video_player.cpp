@@ -32,6 +32,8 @@ constexpr int DMA_BUFS = 8, DMA_LEN = 1024;           // ~0.37 s at 22050 Hz
 constexpr int DMA_SAMPLES = DMA_BUFS * DMA_LEN;
 constexpr int VOLUME_PCT = 70;
 constexpr int LAND_ROT = 3, PORT_ROT = 2;
+// Button scan step while a video plays: the 1 ms default steals decode time.
+constexpr int PLAY_SCAN_MS = 5;
 
 // Colours match the music player.
 constexpr uint16_t BG = 0x0000, WHITE = 0xFFFF, MUTED = 0x9492, ACCENT = 0x1DCA;
@@ -306,9 +308,24 @@ size_t readFrame(uint8_t *buf) {
   return (buf && n > FRAME_CAP) ? 1 : n;   // 1 = oversized, not drawn
 }
 
+// Per-stage timing, printed every few seconds: "[Video] 11.2 fps ...".
+uint32_t stShown = 0, stSkipped = 0, stReadUs = 0, stDecodeUs = 0, stPushUs = 0, stSince = 0;
+
 int drawBlock(JPEGDRAW *d) {
+  uint32_t t = micros();
   tft.pushImage(d->x, d->y, d->iWidth, d->iHeight, d->pPixels);
+  stPushUs += micros() - t;
   return 1;
+}
+
+void printStats() {
+  uint32_t ms = millis() - stSince;
+  if (ms < 3000 || !stShown) return;
+  Serial.printf("[Video] %.1f fps, %u skipped, per frame: read %u ms, decode %u ms, push %u ms\n",
+                stShown * 1000.0f / ms, (unsigned)stSkipped, (unsigned)(stReadUs / stShown / 1000),
+                (unsigned)((stDecodeUs - stPushUs) / stShown / 1000), (unsigned)(stPushUs / stShown / 1000));
+  stShown = stSkipped = stReadUs = stDecodeUs = stPushUs = 0;
+  stSince = millis();
 }
 
 void installI2S(uint32_t rate) {
@@ -361,6 +378,7 @@ uint32_t playedSamples() {
 }
 
 void closeVideo() {
+  buttonsSetScanPeriod(1);
   if (vfile) vfile.close();
   if (afile) afile.close();
   i2s_zero_dma_buffer(I2S_NUM_0);
@@ -381,8 +399,11 @@ bool openVideo(int index) {
   pendOff = pendLen = 0;
   audioDone = false;
   frameNo = 0;
+  stShown = stSkipped = stReadUs = stDecodeUs = stPushUs = 0;
+  stSince = millis();
   paused = false;
   focus = C_PLAY;
+  buttonsSetScanPeriod(PLAY_SCAN_MS);
   tft.setRotation(LAND_ROT);
   tft.fillScreen(BG);
   installI2S(sampleRate);
@@ -489,6 +510,7 @@ void drawControls() {
 
 void setPaused(bool p) {
   paused = p;
+  buttonsSetScanPeriod(p ? 1 : PLAY_SCAN_MS);
   if (p) {
     i2s_stop(I2S_NUM_0);
     focus = C_PLAY;
@@ -541,18 +563,27 @@ void playLoop() {
     while (frameNo + 1 < due) {           // behind: skip frames without decoding
       if (readFrame(nullptr) == 0) { ended = true; break; }
       frameNo++;
+      stSkipped++;
       pumpAudio();
     }
     if (!ended) {
+      uint32_t t0 = micros();
       size_t len = readFrame(frameBuf);
+      uint32_t t1 = micros();
       if (len == 0) ended = true;
       else {
         frameNo++;
         if (len > 4 && jpeg.openRAM(frameBuf, len, drawBlock)) {
           jpeg.setPixelType(RGB565_BIG_ENDIAN);
+          tft.startWrite();   // one SPI transaction per frame; the SD card is idle here
           jpeg.decode(0, 0, 0);
+          tft.endWrite();
           jpeg.close();
         }
+        stShown++;
+        stReadUs += t1 - t0;
+        stDecodeUs += micros() - t1;
+        printStats();
       }
     }
     if (ended) {

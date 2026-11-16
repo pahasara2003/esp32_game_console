@@ -9,7 +9,7 @@ enum class Cue : uint8_t {
   Level, Pickup, Milestone, Death, Win, Draw, Record, Paddle, Wall,
   Brick, Powerup, Jump, Laser, Hit, Dive, Wave, Life, Slide,
   PlayerMove, CpuMove, Reveal, Flag, Unflag, ZoomIn, ZoomOut,
-  Pause, Resume, Sparkle, Pop, Firework
+  Pause, Resume, Sparkle, Pop, Firework, Countdown
 };
 extern uint8_t effectsVolume, musicVolume;
 extern bool gameMusic;

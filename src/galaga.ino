@@ -1,5 +1,6 @@
 #include "game.h"
 #include "ui_kit.h"
+#include "arcade_style.h"
 #include <Arduino.h>
 
 // =================================================================
@@ -23,7 +24,7 @@ constexpr int SHIP_Y = 268;
 constexpr int SHIP_SPEED = 5;
 constexpr int GALA_LASER_WIDTH = 4;
 constexpr int GALA_LASER_HEIGHT = 12;
-constexpr uint16_t GALA_LASER_COLOR = 0xF800;
+constexpr uint16_t GALA_LASER_COLOR = 0x47F5;
 
 constexpr int MAX_PLAYER_BULLETS = 4;
 constexpr int MAX_ALIEN_BULLETS = 6;
@@ -38,10 +39,10 @@ constexpr int TOTAL_ALIENS = ALIEN_ROWS * ALIEN_COLS; // 15 aliens per fleet
 #define GALA_WHITE UI_TEXT
 #define GALA_MUTED UI_MUTED
 #define GALA_CYAN UI_CYAN
-constexpr uint16_t GALA_GREEN   = 0x3666;
-constexpr uint16_t GALA_AMBER   = 0xFE04;
-constexpr uint16_t GALA_RED     = 0xFA48;
-constexpr uint16_t GALA_PURPLE  = 0xB37F;
+constexpr uint16_t GALA_GREEN   = 0x268C;
+constexpr uint16_t GALA_AMBER   = 0xFE64;
+constexpr uint16_t GALA_RED     = 0xF98B;
+constexpr uint16_t GALA_PURPLE  = 0xA33F;
 constexpr uint16_t GALA_DARK_TEXT = 0x2087;
 constexpr uint16_t GALA_FRAME     = 0x416D;
 constexpr float GALA_ENEMY_MOTION_SCALE = 0.20f;
@@ -94,27 +95,10 @@ struct GalaStar {
 };
 static GalaStar stars[25];
 
-constexpr int GALA_GRID_SIZE = 10;
-constexpr int GALA_GRID_COLS = GALA_W / GALA_GRID_SIZE;
-constexpr int GALA_GRID_ROWS = (GALA_PLAYFIELD_BOTTOM - GALA_PLAYFIELD_TOP + 1 + GALA_GRID_SIZE - 1) / GALA_GRID_SIZE;
-static uint8_t galaBackdropGrid[GALA_GRID_COLS][GALA_GRID_ROWS];
-// Near-black navy tiles keep the playfield textured without competing with sprites.
-static const uint16_t GALA_GRID_COLORS[] = {0x0000, 0x0001, 0x0002, 0x0003};
-constexpr uint16_t GALA_GRID_LINE = 0x0001;
-
-static void initGalagaBackdropGrid() {
-  for (int x = 0; x < GALA_GRID_COLS; x++)
-    for (int y = 0; y < GALA_GRID_ROWS; y++)
-      galaBackdropGrid[x][y] = random(0, 4);
-}
+static void initGalagaBackdropGrid() {}
 
 static uint16_t galagaBackdropColor(int x, int y) {
-  if (y < GALA_PLAYFIELD_TOP || y > GALA_PLAYFIELD_BOTTOM) return GALA_BG;
-  if ((x % GALA_GRID_SIZE) == 0 || ((y - GALA_PLAYFIELD_TOP) % GALA_GRID_SIZE) == 0)
-    return GALA_GRID_LINE;
-  int gx = constrain(x / GALA_GRID_SIZE, 0, GALA_GRID_COLS - 1);
-  int gy = constrain((y - GALA_PLAYFIELD_TOP) / GALA_GRID_SIZE, 0, GALA_GRID_ROWS - 1);
-  return GALA_GRID_COLORS[galaBackdropGrid[gx][gy]];
+  return arcadeStyle::backdrop(x, y);
 }
 
 static void restoreGalagaBackdropRect(int x, int y, int w, int h) {
@@ -131,17 +115,8 @@ static void restoreGalagaBackdropRect(int x, int y, int w, int h) {
 }
 
 static void drawGalagaBackdrop() {
-  for (int gy = 0; gy < GALA_GRID_ROWS; gy++) {
-    int y = GALA_PLAYFIELD_TOP + gy * GALA_GRID_SIZE;
-    int h = min(GALA_GRID_SIZE, GALA_PLAYFIELD_BOTTOM - y + 1);
-    for (int gx = 0; gx < GALA_GRID_COLS; gx++)
-      tft.fillRect(gx * GALA_GRID_SIZE, y, GALA_GRID_SIZE, h,
-                   GALA_GRID_COLORS[galaBackdropGrid[gx][gy]]);
-  }
-  for (int x = 0; x < GALA_W; x += GALA_GRID_SIZE)
-    tft.drawFastVLine(x, GALA_PLAYFIELD_TOP, GALA_PLAYFIELD_BOTTOM - GALA_PLAYFIELD_TOP + 1, GALA_GRID_LINE);
-  for (int y = GALA_PLAYFIELD_TOP; y <= GALA_PLAYFIELD_BOTTOM; y += GALA_GRID_SIZE)
-    tft.drawFastHLine(0, y, GALA_W, GALA_GRID_LINE);
+  restoreGalagaBackdropRect(0, GALA_PLAYFIELD_TOP, GALA_W,
+                            GALA_PLAYFIELD_BOTTOM - GALA_PLAYFIELD_TOP + 1);
 }
 
 // -----------------------------------------------------------------
@@ -207,10 +182,13 @@ static void drawGalagaHeader() {
   header.fillRoundRect(0, 0, 224, 38, 12, ui::CARD);
   header.setTextDatum(ML_DATUM);
   header.setTextColor(ui::LABEL);
-  header.drawString("Galaga", 12, 20, 4);
-  header.setTextDatum(TR_DATUM);
+  header.drawString("Galaga", 12, 8, 2);
   header.setTextColor(ui::SECONDARY);
+  header.drawString("Wave " + String(galaWave), 12, 27, 2);
+  header.setTextDatum(TR_DATUM);
+  header.setTextColor(0xFD20);
   header.drawString("Score", 150, 3, 2);
+  header.setTextColor(ui::SECONDARY);
   header.drawString("Ships", 212, 3, 2);
   header.setTextColor(ui::LABEL);
   header.drawString(String(score), 150, 19, 2);
@@ -227,8 +205,9 @@ static void updateGalagaScoreHUD() {
 }
 
 static void drawGalagaBottomBar() {
-  tft.fillRoundRect(40, 296, 160, 20, 10, ui::CARD);
-  ui::hint(306, "Up to fire", ui::CARD);
+  tft.fillRect(0, 294, 240, 26, GALA_BG);
+  String hint = "Wave " + String(galaWave) + "   Up to fire";
+  ui::hint(306, hint.c_str(), GALA_BG);
 }
 
 // -----------------------------------------------------------------
@@ -236,6 +215,7 @@ static void drawGalagaBottomBar() {
 // -----------------------------------------------------------------
 static TFT_eSprite galaShipArt(&tft);
 static TFT_eSprite galaEnemyArt(&tft);
+static TFT_eSprite galaEnemyMove(&tft);
 static unsigned long galaShipAnimationAt = 0;
 static unsigned long galaEnemyAnimationAt = 0;
 
@@ -246,15 +226,15 @@ static void drawShip(int px, int py) {
       galaShipArt.drawPixel(x, y, galagaBackdropColor(px + x, py + y));
   int phase = (millis() / 80) % 3;
   int flameTip = 19 + phase;
-  galaShipArt.fillTriangle(6, 15, 11, 15, 9, flameTip, 0xF800);
+  galaShipArt.fillTriangle(6, 15, 11, 15, 9, flameTip, GALA_RED);
   galaShipArt.fillTriangle(7, 16, 10, 16, 9, flameTip - 1, 0xFD20);
   galaShipArt.drawFastVLine(9, 16, 2 + phase, 0xFFE0);
   // Swept white wings, red tips, and a shaded silver fuselage.
   galaShipArt.fillTriangle(8, 0, 3, 15, 14, 15, 0x2948);
   galaShipArt.fillTriangle(4, 6, 0, 14, 6, 13, 0xFFFF);
   galaShipArt.fillTriangle(13, 6, 17, 14, 11, 13, 0xFFFF);
-  galaShipArt.drawFastHLine(0, 14, 5, 0xF800);
-  galaShipArt.drawFastHLine(13, 14, 5, 0xF800);
+  galaShipArt.drawFastHLine(0, 14, 5, GALA_RED);
+  galaShipArt.drawFastHLine(13, 14, 5, GALA_RED);
   galaShipArt.fillTriangle(8, 1, 5, 13, 12, 13, 0xCE59);
   galaShipArt.drawFastVLine(8, 2, 11, 0xFFFF);
   galaShipArt.fillRoundRect(7, 5, 4, 6, 1, 0x02B5);
@@ -272,57 +252,88 @@ static void eraseShip(int px, int py) {
   restoreGalagaBackdropRect(px, py, SHIP_W, 22);
 }
 
-static void drawAlienSprite(int x, int y, int type) {
-  if (!galaEnemyArt.created() && !galaEnemyArt.createSprite(16, 12)) return;
-  for (int yy = 0; yy < 12; ++yy)
-    for (int xx = 0; xx < 16; ++xx)
-      galaEnemyArt.drawPixel(xx, yy, galagaBackdropColor(x + xx, y + yy));
+static bool prepareAlienSprite(int type) {
+  if (!galaEnemyArt.created() && !galaEnemyArt.createSprite(16, 12)) return false;
+  constexpr uint16_t transparent = 0xF81F;
+  galaEnemyArt.fillSprite(transparent);
   int phase = ((millis() / 140) + type) & 1;
-  if (type == 2) {
-    galaEnemyArt.fillTriangle(0, 2, 5, 4, 1, 10, 0xFE04);
-    galaEnemyArt.fillTriangle(15, 2, 10, 4, 14, 10, 0xFE04);
-    galaEnemyArt.fillRoundRect(3, 2, 10, 8, 2, 0x6953);
-    galaEnemyArt.fillRoundRect(4, 2, 8, 6, 2, GALA_PURPLE);
-    galaEnemyArt.drawFastHLine(5, 2, 6, 0xE6FF);
-    galaEnemyArt.fillRect(5, 5, 6, 2, 0x2087);
-    galaEnemyArt.drawFastHLine(6, 5, 4, phase ? 0xFFE0 : 0xFD20);
-    galaEnemyArt.fillRect(6, 9, 4, 1 + phase, 0x07FF);
-  } else if (type == 1) {
-    galaEnemyArt.fillTriangle(0, 1 + phase, 7, 4, 3, 10, 0x3D45);
-    galaEnemyArt.fillTriangle(15, 1 + phase, 8, 4, 12, 10, 0x3D45);
-    galaEnemyArt.drawLine(1, 2 + phase, 4, 5, 0xBFE8);
-    galaEnemyArt.drawLine(14, 2 + phase, 11, 5, 0xBFE8);
-    galaEnemyArt.fillTriangle(5, 2, 10, 2, 8, 11, 0x87E8);
-    galaEnemyArt.fillRect(6, 4, 4, 3, 0x0125);
-    galaEnemyArt.drawFastHLine(7, 4, 2, 0x07FF);
-    galaEnemyArt.drawPixel(8, 9, phase ? 0xFFFF : 0x07FF);
-  } else {
-    galaEnemyArt.fillRoundRect(3, 2, 10, 7, 2, 0xB805);
-    galaEnemyArt.fillRect(4, 2, 8, 4, 0xFA48);
-    galaEnemyArt.drawFastHLine(5, 2, 6, 0xFCB4);
-    galaEnemyArt.fillRect(5, 5, 2, 2, 0xFFE0);
-    galaEnemyArt.fillRect(9, 5, 2, 2, 0xFFE0);
-    galaEnemyArt.drawLine(3, 4, 0, 6 + phase, 0xFA48);
-    galaEnemyArt.drawLine(12, 4, 15, 6 + phase, 0xFA48);
-    galaEnemyArt.drawLine(5, 8, 2 + phase, 11, 0xFA48);
-    galaEnemyArt.drawLine(10, 8, 13 - phase, 11, 0xFA48);
-  }
+  uint16_t body = type == 2 ? GALA_PURPLE : (type == 1 ? GALA_GREEN : GALA_RED);
+  galaEnemyArt.fillCircle(3, 5 + phase, 3, body);
+  galaEnemyArt.fillCircle(12, 5 + phase, 3, body);
+  galaEnemyArt.fillRoundRect(3, 1, 10, 10, 4, body);
+  galaEnemyArt.drawFastHLine(6, 2, 4, 0xFFFF);
+  galaEnemyArt.drawPixel(5, 5, GALA_DARK_TEXT);
+  galaEnemyArt.drawPixel(10, 5, GALA_DARK_TEXT);
+  galaEnemyArt.drawPixel(6, 7, GALA_DARK_TEXT);
+  galaEnemyArt.drawFastHLine(7, 8, 2, GALA_DARK_TEXT);
+  galaEnemyArt.drawPixel(9, 7, GALA_DARK_TEXT);
+  if (type == 2) galaEnemyArt.drawFastHLine(6, 0, 4, GALA_AMBER);
+  return true;
+}
+
+static void drawAlienSprite(int x, int y, int type) {
+  if (!prepareAlienSprite(type)) return;
+  constexpr uint16_t transparent = 0xF81F;
   int visibleHeight = min(12, GALA_PLAYFIELD_BOTTOM + 1 - y);
-  if (visibleHeight > 0) galaEnemyArt.pushSprite(x, y, 0, 0, 16, visibleHeight);
+  if (visibleHeight > 0) {
+    int vx = tft.getViewportX(), vy = tft.getViewportY();
+    int vw = tft.getViewportWidth(), vh = tft.getViewportHeight();
+    int top = max(vy, GALA_PLAYFIELD_TOP);
+    int bottom = min(vy + vh, GALA_PLAYFIELD_BOTTOM + 1);
+    if (top < bottom) {
+      tft.setViewport(vx, top, vw, bottom - top, false);
+      galaEnemyArt.pushSprite(x, y, transparent);
+    }
+    tft.setViewport(vx, vy, vw, vh, false);
+  }
 }
 
 static void eraseAlienSprite(int x, int y) {
   restoreGalagaBackdropRect(x, y, 16, min(12, GALA_PLAYFIELD_BOTTOM + 1 - y));
 }
 
+// Paint the old and new positions in one transfer so moving enemies stay visible.
+static void moveAlienSprite(int oldX, int oldY, int x, int y, int type) {
+  int left = min(oldX, x), top = min(oldY, y);
+  int width = max(oldX, x) - left + 16, height = max(oldY, y) - top + 12;
+  if (width > 24 || height > 24 ||
+      (!galaEnemyMove.created() && !galaEnemyMove.createSprite(24, 24)) ||
+      !prepareAlienSprite(type)) {
+    eraseAlienSprite(oldX, oldY);
+    drawAlienSprite(x, y, type);
+    return;
+  }
+  for (int yy = 0; yy < height; ++yy)
+    for (int xx = 0; xx < width; ++xx)
+      galaEnemyMove.drawPixel(xx, yy, galagaBackdropColor(left + xx, top + yy));
+  galaEnemyArt.pushToSprite(&galaEnemyMove, x - left, y - top, 0xF81F);
+  int vx = tft.getViewportX(), vy = tft.getViewportY();
+  int vw = tft.getViewportWidth(), vh = tft.getViewportHeight();
+  int clipTop = max(vy, GALA_PLAYFIELD_TOP);
+  int clipBottom = min(vy + vh, GALA_PLAYFIELD_BOTTOM + 1);
+  if (clipTop < clipBottom) {
+    tft.setViewport(vx, clipTop, vw, clipBottom - clipTop, false);
+    galaEnemyMove.pushSprite(left, top, 0, 0, width, height);
+  }
+  tft.setViewport(vx, vy, vw, vh, false);
+}
+
 static void drawGalagaLaser(int index) {
   if (!pBullets[index].active) return;
   int x = (int)pBullets[index].x - GALA_LASER_WIDTH / 2;
   int y = (int)pBullets[index].y;
+  for (int i = 3; i >= 0; --i) {
+    int cy = y + GALA_LASER_HEIGHT + 3 + i * 4;
+    int radius = i < 2 ? 2 : 1;
+    if (cy - radius < GALA_PLAYFIELD_TOP || cy + radius >= SHIP_Y) continue;
+    uint16_t color = arcadeStyle::mix(0xFD20, 0x36FF, i * 255 / 3);
+    tft.fillCircle(x + GALA_LASER_WIDTH / 2 + ((i + millis() / 80) % 3) - 1,
+                   cy, radius, arcadeStyle::fade(color, 150 - i * 30));
+  }
   tft.fillRect(x, y, GALA_LASER_WIDTH, GALA_LASER_HEIGHT, GALA_LASER_COLOR);
   tft.drawFastVLine(x + 1, y + 1, 8, (millis() / 60) & 1 ? 0xFCB4 : 0xFFFF);
   tft.drawFastHLine(x + 1, y, 2, 0xFFFF);
-  tft.drawFastHLine(x, y + GALA_LASER_HEIGHT - 1, GALA_LASER_WIDTH, 0xA800);
+  tft.drawFastHLine(x, y + GALA_LASER_HEIGHT - 1, GALA_LASER_WIDTH, GALA_CYAN);
 }
 
 static void drawAlienBullet(int index) {
@@ -330,7 +341,37 @@ static void drawAlienBullet(int index) {
   // Stagger each missile's red/yellow pulse so the volley alternates visually.
   bool yellow = (((millis() / 180) + index) & 1) != 0;
   tft.fillCircle((int)aBullets[index].x, (int)aBullets[index].y, 2,
-                 yellow ? 0xFFE0 : 0xF800);
+                 yellow ? 0xFFE0 : GALA_RED);
+}
+
+// Fixed-size celebrations keep RAM use bounded during rapid hits.
+struct GalaPop { int x; float y; int points; uint16_t color; unsigned long born; bool active; };
+static GalaPop galaPops[4] = {};
+static int galaPopNext = 0;
+static void eraseGalagaPops() {
+  for (auto &p : galaPops)
+    if (p.active) restoreGalagaBackdropRect(p.x - 16, (int)p.y, 32, 11);
+}
+static void drawGalagaPops() {
+  for (auto &p : galaPops) {
+    if (!p.active) continue;
+    unsigned long age = millis() - p.born;
+    if (age >= 600) { p.active = false; continue; }
+    p.y = max((float)(GALA_PLAYFIELD_TOP + 8), p.y - 0.7f);
+    int py = (int)p.y;
+    uint16_t color = arcadeStyle::fade(p.color, max(0, 255 - (int)age * 255 / 600));
+    int digits = p.points >= 100 ? 3 : 2;
+    int px = p.x - (digits * 8 + 6) / 2;
+    tft.fillRect(px, py + 4, 6, 2, color);
+    tft.fillRect(px + 2, py + 2, 2, 6, color);
+    int x = px + 8;
+    if (p.points >= 100) {
+      drawTinyDigit(tft, x, py, (p.points / 100) % 10, color);
+      x += 8;
+    }
+    drawTinyDigit(tft, x, py, (p.points / 10) % 10, color);
+    drawTinyDigit(tft, x + 8, py, p.points % 10, color);
+  }
 }
 
 // -----------------------------------------------------------------
@@ -370,8 +411,9 @@ static void updateBullets() {
   // Update Player Lasers
   for (int i = 0; i < MAX_PLAYER_BULLETS; i++) {
     if (pBullets[i].active) {
-      restoreGalagaBackdropRect((int)pBullets[i].x - GALA_LASER_WIDTH / 2,
-                               (int)pBullets[i].y, GALA_LASER_WIDTH, GALA_LASER_HEIGHT);
+      int oldY = (int)pBullets[i].y;
+      restoreGalagaBackdropRect((int)pBullets[i].x - 4, oldY, 9,
+                               min(GALA_LASER_HEIGHT + 21, SHIP_Y - oldY));
       pBullets[i].y += pBullets[i].vy;
 
       if (pBullets[i].y < GALA_PLAYFIELD_TOP + 2) {
@@ -394,7 +436,11 @@ static void updateBullets() {
             hit = true;
             soundAlienHit();
 
-            score += (aliens[a].type == 2) ? 150 : (aliens[a].type == 1 ? 80 : 40);
+            int points = (aliens[a].type == 2) ? 150 : (aliens[a].type == 1 ? 80 : 40);
+            score += points;
+            galaPops[galaPopNext] = {constrain(ax + 8, 22, 218), (float)constrain(ay, 56, 260), points,
+                                     aliens[a].type == 2 ? GALA_PURPLE : (aliens[a].type == 1 ? GALA_GREEN : GALA_RED), millis(), true};
+            galaPopNext = (galaPopNext + 1) % 4;
             updateGalagaScoreHUD();
             break;
           }
@@ -449,6 +495,7 @@ static void updateBullets() {
 static void initGalagaWave(int wave) {
   audio::play(audio::Cue::Wave);
   galaWave = wave;
+  for (auto &p : galaPops) p.active = false;
   fleetOffsetX = 0;
   fleetDir = 1.0f;
   lastFleetMove = millis();
@@ -476,13 +523,13 @@ static void initGalagaWave(int wave) {
 
   tft.fillScreen(GALA_BG);
   initGalagaBackdropGrid();
+  initStarfield();
   drawGalagaBackdrop();
   tft.drawFastHLine(0, GALA_PLAYFIELD_TOP - 1, GALA_W, GALA_SURFACE);
   tft.drawFastHLine(0, GALA_PLAYFIELD_BOTTOM + 1, GALA_W, GALA_SURFACE);
 
   drawGalagaHeader();
   drawGalagaBottomBar();
-  initStarfield();
 
   drawShip(shipX, SHIP_Y);
   for (int i = 0; i < TOTAL_ALIENS; i++) {
@@ -519,12 +566,11 @@ static void updateAliens() {
       // Formation swaying
       float targetX = aliens[i].formX + fleetOffsetX;
       if (abs(aliens[i].x - targetX) > 0.5f || abs(aliens[i].y - aliens[i].formY) > 0.5f) {
-        eraseAlienSprite(prevAX, prevAY);
         aliens[i].x = targetX;
         aliens[i].y = aliens[i].formY;
-        drawAlienSprite((int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
+        moveAlienSprite(prevAX, prevAY, (int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
       } else if (animate) {
-        drawAlienSprite(prevAX, prevAY, aliens[i].type);
+        moveAlienSprite(prevAX, prevAY, prevAX, prevAY, aliens[i].type);
       }
 
       // Random dive launch
@@ -536,7 +582,6 @@ static void updateAliens() {
       }
     } else {
       // Diving trajectory (swooping curve towards player)
-      eraseAlienSprite(prevAX, prevAY);
       aliens[i].y += aliens[i].diveSpeed * 0.35f;
       aliens[i].x += sin(aliens[i].diveAngle) * 3.2f * GALA_ENEMY_MOTION_SCALE;
       aliens[i].diveAngle += 0.12f * GALA_ENEMY_MOTION_SCALE;
@@ -562,7 +607,7 @@ static void updateAliens() {
         aliens[i].diving = false;
       }
 
-      drawAlienSprite((int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
+      moveAlienSprite(prevAX, prevAY, (int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
 
       // Collision with player ship
       if (aliens[i].x < shipX + SHIP_W && aliens[i].x + 16 > shipX &&
@@ -659,8 +704,6 @@ static void redrawGalagaPlayfield() {
   tft.drawFastHLine(0, GALA_PLAYFIELD_BOTTOM + 1, GALA_W, GALA_SURFACE);
   drawGalagaHeader();
   drawGalagaBottomBar();
-  for (int i = 0; i < 25; ++i)
-    tft.drawPixel((int)stars[i].x, (int)stars[i].y, stars[i].color);
   for (int i = 0; i < TOTAL_ALIENS; ++i)
     if (aliens[i].active) drawAlienSprite((int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
   for (int i = 0; i < MAX_ALIEN_BULLETS; ++i)
@@ -707,11 +750,12 @@ static void showGalagaStartScreen() {
   tft.setRotation(2);
   tft.fillScreen(GALA_BG);
   initGalagaBackdropGrid();
+  initStarfield();
   drawGalagaBackdrop();
   drawGalagaHeader();
   static const ui::Control controls[] = {
     {"Left / Right", "Steer"}, {"Up", "Fire"}, {"Shoot", "Pause"}};
-  ui::startCard(52, "Galaga", "Defend against the swarm", controls, 3,
+  ui::startCard(52, "Galaga", "A little cosmic joy", controls, 3,
                 currentGame.highScores[0], GALA_PURPLE, nullptr, "Press Shoot to start");
 }
 
@@ -750,7 +794,7 @@ static void drawGalagaWaveClear() {
   audio::play(audio::Cue::Win);
   buttonsRequireRelease();
   ui::card(26, 66, 188, 194);
-  ui::heading(40, 80, "Galaga", "Wave cleared");
+  ui::heading(40, 80, "Galaga", "Lovely flying!");
   ui::stat(40, 128, "Score", String(score), GALA_PURPLE);
   ui::listAll(GALA_WAVE_LIST, GALA_WAVE_ITEMS, galaWaveClearSelection, GALA_PURPLE);
 }
@@ -797,10 +841,14 @@ void galagaLoop() {
   if (gameState == 0) {
     handleGalagaInput();
     if (gameState != 0) return;
+    eraseGalagaPops();
     updateBullets();
     if (gameState != 0) return;
     updateAliens();
     if (gameState != 0) return;
+    drawGalagaPops();
+    for (int i = 0; i < TOTAL_ALIENS; ++i)
+      if (aliens[i].active) drawAlienSprite((int)aliens[i].x, (int)aliens[i].y, aliens[i].type);
     // Repair foreground art after nearby moving objects restore their backgrounds.
     for (int i = 0; i < MAX_PLAYER_BULLETS; ++i) drawGalagaLaser(i);
     if (millis() - galaShipAnimationAt >= 80) drawShip(shipX, SHIP_Y);
