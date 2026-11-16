@@ -17,7 +17,7 @@
   pio run
   ```
 
-- Flash only when requested or when the connected console is available. Attempt the upload directly; check port usage or serial monitors only if the upload fails.
+- Flash only when requested or when the connected console is available. Close the serial monitor before flashing.
 - Do not kill processes, delete files, reset history, or force-push without explicit approval.
 
 ## Git collaboration
@@ -34,9 +34,3 @@
 
 - Avoid changing generated files, backups, or unrelated projects unless required.
 - Preserve the existing UI style and consistent game controls.
-
-## Delegation
-
-- The supervisor plans and delegates; the worker executes edits, checks, and shell commands.
-- Delegation instructions must name the exact files, the exact change, and the exact commands to run and report.
-- The worker must not commit, push, flash hardware, or run destructive commands without user approval.

@@ -6,7 +6,7 @@ ESP32-C3 retro game console. PlatformIO, Arduino framework, TFT_eSPI with ILI934
 - Env: `esp32-c3-devkitm-1` (default). Partitions: `huge_app.csv`. Monitor: 115200 baud.
 - USB CDC on boot is enabled (`ARDUINO_USB_CDC_ON_BOOT=1`).
 - Always build and flash the connected console after firmware changes (user preference).
-- Attempt flashing directly without checking port usage first (user preference). Only investigate port usage or serial monitors if the upload fails.
+- Close the serial monitor before flashing, or the port is busy.
 - The user runs interactive/kill commands themselves; ask before killing processes.
 - Menu-only preview firmware lives in `menu_preview/` (separate PlatformIO project).
 
@@ -16,12 +16,11 @@ Display (`lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`):
 - Backlight GPIO0 (HIGH = on), RST tied to 3V3 (`TFT_RST -1`)
 
 Other pins (`src/config.h`):
-- Right button: D8/GPIO8, active-low (10k pull-up)
+- Shoot button: GPIO8, active-low (10k pull-up), read with `readShoot()`
 - SD card CS: GPIO9
 - I2S (MAX98357A): BCLK GPIO6, LRCLK GPIO7, DOUT GPIO5 (from `src/config.h`; the music player uses these)
 - I2C: SDA GPIO10, SCL GPIO20
-- Buttons (all active-low): ADS1115 A0 = Up, A2 = Down, A3 = Left, A1 = Shoot; D8/GPIO8 = Right.
-- ADS1115 is at I2C address 0x48 (`src/buttons.cpp`).
+- Other buttons: ADS1115 ADC at I2C address 0x48 (`src/buttons.cpp`)
 
 ## Code layout
 - `src/menu.ino`: home launcher, Settings, Info, Sound screens
