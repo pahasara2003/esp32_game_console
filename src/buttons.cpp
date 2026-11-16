@@ -10,7 +10,11 @@ portMUX_TYPE lock = portMUX_INITIALIZER_UNLOCKED;
 constexpr uint8_t CAPACITY = 16;
 // Keep intentional taps through a slow redraw; screen transitions clear the queue.
 constexpr unsigned long EVENT_LIFETIME_MS = 1500;
-constexpr int16_t PRESS_LEVEL = 14000, RELEASE_LEVEL = 10500;
+// ADC buttons are active-low: idle reads ~26300 (3.3 V pull-up), pressed ~0.
+// A press is a reading below PRESS_LEVEL; release needs one above RELEASE_LEVEL.
+constexpr int16_t PRESS_LEVEL = 9000, RELEASE_LEVEL = 17000;
+// 860 SPS conversion is ~1.16 ms; check it no sooner than this.
+constexpr unsigned long CONVERSION_US = 1200;
 unsigned long queuedAt[CAPACITY];
 uint8_t events[CAPACITY], head = 0, count = 0, held = 0;
 uint8_t blocked = 0x1f;
@@ -25,7 +29,12 @@ TaskHandle_t scanner = nullptr;
 constexpr uint16_t MUX[] = {ADS1X15_REG_CONFIG_MUX_SINGLE_0,
   ADS1X15_REG_CONFIG_MUX_SINGLE_1, ADS1X15_REG_CONFIG_MUX_SINGLE_2,
   ADS1X15_REG_CONFIG_MUX_SINGLE_3};
-constexpr uint8_t DIRECTION[] = {1, 2, 3, 0};
+// Command index per ADS1115 channel: A0 = Up, A1 = Shoot, A2 = Down, A3 = Left.
+// Right is not on the ADC; it is read from GPIO RIGHT_BTN (D8).
+constexpr uint8_t DIRECTION[] = {0, 4, 2, 3};
+// Set by the scanner from the debounced Shoot bit (ADC A1).
+volatile bool shootDown = false;
+volatile uint8_t scanPeriodMs = 1;
 void publish(uint8_t state, uint8_t released) {
   portENTER_CRITICAL(&lock);
   blocked &= ~released;
@@ -68,21 +77,24 @@ bool startConversion(uint8_t channel) {
 }
 void scan(void *) {
   uint8_t channel = 0, high[4] = {}, low[4] = {}, directions = 0;
-  bool settling = true, shootRaw = false, shootStable = false;
-  unsigned long shootChanged = millis(), started = 0;
+  bool settling = true, rightRaw = false, rightStable = false;
+  unsigned long rightChanged = millis(), started = 0;  // started is in micros
   bool converting = false;
   for (;;) {
     unsigned long now = millis();
-    bool raw = readShoot() != LOW;
-    if (raw != shootRaw) { shootRaw = raw; shootChanged = now; }
-    if (now - shootChanged >= 20) shootStable = raw;
+    bool raw = digitalRead(RIGHT_BTN) == LOW;
+    if (raw != rightRaw) { rightRaw = raw; rightChanged = now; }
+    // Register a press on the first contact; only a release must be stable for
+    // 20 ms, so contact bounce cannot produce a second press.
+    if (raw && !rightStable) rightStable = true;
+    else if (now - rightChanged >= 20) rightStable = raw;
     bool fault = false;
     if (adsConnected) {
       if (!converting) {
         converting = startConversion(channel);
-        started = millis();
+        started = micros();
         fault = !converting;
-      } else if (now - started >= 2) {
+      } else if (micros() - started >= CONVERSION_US) {
         uint16_t config = 0, result = 0;
         if (!readRegister(1, config) ||
             (config & 0x7fff) != (configFor(channel) & 0x7fff)) fault = true;
@@ -99,11 +111,15 @@ void scan(void *) {
               if (value > peakRaw[channel]) peakRaw[channel] = value;
               portEXIT_CRITICAL(&lock);
               uint8_t bit = 1 << DIRECTION[channel];
-              if (value > PRESS_LEVEL) {
+              // high[] counts pressed samples, low[] released samples. One
+              // settled sample below PRESS_LEVEL is a press (the hysteresis
+              // gap and the MUX settling conversion already filter noise);
+              // release still needs two samples so a held key never chatters.
+              if (value < PRESS_LEVEL) {
                 low[channel] = 0;
-                if (high[channel] < 2) ++high[channel];
-                if (high[channel] == 2) directions |= bit;
-              } else if (value < RELEASE_LEVEL) {
+                high[channel] = 1;
+                directions |= bit;
+              } else if (value > RELEASE_LEVEL) {
                 high[channel] = 0;
                 if (low[channel] < 2) ++low[channel];
                 if (low[channel] == 2) directions &= ~bit;
@@ -111,9 +127,12 @@ void scan(void *) {
               channel = (channel + 1) % 4;
               settling = true;
             }
-            converting = false;
+            // Start the next conversion now instead of losing a scheduler tick.
+            converting = startConversion(channel);
+            started = micros();
+            if (!converting) fault = true;
           }
-        } else if (now - started > 15) fault = true;
+        } else if (micros() - started > 15000) fault = true;
       }
     }
     if (fault) {
@@ -126,19 +145,21 @@ void scan(void *) {
       settling = true;
       channel = directions = 0;
       for (int i = 0; i < 4; ++i) high[i] = low[i] = 0;
-      // Gate only ADC directions. A bus fault must not disable Shoot or erase
-      // already captured presses; rearm each direction after confirmed release.
+      // Gate only the ADC-driven bits (Up, Down, Left, Shoot). Right is on GPIO
+      // and is not affected by bus faults. Erased presses are not restored; each
+      // gated key rearms after its own confirmed release.
       portENTER_CRITICAL(&lock);
-      blocked |= 0x0f;
+      blocked |= 0x1d;
       portEXIT_CRITICAL(&lock);
     }
-    uint8_t released = (!shootRaw && !shootStable) ? 16 : 0;
+    uint8_t released = (!rightRaw && !rightStable) ? 2 : 0;
     if (adsConnected)
       for (int i = 0; i < 4; ++i)
         if (low[i] == 2) released |= 1 << DIRECTION[i];
-    publish(directions | (shootStable ? 16 : 0), released);
+    shootDown = (directions & 16) != 0;
+    publish(directions | (rightStable ? 2 : 0), released);
     // Never try to catch up with a burst of old scan deadlines after a stall.
-    vTaskDelay(pdMS_TO_TICKS(1));
+    vTaskDelay(pdMS_TO_TICKS(scanPeriodMs));
   }
 }
 // USB logging runs separately at lower priority. The ADC scanner never waits
@@ -175,6 +196,10 @@ void record(void *) {
   }
 }
 }
+bool readShoot() {
+  return shootDown;
+}
+
 bool buttonsBegin() {
   if (scanner) return true;
   if (xTaskCreate(scan, "buttons", 3072, nullptr, 2, &scanner) != pdPASS) return false;
@@ -188,6 +213,8 @@ uint8_t buttonsHeld() {
   portEXIT_CRITICAL(&lock);
   return state;
 }
+// The scanner's I2C traffic costs real CPU time; CPU-bound apps (video) slow it down.
+void buttonsSetScanPeriod(uint8_t ms) { scanPeriodMs = ms ? ms : 1; }
 void buttonsDebugKey(char key) {
   int command = -1;
   switch (key) {
@@ -237,6 +264,15 @@ void buttonsRequireRelease() {
   blocked = 0x1f;
   debugHeld = 0;
   debugUntil = 0;
+  portEXIT_CRITICAL(&lock);
+}
+
+void buttonsAllowHeldDirections() {
+  // For continuous-steering games: a direction already held when a screen
+  // changed (e.g. through a countdown) works immediately instead of waiting
+  // for a release. Shoot stays gated so it cannot re-trigger a menu.
+  portENTER_CRITICAL(&lock);
+  blocked &= ~0x0f;
   portEXIT_CRITICAL(&lock);
 }
 

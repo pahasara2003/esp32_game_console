@@ -20,12 +20,183 @@ int activeScene = 0;
 int lastGameState = -99;
 uint32_t legacyPhase = 0;
 // Original, sparse loops. A low music level leaves room for feedback sounds.
-const Note calm[] = {{262,280},{330,280},{392,420},{0,420},{330,280},{294,280},{262,560},{0,560}};
 const Note arcade[] = {{262,150},{392,150},{523,150},{392,150},{330,150},{440,150},{587,150},{0,300}};
 const Note blocks[] = {{330,200},{392,200},{440,200},{330,200},{294,200},{349,200},{392,300},{0,300}};
-const Note bounce[] = {{262,180},{0,180},{392,180},{330,180},{0,180},{440,180},{392,180},{0,360}};
-const Note space[] = {{220,180},{330,180},{440,180},{659,180},{587,180},{440,180},{330,180},{0,360}};
 const Note ambient[] = {{131,650},{196,650},{262,650},{0,650},{165,650},{247,650},{330,650},{0,900}};
+
+// Original 116 BPM modern happy synth-pop groove (D - A - Bm7 - Gmaj7):
+// warm major chords, bouncy root-octave bass, crisp hi-hat/kick pulse, and
+// a bright sunlit marimba/bell pluck melody.
+constexpr uint32_t BO_STEP = RATE * 15 / 116; // 16th note at 116 BPM (~2851 samples)
+const uint16_t boChords[4][4] = {
+  {294, 370, 440, 554}, // Dmaj7  (D4, F#4, A4, C#5)
+  {220, 277, 330, 494}, // Aadd9  (A3, C#4, E4, B4)
+  {247, 294, 370, 440}, // Bm7    (B3, D4, F#4, A4)
+  {196, 247, 294, 370}  // Gmaj7  (G3, B3, D4, F#4)
+};
+const uint16_t boBass[4] = {147, 110, 123, 98}; // D3, A2, B2, G2
+const uint16_t boMelody[64] = {
+  // Bar 1 (Dmaj7): sunny syncopated hook
+  587, 0, 659, 740, 0, 880, 0, 740,   659, 0, 587, 0, 740, 0, 880, 0,
+  // Bar 2 (Aadd9): uplifting bounce
+  880, 0, 988, 880, 0, 740, 0, 659,   554, 0, 659, 0, 740, 0, 659, 0,
+  // Bar 3 (Bm7): playful response
+  587, 0, 659, 740, 0, 880, 0, 988,   880, 0, 740, 0, 659, 0, 587, 0,
+  // Bar 4 (Gmaj7): bright turnaround
+  784, 0, 740, 0, 659, 0, 740, 880,   0, 988, 0, 880, 740, 0, 659, 0
+};
+// A separate uplifting Galaga melody over the same warm pop instruments.
+const uint16_t galaMelody[64] = {
+  740, 0, 880, 0, 988, 0, 880, 740, 659, 0, 740, 0, 880, 0, 0, 0,
+  659, 0, 740, 880, 0, 988, 0, 1109, 988, 0, 880, 0, 740, 0, 659, 0,
+  740, 0, 880, 0, 988, 0, 1109, 988, 880, 0, 740, 0, 659, 0, 740, 0,
+  784, 0, 880, 988, 0, 880, 0, 740, 659, 0, 740, 0, 587, 0, 0, 0
+};
+const int16_t boSine[64] = {0,3212,6393,9512,12539,15446,18204,20787,23170,25329,27245,28898,30273,31356,32137,32609,32767,32609,32137,31356,30273,28898,27245,25329,23170,20787,18204,15446,12539,9512,6393,3212,0,-3212,-6393,-9512,-12539,-15446,-18204,-20787,-23170,-25329,-27245,-28898,-30273,-31356,-32137,-32609,-32767,-32609,-32137,-31356,-30273,-28898,-27245,-25329,-23170,-20787,-18204,-15446,-12539,-9512,-6393,-3212};
+uint32_t boClock = 0, boPhase[9] = {}, boMelodyAge = BO_STEP * 8;
+uint16_t boMelodyHz = 587;
+int boDuck = 256;
+
+int softOscillator(uint32_t &phase, uint16_t hz) {
+  phase += uint32_t(hz) * 65536 / RATE;
+  unsigned position = phase & 65535;
+  unsigned index = position >> 10;
+  return boSine[index] + (int(boSine[(index + 1) & 63]) - boSine[index]) * int(position & 1023) / 1024;
+}
+
+int popMusicSample() {
+  const uint16_t *melody = activeScene == 5 ? galaMelody : boMelody;
+  uint32_t step = boClock / BO_STEP;
+  uint32_t withinStep = boClock % BO_STEP;
+  uint32_t chord = (step / 16) & 3;
+  uint32_t withinBar = boClock % (BO_STEP * 16);
+  uint32_t beatPos = boClock % (BO_STEP * 4);
+
+  if (withinStep == 0 && melody[step]) {
+    boMelodyHz = melody[step];
+    boMelodyAge = 0;
+  }
+
+  // Warm lush synth pad with subtle sidechain pump on every beat
+  int pad = 0;
+  for (int i = 0; i < 4; ++i) pad += softOscillator(boPhase[i], boChords[chord][i]);
+  int barEdge = min(uint32_t(RATE / 20), min(withinBar, BO_STEP * 16 - withinBar));
+  uint32_t pumpRamp = beatPos < 256 ? (256 - beatPos) : min(uint32_t(256), (beatPos - 256) * 256 / (BO_STEP * 3));
+  int pump = 175 + pumpRamp * 81 / 256;
+  pad = (pad / 6) * barEdge / int(RATE / 20) * pump / 256;
+
+  // Bouncy modern pop bassline (root on beat, octave on off-beat, fifth pickup)
+  uint32_t eig = (step >> 1) & 7;
+  uint16_t bassHz = boBass[chord];
+  if (eig & 1) bassHz *= 2;
+  else if (eig == 6) bassHz = bassHz * 3 / 2;
+  uint32_t withinEig = boClock % (BO_STEP * 2);
+  int bassEdge = min(uint32_t(220), min(withinEig, BO_STEP * 2 - 1 - withinEig));
+  int bassDec = max(0, 256 - int(withinEig * 180 / (BO_STEP * 2)));
+  int bass = (softOscillator(boPhase[4], bassHz) * 3 / 4 +
+              softOscillator(boPhase[5], bassHz * 2) / 4);
+  bass = (bass / 4) * bassEdge / 220 * bassDec / 256;
+
+  // Bright happy marimba/bell pluck (fundamental + octave harmonic sparkle)
+  int lead = 0;
+  if (boMelodyAge < BO_STEP * 5) {
+    int atk = min(boMelodyAge, uint32_t(180));
+    int dec = max(0, 256 - int(boMelodyAge * 256 / (BO_STEP * 5)));
+    int env = (dec * dec) >> 8;
+    if (melody[step + 1 <= 63 ? step + 1 : 0] && withinStep > BO_STEP - 180)
+      env = env * int(BO_STEP - withinStep) / 180;
+    int osc = softOscillator(boPhase[6], boMelodyHz) * 5 / 6 +
+              softOscillator(boPhase[7], boMelodyHz * 2) / 7;
+    lead = (osc / 5) * atk / 180 * env / 256;
+  }
+  ++boMelodyAge;
+
+  // Soft modern four-on-the-floor kick thump for happy danceable groove
+  int kick = 0;
+  if (beatPos < 1100) {
+    if (beatPos == 0) boPhase[8] = 0;
+    uint16_t kHz = 48 + (1100 - beatPos) * 72 / 1100;
+    int kAtk = min(beatPos, uint32_t(80));
+    int kEnv = (1100 - beatPos) * 256 / 1100;
+    kick = (softOscillator(boPhase[8], kHz) / 5) * kAtk / 80 * kEnv / 256;
+  }
+
+  if (++boClock >= BO_STEP * 64) boClock = 0;
+  int target = effect.count ? 120 : 256;
+  if (boDuck < target) ++boDuck;
+  if (boDuck > target) boDuck = max(target, boDuck - 2);
+  return (pad + bass + lead + kick) * boDuck / 256;
+}
+
+// IMA ADPCM keeps the orchestral recording in flash and decodes it incrementally.
+extern const uint8_t puzzleRecordingStart[] asm("_binary_assets_puzzle_mozart_wav_start");
+extern const uint8_t puzzleRecordingEnd[] asm("_binary_assets_puzzle_mozart_wav_end");
+const int16_t imaSteps[89] = {
+  7,8,9,10,11,12,13,14,16,17,19,21,23,25,28,31,34,37,41,45,50,55,60,66,73,80,
+  88,97,107,118,130,143,157,173,190,209,230,253,279,307,337,371,408,449,494,
+  544,598,658,724,796,876,963,1060,1166,1282,1411,1552,1707,1878,2066,2272,
+  2499,2749,3024,3327,3660,4026,4428,4871,5358,5894,6484,7132,7845,8630,9493,
+  10442,11487,12635,13899,15289,16818,18500,20350,22385,24623,27086,29794,32767
+};
+const int8_t imaIndex[16] = {-1,-1,-1,-1,2,4,6,8,-1,-1,-1,-1,2,4,6,8};
+const uint8_t *puzzleData = nullptr;
+uint32_t puzzleDataBytes = 0, puzzleSamples = 0, puzzlePosition = 0;
+int puzzlePredictor = 0, puzzleStepIndex = 0, puzzleDuck = 256;
+
+uint32_t readPuzzleLE32(const uint8_t *p) {
+  return uint32_t(p[0]) | uint32_t(p[1]) << 8 | uint32_t(p[2]) << 16 | uint32_t(p[3]) << 24;
+}
+
+void resetPuzzleMusic() {
+  puzzlePosition = 0; puzzleDuck = 256;
+  puzzleData = nullptr; puzzleDataBytes = puzzleSamples = 0;
+  size_t size = puzzleRecordingEnd - puzzleRecordingStart;
+  for (size_t pos = 12; pos + 8 <= size;) {
+    const uint8_t *chunk = puzzleRecordingStart + pos;
+    uint32_t length = readPuzzleLE32(chunk + 4);
+    if (length > size - pos - 8) break;
+    if (!memcmp(chunk, "fact", 4) && length >= 4) puzzleSamples = readPuzzleLE32(chunk + 8);
+    if (!memcmp(chunk, "data", 4)) { puzzleData = chunk + 8; puzzleDataBytes = length; }
+    pos += 8 + length + (length & 1);
+  }
+  if (!puzzleData || puzzleDataBytes % 1024 || puzzleSamples > puzzleDataBytes / 1024 * 2041)
+    puzzleSamples = 0;
+}
+
+int puzzleMusicSample() {
+  if (!puzzleSamples) return 0;
+  if (puzzlePosition >= puzzleSamples) puzzlePosition = 0;
+  uint32_t block = puzzlePosition / 2041;
+  uint32_t sample = puzzlePosition % 2041;
+  const uint8_t *data = puzzleData + block * 1024;
+  if (sample == 0) {
+    puzzlePredictor = int16_t(uint16_t(data[0]) | uint16_t(data[1]) << 8);
+    puzzleStepIndex = min(88, int(data[2]));
+  } else {
+    uint32_t nibble = sample - 1;
+    int code = (data[4 + nibble / 2] >> ((nibble & 1) * 4)) & 15;
+    int step = imaSteps[puzzleStepIndex];
+    int diff = step >> 3;
+    if (code & 1) diff += step >> 2;
+    if (code & 2) diff += step >> 1;
+    if (code & 4) diff += step;
+    puzzlePredictor = constrain(puzzlePredictor + ((code & 8) ? -diff : diff), -32768, 32767);
+    puzzleStepIndex = constrain(puzzleStepIndex + imaIndex[code], 0, 88);
+  }
+  ++puzzlePosition;
+  int target = effect.count ? 160 : 256;
+  if (puzzleDuck < target) ++puzzleDuck;
+  if (puzzleDuck > target) puzzleDuck = max(target, puzzleDuck - 2);
+  return puzzlePredictor * puzzleDuck / 256;
+}
+
+void resetBreakoutMusic() {
+  boClock = 0;
+  memset(boPhase, 0, sizeof(boPhase));
+  boMelodyAge = BO_STEP * 8;
+  boMelodyHz = 587;
+  boDuck = 256;
+}
 
 void beginNote(Voice &v) {
   v.length = uint32_t(v.notes[v.index].ms) * RATE / 1000;
@@ -51,10 +222,7 @@ void loopMusic() {
   if (background.count || !activeScene) return;
   const Note *notes = nullptr;
   if (activeScene == 1) notes = blocks;
-  else if (activeScene == 3) notes = bounce;
   else if (activeScene == 4) notes = arcade;
-  else if (activeScene == 5) notes = space;
-  else if (activeScene == 6) notes = calm;
   else if (activeScene == 10 || activeScene == 11) notes = ambient;
   if (!notes) return;
   memcpy(background.notes, notes, sizeof(background.notes));
@@ -86,9 +254,13 @@ void play(Cue cue, uint16_t pitch) {
     case Cue::Win: add(523,90); add(659,90); add(784,90); add(1047,220); next.priority=6; break;
     case Cue::Draw: add(440,80); add(440,80); add(330,130); next.priority=5; break;
     case Cue::Record: add(784,65); add(988,65); add(1175,65); add(1568,140); add(0,50); add(1568,180); next.priority=7; break;
-    case Cue::Paddle: add(880,20); break;
-    case Cue::Wall: add(440,15); break;
-    case Cue::Brick: add(pitch ? pitch : 1320,25); next.priority=2; break;
+    case Cue::Paddle: add(659,16); add(988,22); break;
+    case Cue::Wall: add(523,14); add(784,18); break;
+    case Cue::Brick: {
+      uint16_t f = pitch ? pitch : 1320;
+      add(f, 18); add(min(uint16_t(3136), uint16_t(f * 5 / 4)), 24);
+      next.priority=2; break;
+    }
     case Cue::Powerup: case Cue::Sparkle: add(1047,35); add(1568,35); add(2093,60); next.priority=3; break;
     case Cue::Jump: add(659,20); add(880,30); next.priority=2; break;
     case Cue::Laser: add(2093,12); add(1568,18); break;
@@ -105,6 +277,7 @@ void play(Cue cue, uint16_t pitch) {
     case Cue::ZoomOut: add(660,25); add(440,25); add(330,40); break;
     case Cue::Pause: add(660,35); add(440,50); next.priority=3; break;
     case Cue::Resume: add(440,35); add(660,50); next.priority=3; break;
+    case Cue::Countdown: add(880,45); break;
     case Cue::Pop: add(1800,8); add(240,24); next.priority=2; break;
     case Cue::Firework: add(330,35); add(660,35); add(1320,35); add(1760,65); next.priority=3; break;
   }
@@ -118,6 +291,8 @@ void scene(int game) {
   portENTER_CRITICAL(&guard);
   if (activeScene != game) {
     activeScene=game; effect=Voice{}; background=Voice{}; paused=false; lastGameState=-99;
+    resetBreakoutMusic();
+    resetPuzzleMusic();
   }
   portEXIT_CRITICAL(&guard);
 }
@@ -133,6 +308,8 @@ void gameState(int state) {
 void external(bool value) {
   portENTER_CRITICAL(&guard);
   held=value; effect=Voice{}; background=Voice{};
+  resetBreakoutMusic();
+  resetPuzzleMusic();
   portEXIT_CRITICAL(&guard);
 }
 void render(int16_t *out, size_t count, uint32_t legacy, bool enabled) {
@@ -141,12 +318,16 @@ void render(int16_t *out, size_t count, uint32_t legacy, bool enabled) {
     if (held || !enabled) { effect=Voice{}; out[i]=0; continue; }
     int fx = sample(effect);
     int music = 0;
-    if (gameMusic && !paused && !legacy) { loopMusic(); music=sample(background); }
+    if (gameMusic && !paused && !legacy) {
+      if (activeScene == 6) music = puzzleMusicSample();
+      else if (activeScene == 3 || activeScene == 5) music = popMusicSample();
+      else { loopMusic(); music=sample(background); }
+    }
     legacyPhase += legacy * 65536 / RATE;
     int tone = legacy ? ((legacyPhase & 32768) ? 3000 : -3000) : 0;
     int value = (fx / 8 + tone) * effectsVolume / 100;
     // Duck the background under effects and legacy birthday/jukebox notes.
-    value += (music / (effect.count ? 64 : 32)) * musicVolume / 100;
+    value += (music / (activeScene == 6 ? 2 : ((activeScene == 3 || activeScene == 5) ? 4 : (effect.count ? 32 : 16)))) * musicVolume / 100;
     out[i] = int16_t(constrain(value, -12000, 12000));
   }
   portEXIT_CRITICAL(&guard);

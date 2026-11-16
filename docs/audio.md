@@ -12,7 +12,11 @@ video audio. Sound off mutes synthesized system/game audio and the welcome tune;
 the media apps have their separate music volume. Game music is quieter than
 effects and pauses on game menus. Snake, Pong, Tic-tac-toe and Mines stay quiet
 between effects. Tetris, Breakout, Run, Galaga, Puzzle, Life and Mandelbrot have
-background loops. No downloaded tracks are required for these loops.
+background loops. Breakout uses an original 116 BPM modern happy synth-pop groove (warm major
+chords, bouncy pop bass, soft kick pulse and sunlit marimba pluck melody) rather
+than a retro sequence. Its music has more presence, with smooth effect ducking;
+the existing Music volume still applies.
+No downloaded tracks are required for these loops.
 
 The Nokia welcome MP3 is embedded in firmware from `assets/nokia_welcome.mp3`
 using PlatformIO's binary embedding. Playback reads directly from flash and
