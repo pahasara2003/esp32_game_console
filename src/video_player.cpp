@@ -32,6 +32,11 @@ constexpr int DMA_BUFS = 8, DMA_LEN = 1024;           // ~0.37 s at 22050 Hz
 constexpr int DMA_SAMPLES = DMA_BUFS * DMA_LEN;
 constexpr int VOLUME_PCT = 70;
 constexpr int LAND_ROT = 3, PORT_ROT = 2;
+<<<<<<< HEAD
+=======
+// Button scan step while a video plays: the 1 ms default steals decode time.
+constexpr int PLAY_SCAN_MS = 5;
+>>>>>>> codex/rally-3d
 
 // Colours match the music player.
 constexpr uint16_t BG = 0x0000, WHITE = 0xFFFF, MUTED = 0x9492, ACCENT = 0x1DCA;
@@ -102,6 +107,7 @@ void fmtTime(char *buf, uint32_t s) { sprintf(buf, "%u:%02u", s / 60, s % 60); }
 
 int readKey() {
   int k = buttonsNextPress();
+<<<<<<< HEAD
   if (k >= 0) return k;
   if (!Serial.available()) return -1;
   switch (tolower(Serial.read())) {
@@ -110,6 +116,21 @@ int readKey() {
     case 'e': case ' ': return K_SHOOT;
   }
   return -1;
+=======
+  if (k < 0 && Serial.available()) {
+    switch (tolower(Serial.read())) {
+      case 'w': k = K_UP;    break; case 'd': k = K_RIGHT; break;
+      case 's': k = K_DOWN;  break; case 'a': k = K_LEFT;  break;
+      case 'e': case ' ': k = K_SHOOT; break;
+    }
+  }
+  // Playback and its controls are rotated 90 degrees relative to the buttons.
+  if (k == K_UP) return K_LEFT;
+  if (k == K_LEFT) return K_DOWN;
+  if (k == K_DOWN) return K_RIGHT;
+  if (k == K_RIGHT) return K_UP;
+  return k;
+>>>>>>> codex/rally-3d
 }
 
 // Bytes of PCM data after the WAV header; leaves the file at the data start.
@@ -306,11 +327,34 @@ size_t readFrame(uint8_t *buf) {
   return (buf && n > FRAME_CAP) ? 1 : n;   // 1 = oversized, not drawn
 }
 
+<<<<<<< HEAD
 int drawBlock(JPEGDRAW *d) {
   tft.pushImage(d->x, d->y, d->iWidth, d->iHeight, d->pPixels);
   return 1;
 }
 
+=======
+// Per-stage timing, printed every few seconds: "[Video] 11.2 fps ...".
+uint32_t stShown = 0, stSkipped = 0, stReadUs = 0, stDecodeUs = 0, stPushUs = 0, stSince = 0;
+
+int drawBlock(JPEGDRAW *d) {
+  uint32_t t = micros();
+  tft.pushImage(d->x, d->y, d->iWidth, d->iHeight, d->pPixels);
+  stPushUs += micros() - t;
+  return 1;
+}
+
+void printStats() {
+  uint32_t ms = millis() - stSince;
+  if (ms < 3000 || !stShown) return;
+  Serial.printf("[Video] %.1f fps, %u skipped, per frame: read %u ms, decode %u ms, push %u ms\n",
+                stShown * 1000.0f / ms, (unsigned)stSkipped, (unsigned)(stReadUs / stShown / 1000),
+                (unsigned)((stDecodeUs - stPushUs) / stShown / 1000), (unsigned)(stPushUs / stShown / 1000));
+  stShown = stSkipped = stReadUs = stDecodeUs = stPushUs = 0;
+  stSince = millis();
+}
+
+>>>>>>> codex/rally-3d
 void installI2S(uint32_t rate) {
   i2s_driver_uninstall(I2S_NUM_0);
   i2s_config_t cfg = {};
@@ -361,6 +405,10 @@ uint32_t playedSamples() {
 }
 
 void closeVideo() {
+<<<<<<< HEAD
+=======
+  buttonsSetScanPeriod(1);
+>>>>>>> codex/rally-3d
   if (vfile) vfile.close();
   if (afile) afile.close();
   i2s_zero_dma_buffer(I2S_NUM_0);
@@ -381,8 +429,16 @@ bool openVideo(int index) {
   pendOff = pendLen = 0;
   audioDone = false;
   frameNo = 0;
+<<<<<<< HEAD
   paused = false;
   focus = C_PLAY;
+=======
+  stShown = stSkipped = stReadUs = stDecodeUs = stPushUs = 0;
+  stSince = millis();
+  paused = false;
+  focus = C_PLAY;
+  buttonsSetScanPeriod(PLAY_SCAN_MS);
+>>>>>>> codex/rally-3d
   tft.setRotation(LAND_ROT);
   tft.fillScreen(BG);
   installI2S(sampleRate);
@@ -489,6 +545,10 @@ void drawControls() {
 
 void setPaused(bool p) {
   paused = p;
+<<<<<<< HEAD
+=======
+  buttonsSetScanPeriod(p ? 1 : PLAY_SCAN_MS);
+>>>>>>> codex/rally-3d
   if (p) {
     i2s_stop(I2S_NUM_0);
     focus = C_PLAY;
@@ -541,18 +601,40 @@ void playLoop() {
     while (frameNo + 1 < due) {           // behind: skip frames without decoding
       if (readFrame(nullptr) == 0) { ended = true; break; }
       frameNo++;
+<<<<<<< HEAD
       pumpAudio();
     }
     if (!ended) {
       size_t len = readFrame(frameBuf);
+=======
+      stSkipped++;
+      pumpAudio();
+    }
+    if (!ended) {
+      uint32_t t0 = micros();
+      size_t len = readFrame(frameBuf);
+      uint32_t t1 = micros();
+>>>>>>> codex/rally-3d
       if (len == 0) ended = true;
       else {
         frameNo++;
         if (len > 4 && jpeg.openRAM(frameBuf, len, drawBlock)) {
           jpeg.setPixelType(RGB565_BIG_ENDIAN);
+<<<<<<< HEAD
           jpeg.decode(0, 0, 0);
           jpeg.close();
         }
+=======
+          tft.startWrite();   // one SPI transaction per frame; the SD card is idle here
+          jpeg.decode(0, 0, 0);
+          tft.endWrite();
+          jpeg.close();
+        }
+        stShown++;
+        stReadUs += t1 - t0;
+        stDecodeUs += micros() - t1;
+        printStats();
+>>>>>>> codex/rally-3d
       }
     }
     if (ended) {

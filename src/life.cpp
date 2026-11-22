@@ -1,5 +1,6 @@
 #include "ui_kit.h"
 #include <Arduino.h>
+#include <new>
 #include "game.h"
 #include "life_model.h"
 #include "life_guide.h"
@@ -7,8 +8,14 @@
 namespace lifeApp {
 enum Mode { RUNNING, PAUSED, OPTIONS, INFO };
 static Mode mode = RUNNING, optionsReturn = RUNNING;
-static lifeModel::Board board;
-static uint8_t drawn[lifeModel::CAPACITY];
+// ~32 KB of cell buffers, allocated in lifeSetup and freed by lifeRelease.
+struct State {
+  lifeModel::Board b;
+  uint8_t d[lifeModel::CAPACITY];
+};
+static State *state = nullptr;
+#define board (state->b)
+#define drawn (state->d)
 static constexpr int CELL_SIZE = 2;
 static bool boardDrawn = false;
 static constexpr int FIELD_W = 224, FIELD_H = 192;
@@ -93,15 +100,20 @@ static void drawState() {
 
 static void drawStats() {
   char text[24];
-  tft.fillRect(16, 31, 208, 18, ui::CARD);
-  tft.setTextDatum(TL_DATUM);
-  tft.setTextColor(ui::SECONDARY, ui::CARD);
+  TFT_eSprite sprite(&tft);
+  bool buffered = sprite.createSprite(208, 18) != nullptr;
+  TFT_eSPI &target = buffered ? static_cast<TFT_eSPI &>(sprite) : tft;
+  int x = buffered ? 0 : 16, y = buffered ? 0 : 31;
+  target.fillRect(x, y, 208, 18, ui::CARD);
+  target.setTextDatum(TL_DATUM);
+  target.setTextColor(ui::SECONDARY, ui::CARD);
   snprintf(text, sizeof(text), "Generation %lu", (unsigned long)board.generation);
-  tft.drawString(text, 18, 32, 2);
+  target.drawString(text, x + 2, y + 1, 2);
   snprintf(text, sizeof(text), "%u alive", board.population);
-  tft.setTextDatum(TR_DATUM);
-  tft.setTextColor(LIVE, ui::CARD);
-  tft.drawString(text, 220, 32, 2);
+  target.setTextDatum(TR_DATUM);
+  target.setTextColor(LIVE, ui::CARD);
+  target.drawString(text, x + 204, y + 1, 2);
+  if (buffered) sprite.pushSprite(16, 31);
   lastStats = millis();
 }
 
@@ -228,7 +240,7 @@ static void drawGuidePage() {
   if (page.rle) drawGuideDiagram(true);
   tft.setTextColor(ui::LABEL, ui::CARD);
   for (int i = 0; i < 7 && page.lines[i]; ++i)
-    tft.drawString(page.lines[i], 120, page.rle ? 211 + i * 13 : 123 + i * 18);
+    tft.drawString(page.lines[i], 120, page.rle ? 206 + i * 13 : 123 + i * 18);
   tft.fillRoundRect(8, 264, 224, 48, 12, ui::CARD);
   ui::hint(276, "Left / Right to turn pages", ui::CARD, ui::LABEL);
   ui::hint(293, "Shoot to go back", ui::CARD);
@@ -248,7 +260,14 @@ static void closeGuide() {
 
 } // namespace lifeApp
 
+void lifeRelease() {
+  delete lifeApp::state;
+  lifeApp::state = nullptr;
+}
+
 void lifeSetup() {
+  if (!lifeApp::state) lifeApp::state = new (std::nothrow) lifeApp::State();
+  if (!lifeApp::state) { switchGame(0); return; }
   tft.setRotation(2);
   lifeApp::mode = lifeApp::RUNNING;
   lifeApp::resetInput();

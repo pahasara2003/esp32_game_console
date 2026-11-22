@@ -1,5 +1,6 @@
 #include "game.h"
 #include "ui_kit.h"
+#include "arcade_style.h"
 #include <Arduino.h>
 
 // =================================================================
@@ -27,11 +28,11 @@ static int puzzleRow(int index) { return index / puzzleSize; }
 static int puzzleCol(int index) { return index % puzzleSize; }
 
 static int puzzleColorBand(int value, int size) {
-  return ((value - 1) / size) * 4 / size;
+  return (value - 1) / size;
 }
 
 static uint16_t puzzleBandColor(int band) {
-  constexpr uint16_t colors[4] = {0xCFE0, 0xFFE0, 0xFC60, 0xF81F};
+  constexpr uint16_t colors[6] = {0xF98B, 0xFD24, 0xFE64, 0x268C, 0x263F, 0xA33F};
   return colors[band];
 }
 
@@ -69,7 +70,7 @@ static void drawPuzzleGoalPreview() {
     int band = puzzleColorBand(index + 1, size);
     uint16_t fill = puzzleBandColor(band);
     tft.fillRoundRect(x, y, tile, tile, 3, fill);
-    tft.setTextColor(band == 3 ? TFT_WHITE : TFT_BLACK, fill);
+    tft.setTextColor(ui::inkOn(fill), fill);
     tft.drawString(String(index + 1), x + tile / 2, y + tile / 2 + 1);
   }
 }
@@ -79,91 +80,121 @@ static void puzzleTilePosition(int index, int &x, int &y) {
   y = PUZZLE_Y + puzzleRow(index) * (puzzleTile + puzzleGap);
 }
 
-static void drawPuzzleTileAt(int x, int y, uint8_t value, bool highlighted) {
-  if (restoringCountdownDigit()) {
-    // Restore only the empty corners and spacing, never clear a whole tile.
-    tft.fillRect(x, y, 7, 7, UI_BG);
-    tft.fillRect(x + puzzleTile - 7, y, 7, 7, UI_BG);
-    tft.fillRect(x, y + puzzleTile - 7, 7, 7, UI_BG);
-    tft.fillRect(x + puzzleTile - 7, y + puzzleTile - 7, 7, 7, UI_BG);
-    tft.fillRect(x + puzzleTile, y, puzzleGap, puzzleTile + puzzleGap, UI_BG);
-    tft.fillRect(x, y + puzzleTile, puzzleTile, puzzleGap, UI_BG);
+static void restorePuzzleBackdrop(int x, int y, int w, int h) {
+  int x0 = max(0, x), x1 = min(240, x + w);
+  int y0 = max(48, y), y1 = min(291, y + h);
+  if (x0 >= x1 || y0 >= y1) return;
+  uint16_t row[240];
+  bool swap = tft.getSwapBytes();
+  tft.setSwapBytes(true);
+  for (int yy = y0; yy < y1; ++yy) {
+    for (int xx = x0; xx < x1; ++xx) row[xx - x0] = arcadeStyle::backdrop(xx, yy);
+    tft.pushImage(x0, yy, x1 - x0, 1, row);
   }
+  tft.setSwapBytes(swap);
+}
+
+template<class Surface>
+static void drawPuzzleTileAt(Surface &canvas, int x, int y, uint8_t value, bool highlighted) {
   if (value == 0) {
-    tft.fillRoundRect(x, y, puzzleTile, puzzleTile, 7, UI_BG);
-    tft.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, UI_SURFACE);
-    tft.drawRoundRect(x + 2, y + 2, puzzleTile - 4, puzzleTile - 4, 5, UI_ICON_BG);
-    tft.setTextDatum(MC_DATUM);
-    tft.setTextFont(1);
-    tft.setTextColor(UI_MUTED, UI_BG);
-    tft.drawString(puzzleSize == 6 ? "GAP" : "EMPTY", x + puzzleTile / 2, y + puzzleTile / 2);
+    canvas.fillRoundRect(x, y, puzzleTile, puzzleTile, 7, 0x10C9);
+    canvas.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, 0x3A52);
+    canvas.setTextDatum(MC_DATUM);
+    canvas.setTextFont(1);
+    canvas.setTextColor(UI_MUTED, 0x10C9);
+    canvas.drawString(puzzleSize == 6 ? "GAP" : "EMPTY", x + puzzleTile / 2, y + puzzleTile / 2);
     return;
   }
 
-  uint16_t tileColor;
-  uint16_t numberColor;
-  switch (puzzleColorBand(value, puzzleSize)) {
-    case 0:
-      tileColor = 0xCFE0;  // vivid yellow-green
-      numberColor = TFT_BLACK;
-      break;
-    case 1:
-      tileColor = 0xFFE0;  // bright yellow
-      numberColor = TFT_BLACK;
-      break;
-    case 2:
-      tileColor = 0xFC60;  // bright orange
-      numberColor = TFT_BLACK;
-      break;
-    default:
-      tileColor = 0xF81F;  // vivid magenta
-      numberColor = TFT_WHITE;
-      break;
-  }
-
-  tft.fillRoundRect(x, y, puzzleTile, puzzleTile, 7, tileColor);
-  tft.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, UI_PANEL);
-  tft.fillRoundRect(x + 3, y + 3, puzzleTile - 6, 4, 2, 0xFFFF);
+  uint16_t tileColor = puzzleBandColor(puzzleColorBand(value, puzzleSize));
+  canvas.fillRoundRect(x, y, puzzleTile, puzzleTile, 7, tileColor);
+  canvas.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, arcadeStyle::fade(tileColor, 135));
+  canvas.drawFastHLine(x + 5, y + 2, puzzleTile - 10, arcadeStyle::mix(tileColor, 0xFFFF, 125));
+  canvas.drawFastHLine(x + 7, y + 4, min(10, puzzleTile - 14), TFT_WHITE);
+  canvas.drawFastHLine(x + 6, y + puzzleTile - 3, puzzleTile - 12, arcadeStyle::fade(tileColor, 135));
 
   char number[4];
   snprintf(number, sizeof(number), "%u", value);
-  tft.setTextDatum(MC_DATUM);
-  tft.setTextFont(puzzleSize == 6 ? 2 : 4);
-  tft.setTextColor(numberColor, tileColor);
-  tft.drawString(number, x + puzzleTile / 2, y + puzzleTile / 2 + 2);
+  canvas.setTextDatum(MC_DATUM);
+  canvas.setTextFont(puzzleSize == 6 ? 2 : 4);
+  canvas.setTextColor(ui::inkOn(tileColor), tileColor);
+  canvas.drawString(number, x + puzzleTile / 2, y + puzzleTile / 2 + 2);
 
   if (highlighted) {
-    tft.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, UI_CYAN);
-    tft.drawRoundRect(x + 1, y + 1, puzzleTile - 2, puzzleTile - 2, 6, UI_PURPLE);
+    canvas.drawRoundRect(x, y, puzzleTile, puzzleTile, 7, 0x36FF);
+    canvas.drawPixel(x + puzzleTile - 7, y + 5, TFT_WHITE);
+    canvas.drawPixel(x + puzzleTile - 5, y + 7, TFT_WHITE);
   }
 }
 
 static void drawPuzzleTile(int index) {
   int x, y;
   puzzleTilePosition(index, x, y);
-  drawPuzzleTileAt(x, y, puzzleBoard[index], index == puzzleLastMoved);
+  TFT_eSprite tile(&tft);
+  tile.setColorDepth(16);
+  if (tile.createSprite(puzzleTile, puzzleTile)) {
+    tile.setOrigin(-x, -y);
+    for (int yy = y; yy < y + puzzleTile; ++yy)
+      for (int xx = x; xx < x + puzzleTile; ++xx)
+        tile.drawPixel(xx, yy, arcadeStyle::backdrop(xx, yy));
+    drawPuzzleTileAt(tile, x, y, puzzleBoard[index], index == puzzleLastMoved);
+    tile.pushSprite(x, y);
+    tile.deleteSprite();
+  } else {
+    drawPuzzleTileAt(tft, x, y, puzzleBoard[index], index == puzzleLastMoved);
+  }
 }
 
 static void animatePuzzleSlide(int fromIndex, int toIndex, uint8_t value) {
   int fromX, fromY, toX, toY;
   puzzleTilePosition(fromIndex, fromX, fromY);
   puzzleTilePosition(toIndex, toX, toY);
-  int dirtyX = min(fromX, toX);
-  int dirtyY = min(fromY, toY);
+  int dirtyX = min(fromX, toX), dirtyY = min(fromY, toY);
   int dirtyW = abs(toX - fromX) + puzzleTile;
   int dirtyH = abs(toY - fromY) + puzzleTile;
-
-  // The moving tile crosses only its own cell, the gap, and the empty cell.
-  for (int step = 1; step < 5; ++step) {
+  TFT_eSprite frame(&tft);
+  frame.setColorDepth(16);
+  bool buffered = frame.createSprite(dirtyW, dirtyH);
+  for (int step = 1; step <= 5; ++step) {
     int x = fromX + (toX - fromX) * step / 5;
     int y = fromY + (toY - fromY) * step / 5;
-    tft.fillRect(dirtyX, dirtyY, dirtyW, dirtyH, UI_BG);
-    drawPuzzleTileAt(toX, toY, 0, false);
-    drawPuzzleTileAt(x, y, value, false);
+    if (buffered) {
+      frame.setOrigin(-dirtyX, -dirtyY);
+      for (int yy = dirtyY; yy < dirtyY + dirtyH; ++yy)
+        for (int xx = dirtyX; xx < dirtyX + dirtyW; ++xx)
+          frame.drawPixel(xx, yy, arcadeStyle::backdrop(xx, yy));
+      drawPuzzleTileAt(frame, fromX, fromY, 0, false);
+      drawPuzzleTileAt(frame, toX, toY, 0, false);
+      drawPuzzleTileAt(frame, x, y, value, step >= 3);
+      frame.pushSprite(dirtyX, dirtyY);
+    } else {
+      restorePuzzleBackdrop(dirtyX, dirtyY, dirtyW, dirtyH);
+      drawPuzzleTileAt(tft, fromX, fromY, 0, false);
+      drawPuzzleTileAt(tft, toX, toY, 0, false);
+      drawPuzzleTileAt(tft, x, y, value, step >= 3);
+    }
     delay(6);
   }
-  // Remove the last in-between tile before drawing both cells at rest.
-  tft.fillRect(dirtyX, dirtyY, dirtyW, dirtyH, UI_BG);
+  if (buffered) frame.deleteSprite();
+}
+
+static void drawPuzzleMoves() {
+  TFT_eSprite count(&tft);
+  count.setColorDepth(16);
+  if (count.createSprite(62, 16)) {
+    count.fillSprite(ui::CARD);
+    count.setTextDatum(TR_DATUM);
+    count.setTextColor(ui::LABEL, ui::CARD);
+    count.drawString(String(puzzleMoves), 62, 0, 2);
+    count.pushSprite(158, 24);
+    count.deleteSprite();
+    return;
+  }
+  tft.setTextDatum(TR_DATUM);
+  tft.setTextColor(ui::LABEL, ui::CARD);
+  tft.setTextPadding(40);
+  tft.drawString(String(puzzleMoves), 220, 24, 2);
+  tft.setTextPadding(0);
 }
 
 static void drawPuzzleHeader() {
@@ -178,8 +209,8 @@ static void drawPuzzleHeader() {
   tft.setTextColor(ui::LABEL, ui::CARD);
   tft.setTextPadding(40);
   tft.drawString(String(puzzleSize) + "x" + String(puzzleSize), 158, 24, 2);
-  tft.drawString(String(puzzleMoves), 220, 24, 2);
   tft.setTextPadding(0);
+  drawPuzzleMoves();
 }
 
 static void drawPuzzleBottomBar() {
@@ -189,8 +220,13 @@ static void drawPuzzleBottomBar() {
 
 static void drawPuzzleBoard() {
   if (!restoringCountdownDigit()) tft.fillScreen(UI_BG);
+  restorePuzzleBackdrop(0, 48, 240, 243);
   drawPuzzleHeader();
-  for (int i = 0; i < puzzleCount; i++) drawPuzzleTile(i);
+  for (int i = 0; i < puzzleCount; i++) {
+    int x, y;
+    puzzleTilePosition(i, x, y);
+    drawPuzzleTileAt(tft, x, y, puzzleBoard[i], i == puzzleLastMoved);
+  }
   drawPuzzleBottomBar();
 }
 
@@ -216,11 +252,9 @@ static bool slidePuzzleGap(int command, bool countMove) {
   if (countMove) puzzleMoves++;
 
   if (countMove) {
-    drawPuzzleTile(oldBlank);
-    drawPuzzleTile(target);
     if (oldHighlight >= 0 && oldHighlight != oldBlank && oldHighlight != target)
       drawPuzzleTile(oldHighlight);
-    drawPuzzleHeader();
+    drawPuzzleMoves();
   }
   return true;
 }
@@ -296,6 +330,7 @@ static void drawPuzzleStartChoices() {
 
 static void drawPuzzleStartScreen() {
   tft.fillScreen(UI_BG);
+  restorePuzzleBackdrop(0, 48, 240, 243);
   ui::card(14, 24, 212, 284);
   tft.setTextDatum(TL_DATUM);
   tft.setTextColor(ui::LABEL, ui::CARD);
@@ -313,13 +348,16 @@ static void drawPuzzlePause() {
 static void drawPuzzleComplete() {
   ui::card(24, 66, 192, 186);
   ui::heading(40, 80, "Puzzle", "Solved");
-  ui::stat(40, 132, "Moves", String(puzzleMoves), UI_CYAN);
-  ui::stat(128, 132, "Grid", String(puzzleSize) + "x" + String(puzzleSize));
+  const ui::List stats = {32, 130, 176, 24, 2};
+  ui::infoRow(stats, 0, "Moves", String(puzzleMoves).c_str());
+  String grid = String(puzzleSize) + "x" + String(puzzleSize);
+  ui::infoRow(stats, 1, "Grid", grid.c_str());
   ui::pill(40, 188, 160, 30, "Play again", UI_CYAN);
   ui::hint(234, "Up for home screen", ui::CARD);
 }
 
 static void startPuzzle() {
+  audio::restartMusic();
   gameState = 0;
   menu_drawn = false;
   puzzleCompleteRecorded = false;
@@ -371,7 +409,7 @@ void puzzleLoop() {
       } else audio::play(audio::Cue::Error);
     } else if (command == 4) {
       puzzlePauseSelection = 0;
-      gameState = 1;
+      audio::pauseMusic(true); gameState = 1;
       menu_drawn = false;
     }
   } else if (gameState == 1) {

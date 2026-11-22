@@ -222,7 +222,16 @@ const THEMES = [
 
 /* wallpaper: same shapes per theme, hues shifted from the accent hue */
 function wallpaperVars(hue, light) {
-  const B = light ? 14 : 0;
+  if (light) return {
+    "--wTop": hslHex(hue,      70, 88),
+    "--wMid": hslHex(hue+16,   66, 80),
+    "--wBot": hslHex(hue+28,   60, 66),
+    "--wA":   hslHex(hue+36,   90, 78),
+    "--wB":   hslHex(hue-44,   85, 74),
+    "--wC":   hslHex(hue+140,  80, 80),
+    "--wD":   hslHex(hue-22,   88, 70),
+  };
+  const B = 0;
   return {
     "--wTop": hslHex(hue,      58, 34+B),
     "--wMid": hslHex(hue+16,   56, 26+B),

@@ -4,7 +4,6 @@
 #include "home_wallpaper.h"
 #include "config.h"
 #include "birthday.h"
-#include "birthday_code.h"
 
 // Define apps
 struct App {
@@ -21,6 +20,7 @@ App Apps[] = {
   {"Breakout", 0, 0, breakout_home_icon, 3},
   {"Run",      0, 0, run_home_icon,      4},
   {"Galaga",   0, 0, galaga_home_icon,   5},
+  {"Rally",    0, 0, rally_home_icon,   12},
   {"Puzzle",   0, 0, puzzle_home_icon,   6},
   {"Tic-Tac",  0, 0, tic_tac_home_icon,  7},
   {"Pong",     0, 0, pong_home_icon,     8},
@@ -28,6 +28,10 @@ App Apps[] = {
   {"Conway's", 0, 0, life_home_icon,    10},
   {"Mandel",   0, 0, mandelbrot_home_icon,11},
   {"Music",    0, 0, sound_home_icon,   -1},
+<<<<<<< HEAD
+=======
+  {"Videos",   0, 0, videos_home_icon,  -1},
+>>>>>>> codex/rally-3d
   {"Settings", 0, 0, settings_home_icon,-1},
   {"Info",     0, 0, about_home_icon,   -1}
 };
@@ -349,7 +353,6 @@ void showAboutScreen() {
   Serial.println("[Info] Open");
   drawAboutInformation();
   buttonsRequireRelease();
-  BirthdayCode secret;
   while (true) {
     int c = findCommand(false);
     if (Serial.available()) {
@@ -361,11 +364,6 @@ void showAboutScreen() {
       else if (key == ' ' || key == 'e' || key == 'E' || key == '\r' || key == '\n') c = 4;
     }
     if (c == 4) break;
-    if (secret.press(c, millis())) {
-      showBirthdayScene();
-      drawAboutInformation();
-      buttonsRequireRelease();
-    }
     delay(2);
   }
   menuSetup();
@@ -585,6 +583,7 @@ static String titleCase(const char *name) {
   return s;
 }
 
+<<<<<<< HEAD
 static const ui::List settingsList = {16, 68, 208, 30, 6};
 void drawSettingsRow(int row, bool selected) {
   const char *labels[] = {"Theme", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores"};
@@ -595,6 +594,20 @@ void drawSettingsRow(int row, bool selected) {
                  row == 4 ? String(audio::gameMusic ? "On" : "Off") : String("Reset");
   ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
                row == 5 ? UI_RED : ui::SECONDARY);
+=======
+static const ui::List settingsList = {16, 58, 208, 21, 9};
+void drawSettingsRow(int row, bool selected) {
+  const char *labels[] = {"Theme", "Brightness", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores", "Battery saver", "Show it"};
+  String value = row == 0 ? titleCase(themeName(activeTheme)) :
+                 row == 1 ? (batterySaver ? String("10% locked") : String(displayBrightness) + "%") :
+                 row == 2 ? String(soundEnabled ? "On" : "Off") :
+                 row == 3 ? String(audio::effectsVolume) + "%" :
+                 row == 4 ? String(audio::musicVolume) + "%" :
+                 row == 5 ? String(batterySaver ? "Off locked" : (audio::gameMusic ? "On" : "Off")) :
+                 row == 6 ? String("Reset") : row == 7 ? String(batterySaver ? "On" : "Off") : String("Open");
+  ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
+               row == 6 ? UI_RED : ui::SECONDARY);
+>>>>>>> codex/rally-3d
 }
 
 static void drawSettingsHeader() {
@@ -624,7 +637,11 @@ static void refreshSettingsTheme(int selectedRow) {
   // stays identical. Updating these regions in place avoids a visible black
   // frame between the old and new themes.
   drawSettingsHeader();
+<<<<<<< HEAD
   for (int row=0; row<6; ++row) drawSettingsRow(row, selectedRow == row);
+=======
+  for (int row=0; row<9; ++row) drawSettingsRow(row, selectedRow == row);
+>>>>>>> codex/rally-3d
   drawSettingsPalette();
   drawSettingsFooter();
 }
@@ -680,7 +697,11 @@ void showSettingsScreen() {
 
     if (cmd == 0 || cmd == 2) {
       int previousRow = selectedRow;
+<<<<<<< HEAD
       selectedRow = (selectedRow + (cmd == 0 ? 5 : 1)) % 6;
+=======
+      selectedRow = (selectedRow + (cmd == 0 ? 8 : 1)) % 9;
+>>>>>>> codex/rally-3d
       playNavClick();
       drawSettingsRow(previousRow, false);
       drawSettingsRow(selectedRow, true);
@@ -690,22 +711,41 @@ void showSettingsScreen() {
         applyThemePreset((activeTheme + direction + THEME_COUNT) % THEME_COUNT, false);
         playNavClick();
         refreshSettingsTheme(selectedRow);
-      } else if (selectedRow == 1) {
+      } else if (selectedRow == 7) {
+        setBatterySaver(!batterySaver);
+        drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 1 && !batterySaver) {
+        setDisplayBrightness(constrain(int(displayBrightness) + (cmd == 1 ? 10 : -10), 10, 100), false);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 2) {
         setSoundEnabled(!soundEnabled, false);
         playNavClick();
         drawSettingsRow(selectedRow, true);
+<<<<<<< HEAD
       } else if (selectedRow == 2 || selectedRow == 3) {
         uint8_t &volume = selectedRow == 2 ? audio::effectsVolume : audio::musicVolume;
         volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
         audio::play(audio::Cue::Move);
         drawSettingsRow(selectedRow, true);
       } else if (selectedRow == 4) {
+=======
+      } else if (selectedRow == 3 || selectedRow == 4) {
+        uint8_t &volume = selectedRow == 3 ? audio::effectsVolume : audio::musicVolume;
+        volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
+        audio::play(audio::Cue::Move);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 5 && !batterySaver) {
+>>>>>>> codex/rally-3d
         audio::gameMusic = !audio::gameMusic;
         playNavClick();
         drawSettingsRow(selectedRow, true);
       }
     } else if (cmd == 4) {
+<<<<<<< HEAD
       if (selectedRow == 5) {
+=======
+      if (selectedRow == 6) {
+>>>>>>> codex/rally-3d
         if (confirmResetScores()) {
           resetAllGameScores();
           audio::play(audio::Cue::Saved);
@@ -714,8 +754,13 @@ void showSettingsScreen() {
           delay(650);
         }
         drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 8) {
+        showBirthdayScene();
+        menuSetup();
+        return;
       } else {
         applyThemePreset(activeTheme, true);
+        setDisplayBrightness(displayBrightness, true);
         setSoundEnabled(soundEnabled, true);
         audio::save();
         audio::play(audio::Cue::Saved);
@@ -828,6 +873,14 @@ void menuLoop() {
         } else if (strcasecmp(Apps[selectedApp].label, "music") == 0) {
           audioReleaseForMusic();
           runMusicPlayer();
+          audioReclaimFromMusic();
+          tft.setSwapBytes(true);
+          buttonsRequireRelease();
+          menuSetup();
+          return;
+        } else if (strcasecmp(Apps[selectedApp].label, "videos") == 0) {
+          audioReleaseForMusic();
+          runVideoPlayer();
           audioReclaimFromMusic();
           tft.setSwapBytes(true);
           buttonsRequireRelease();

@@ -279,6 +279,8 @@ void drawMenu(void) {
   }
 }
 
+static unsigned long tetrisScoreFlashAt = 0;
+
 void drawTetrisScore() {
   char buf[16];
   snprintf(buf, sizeof(buf), "%d", score);
@@ -289,13 +291,14 @@ void drawTetrisScore() {
   value.setTextDatum(TL_DATUM);
   value.setTextFont(2);
   if (value.textWidth(buf) > 56) value.setTextFont(1);
-  value.setTextColor(0x2104);
+  value.setTextColor(millis() - tetrisScoreFlashAt < 350 ? UI_CYAN : 0x2104);
   value.drawString(buf, 0, 2);
   value.pushSprite(17, TETRIS_HUD_Y + 21);
 }
 
 void updateScore() {
   score += 10;
+  tetrisScoreFlashAt = millis();
   drawTetrisScore();
 }
 
@@ -347,7 +350,7 @@ bool newTetro() {
   current_shape = next_shape;
   next_shape = random(7);
   next_color = colors[next_shape];
-  current_pos[0] = (SPACE_WIDTH - 4) / 2 + 1;
+  current_pos[0] = random(SPACE_WIDTH - bodySize() + 1) + 1;
   current_pos[1] = 1;
   drawNext();
 
@@ -427,7 +430,11 @@ void updatePosition(int dx = 0, int dy = 1) {
     addToDead();
     playTetrisDropSound();
     if (!newTetro()) {
+<<<<<<< HEAD
       audio::play(audio::Cue::Death);
+=======
+      audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
       gameState = 2;
       menu_drawn = false;
       tetrisInputRequireRelease();
@@ -440,7 +447,7 @@ void updatePosition(int dx = 0, int dy = 1) {
 
 void getCommand() {
   if (tetrisPressed & 16) {
-    gameState = 1;
+    audio::pauseMusic(true); gameState = 1;
     menu_drawn = false;
     tetrisPauseSelection = 0;
     tetrisInputRequireRelease();
@@ -558,6 +565,7 @@ void handleTetrisGameOver() {
 
 
 void tetrisSetup() {
+  audio::restartMusic();
   tetrisInputBegin();
   tetrisSideHeld = 0;
   TETRIS_GRID_DARK = tetrisMix(UI_BG, UI_PURPLE, 22);

@@ -1,0 +1,109 @@
+{
+  "bitrate": 32000,
+  "sample_rate": 22050,
+  "tracks": [
+    {
+      "name": "tetris",
+      "offset": 0,
+      "size": 140225,
+      "start": 20,
+      "end": 55,
+      "source_sha256": "55c4855ce62c2dc899d95d1fddd6f7f89c3cd8902770dcfca1d6f69f5c5c4bc3",
+      "fade_seconds": 1.0,
+      "duration": 35.05625,
+      "sha256": "8ffc21f67b5ed2b53ad42be25b4860c6b0f919635311e4f6ca16f97418e2be45"
+    },
+    {
+      "name": "snake",
+      "offset": 140225,
+      "size": 168229,
+      "start": 1,
+      "end": 43,
+      "source_sha256": "d4bb1460ef0f538de1459422d2fd6084405e670b73fdefda7709267d80a3033c",
+      "fade_seconds": 1.0,
+      "duration": 42.05725,
+      "sha256": "97b73cc799769d67e3e6d014ae4a4a22b07556b2de9ab72cc202718cb0bb5004"
+    },
+    {
+      "name": "breakout",
+      "offset": 308454,
+      "size": 120268,
+      "start": 1,
+      "end": 31,
+      "source_sha256": "4d4e017725b65d013fb6634bf45db16e77230ebe11ee0cb8dfb7ca7c460e14e9",
+      "fade_seconds": 1.0,
+      "duration": 30.067,
+      "sha256": "b5a523a92510b3e1f4c87577087b680ebb6a047f41f6a91d8d6677e1377ef672"
+    },
+    {
+      "name": "run",
+      "offset": 428722,
+      "size": 120686,
+      "start": 2,
+      "end": 32.1,
+      "source_sha256": "011b0368dfd6913abc862fa45fd4c4025451e91b0adf1aa0d32107961932b993",
+      "fade_seconds": 1.0,
+      "duration": 30.1715,
+      "sha256": "3b9fe7d30b8296a791acbb940267e07a3bd5a18485a859d2dc6e341c495bf91f"
+    },
+    {
+      "name": "galaga",
+      "offset": 549408,
+      "size": 158302,
+      "start": 0,
+      "end": 39.5,
+      "source_sha256": "bfd1d74f8ebc3850390956fda407bf817c5ed2e858f7c2ebf5f570794f8b8fbb",
+      "fade_seconds": 1.0,
+      "duration": 39.5755,
+      "sha256": "989d3c41b09881484f585fa4499eb65f0015f61ebe05c30082122012db4af6b3"
+    },
+    {
+      "name": "puzzle",
+      "offset": 707710,
+      "size": 86309,
+      "start": 7,
+      "end": 28.5,
+      "source_sha256": "5b070bbe605256fb31c765a4a4940bc7efa03ecb6ca805b4245e64094e6807d3",
+      "fade_seconds": 1.0,
+      "duration": 21.57725,
+      "sha256": "f01a5f4f3a527bd5ff55aac6142d87e5ea10ccbf36ed1e79fc025b658fcd7a49"
+    },
+    {
+      "name": "life",
+      "offset": 794019,
+      "size": 136255,
+      "start": 57,
+      "end": 91,
+      "source_sha256": "dd2ee874835c76964c6c7a00d95fc0a5f2a4e4469716abab38cf044dfab031c3",
+      "fade_seconds": 1.0,
+      "duration": 34.06375,
+      "sha256": "1bd6b41e2dac554bb1d1a006c0437816819d79712da230ef6f55f9d0f29ec497"
+    },
+    {
+      "name": "rally",
+      "offset": 930274,
+      "size": 164258,
+      "start": 0,
+      "end": 41,
+      "source_sha256": "8d7f231ad2ae659671f0fe2ef79928b663672d3a1d3765454fc8d8059580bce0",
+      "fade_seconds": 1.0,
+      "duration": 41.0645,
+      "sha256": "ac5efa1e913e5af2e5b6a44ff9f20166162e265d8f0a328e7de924ef54421dfe"
+    }
+  ],
+  "games": {
+    "tetris": 0,
+    "snake": 1,
+    "breakout": 2,
+    "run": 3,
+    "galaga": 4,
+    "puzzle": 5,
+    "tic_tac_toe": 1,
+    "pong": 0,
+    "minesweeper": 4,
+    "life": 6,
+    "mandelbrot": 6,
+    "rally": 7
+  },
+  "bytes": 1094532
+}

@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""Convert selected SD game music segments to shared embedded MP3 loops."""
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+SELECTIONS = ROOT / 'assets/game_music_selection.json'
+MUSIC_BUDGET = 1344 * 1024
+FADE_SECONDS = 1.0
+GAMES = ['tetris', 'snake', 'breakout', 'run', 'galaga', 'puzzle',
+         'tic_tac_toe', 'pong', 'minesweeper', 'life', 'mandelbrot', 'rally']
+
+
+def duration(path):
+    seconds = float(subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries',
+                    'format=duration', '-of', 'default=nw=1:nk=1', str(path)]))
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise ValueError(f'Invalid audio duration: {path}')
+    return seconds
+
+
+def validate_start(value, seconds):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ValueError('Loop start must be a finite number of seconds')
+    if value < 0 or value > max(0, seconds - 30):
+        raise ValueError('Choose a start with at least 30 seconds remaining')
+    return value
+
+
+def validate_selection(value, seconds):
+    # Read earlier saved start-only choices without changing their meaning.
+    if not isinstance(value, dict):
+        start = validate_start(value, seconds)
+        value = {'start': start, 'end': min(start + 30, seconds)}
+    if set(value) != {'start', 'end'}:
+        raise ValueError('Choose both a start and an end')
+    start, end = value['start'], value['end']
+    for number in (start, end):
+        if isinstance(number, bool) or not isinstance(number, (int, float)) or not math.isfinite(number):
+            raise ValueError('Start and end must be finite numbers of seconds')
+    if start < 0 or end > seconds or end - start < 1:
+        raise ValueError('Select at least one second within the song')
+    return {'start': start, 'end': end}
+
+
+def estimate_bytes(choices):
+    return sum(math.ceil((c['end'] - c['start']) * 4000) + 512 for c in choices)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('folder', type=Path, help='SD card GameMusic folder')
+    args = parser.parse_args()
+    selections = json.loads(SELECTIONS.read_text()) if SELECTIONS.exists() else {}
+    bundle = bytearray()
+    sources, encoded, tracks, assignments = {}, {}, [], []
+    with tempfile.TemporaryDirectory() as directory:
+        output = Path(directory) / 'track.mp3'
+        for game in GAMES:
+            source = args.folder / (game + '.mp3')
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            if digest not in sources:
+                choice = validate_selection(selections.get(digest, 0), duration(source))
+                start, end = choice['start'], choice['end']
+                length = end - start
+                fade_start = max(0, length - FADE_SECONDS)
+                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1',
+                                '-ss', str(start), '-i', str(source), '-t', str(length), '-map', '0:a:0',
+                                '-vn', '-map_metadata', '-1', '-af',
+                                f'afade=t=out:st={fade_start}:d={length-fade_start}:curve=exp',
+                                '-ar', '22050', '-ac', '1',
+                                '-c:a', 'libmp3lame', '-b:a', '32k', '-write_xing', '0',
+                                '-id3v2_version', '0', str(output)], check=True)
+                data = output.read_bytes()
+                info = json.loads(subprocess.check_output([
+                    'ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', str(output)]))
+                stream = info['streams'][0]
+                if float(info['format']['duration']) < length or int(stream['sample_rate']) != 22050 or stream['channels'] != 1:
+                    raise ValueError(f'Invalid conversion: {game}')
+                audio_hash = hashlib.sha256(data).hexdigest()
+                if audio_hash not in encoded:
+                    encoded[audio_hash] = len(tracks)
+                    tracks.append({'name': game, 'offset': len(bundle), 'size': len(data),
+                                   'start': start, 'end': end, 'source_sha256': digest,
+                                   'fade_seconds': min(FADE_SECONDS, length),
+                                   'duration': float(info['format']['duration']), 'sha256': audio_hash})
+                    bundle.extend(data)
+                sources[digest] = encoded[audio_hash]
+            assignments.append(sources[digest])
+    # Reserve room for decoder code and firmware growth within the enlarged app.
+    if len(bundle) > MUSIC_BUDGET:
+        raise ValueError('Game music exceeds the 1344 KiB audio budget; shorten some selections')
+    lines = ['#pragma once', '#include <stdint.h>',
+             '// Generated by tools/prepare_game_music.py; duplicate tracks share offsets.',
+             'extern const uint8_t gameMusicData[] asm("_binary_assets_game_music_bin_start");',
+             'struct GameMusicTrack { uint32_t offset, size; };',
+             'const GameMusicTrack gameMusicTracks[] = {', '  {0, 0}, // menu']
+    for game, index in zip(GAMES, assignments):
+        track = tracks[index]
+        lines.append(f'  {{{track["offset"]}, {track["size"]}}}, // {game}: {track["name"]}')
+    lines += ['};', '']
+    (ROOT / 'assets/game_music.bin').write_bytes(bundle)
+    (ROOT / 'src/game_music_tracks.h').write_text('\n'.join(lines))
+    manifest = {'bitrate': 32000, 'sample_rate': 22050,
+                'tracks': tracks, 'games': dict(zip(GAMES, assignments)), 'bytes': len(bundle)}
+    (ROOT / 'assets/game_music.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    print(f'{len(GAMES)} games, {len(tracks)} unique tracks, {len(bundle)} bytes')
+
+
+if __name__ == '__main__':
+    main()
