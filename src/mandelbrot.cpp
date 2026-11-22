@@ -293,6 +293,7 @@ static void openMenu() {
 }
 
 static void changeZoom(int direction) {
+  audio::play(direction > 0 ? audio::Cue::ZoomIn : audio::Cue::ZoomOut);
   zoom = constrain(zoom + direction, 0, MAX_ZOOM);
   menu = false;
   requireRelease();
@@ -313,11 +314,13 @@ void mandelbrotSetup() {
 
 void mandelbrotLoop() {
   using namespace mandelApp;
+  audio::pauseMusic(menu);
   int cmd = input();
   if (menu) {
     if (cmd == 0 || cmd == 2) {
       int previous = option;
       option = (option + (cmd == 2 ? 1 : OPTIONS - 1)) % OPTIONS;
+      playNavClick();
       drawOption(previous); drawOption(option);
     } else if (cmd == 1 || cmd == 3) changeZoom(cmd == 1 ? 1 : -1);
     else if (cmd == 5) { menu = false; requireRelease(); beginRender(); }
@@ -325,14 +328,15 @@ void mandelbrotLoop() {
       if (option == 4) { switchGame(0); return; }
       if (option <= 1) changeZoom(option == 0 ? 1 : -1);
       else {
-        if (option == 2) { centerRe = -0.5; centerIm = 0; zoom = 0; }
+        if (option == 2) { centerRe = -0.5; centerIm = 0; zoom = 0; audio::play(audio::Cue::Saved); }
         menu = false; requireRelease(); beginRender();
       }
     }
     return;
   }
-  if (cmd == 4 || cmd == 5) { openMenu(); return; }
+  if (cmd == 4 || cmd == 5) { audio::play(audio::Cue::Open); openMenu(); return; }
   if (cmd >= 0 && cmd <= 3) {
+    playNavClick();
     double shift = pixelScale() * 32;
     // Up moves the center toward positive imaginary values.
     if (cmd == 0) centerIm += shift;

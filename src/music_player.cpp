@@ -15,6 +15,8 @@
 
 // Music player app, adapted from display_test/src/main.cpp.
 #include "config.h"
+#include "audio_kit.h"
+extern void setDisplayBrightness(uint8_t brightness, bool persist);
 constexpr int SD_CS = SD_CS_PIN, LRCLK = I2S_LRCLK_PIN, BCLK = I2S_BCLK_PIN, DIN = I2S_DOUT_PIN;
 constexpr int SHOOT_PIN = 8, I2C_SDA = 10, I2C_SCL = 20;
 constexpr int ART_X = 40, ART_Y = 29, ART_SIZE = 160;
@@ -1112,6 +1114,7 @@ openAudio:
   // and leave the amp silent. Uninstall first so every track starts clean.
   i2s_driver_uninstall(I2S_NUM_0);
   if (!mp3.begin(musicBuffer, audioOut)) { status("MP3 DECODE FAILED", TFT_RED); return false; }
+  setDisplayBrightness(displayBrightness, false);
   playStarted = millis();
   paused = false;
   status("PLAYING  >", ACCENT);
@@ -1537,8 +1540,6 @@ static void loaderFail(const char *msg) {
 }
 
 static void musicSetup() {
-  pinMode(0, OUTPUT);
-  digitalWrite(0, HIGH);
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
   loaderBegin();
@@ -1564,7 +1565,7 @@ static void musicSetup() {
   if (!audioOut) {
     audioOut = new AudioOutputI2S(0, AudioOutputI2S::EXTERNAL_I2S, 16);
     audioOut->SetPinout(BCLK, LRCLK, DIN);
-    audioOut->SetGain(0.80);
+    audioOut->SetGain(audio::mediaGain());
   }
 
   // Allocate the small text band sprites before the big covers so the heap

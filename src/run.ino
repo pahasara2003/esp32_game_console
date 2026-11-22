@@ -1,9 +1,15 @@
 #include "game.h"
 #include "ui_kit.h"
 #include <Arduino.h>
-#include "run_background_240x320.h"
+#include "run_background.h"
 #include "run_clouds.h"
 #include "vampire_runner_sprites.h"
+#include "run_rules.h"
+
+static void decodeRunnerFrame(const RunnerSprite &sprite, int frame, uint8_t *pixels);
+static void dirtyRunnerRect(int x, int y, int w, int h);
+static void renderRunnerDirty();
+static void prepareRunMilestone();
 
 // =================================================================
 // MODERN VERTICAL ENDLESS RUNNER (240x320 PORTRAIT ORIENTATION)
@@ -22,14 +28,16 @@ constexpr int RUN_GROUND_Y = 262;
 
 // Runner Character Physics (Vertical Portrait space)
 constexpr int RUNNER_X = 30;
+// Frames are generated at display size and drawn without scaling.
 constexpr int RUNNER_W = VAMPIRE_FRAME_W;
 constexpr int RUNNER_H = VAMPIRE_FRAME_H;
-// The death effect spreads farther left than the normal 32px character. Its
+constexpr int RUNNER_DEATH_W = VAMPIRE_DEAD_FRAME_W;
+// The death effect spreads farther left than the normal 40px character. Its
 // wider canvas is offset so the body remains aligned with the running sprite.
-constexpr int RUNNER_DEATH_X = RUNNER_X - 18;
-// Gentler ascent and descent, retaining the ~50px peak with ~11% more airtime.
-constexpr float GRAVITY = 0.70f;
-constexpr float JUMP_VELOCITY = -8.75f;
+constexpr int RUNNER_DEATH_X = RUNNER_X - 24;
+// Faster ascent and landing retain the roughly 50px jump height.
+constexpr float GRAVITY = runrules::gravity;
+constexpr float JUMP_VELOCITY = runrules::jumpVelocity;
 
 // Colors matching OLED Modern Palette
 #define RUN_BG UI_BG
@@ -56,7 +64,7 @@ static bool isJumping = false;
 static int legAnimFrame = 0;
 static unsigned long runLastAnimTime = 0;
 static unsigned long runLastScoreTime = 0;
-static float gameSpeed = 4.2f;
+static float gameSpeed = runrules::startSpeed;
 
 // Obstacles
 struct RunObstacle {
@@ -70,13 +78,44 @@ static const int MAX_RUN_OBS = 3;
 static RunObstacle obs[MAX_RUN_OBS];
 static unsigned long lastObsSpawn = 0;
 
+static int runCharacter = 0;
+static runrules::Rewards runRewards;
+static uint32_t runTickAt = 0;
+static uint32_t runFrameAt = 0;
+static uint32_t runMilestoneTime = 0;
+static int runMilestone = 0;
+static int runPattern = 0, runPatternStep = 0, runSequence = 0;
+static float runSpawnDistance = 0;
+struct RunPickup { float x; int y; bool shield, active; };
+static RunPickup runPickups[16];
+struct RunDebris {
+  float x, y, vx, vy;
+  uint16_t life, color;
+  uint8_t size;
+};
+static RunDebris runDebris[24];
+struct RunCollectedCoin { float x, y; uint16_t life; };
+static RunCollectedCoin runCollectedCoins[12];
+static bool runBonusNext = false;
+
+static void decodeRunnerFrame(const RunnerSprite &sprite, int frame, uint8_t *pixels) {
+  uint32_t offset = pgm_read_dword(sprite.offsets + frame % sprite.count);
+  const int size = sprite.width * RUNNER_H;
+  int out = 0;
+  while (out < size) {
+    int count = pgm_read_byte(sprite.data + offset++);
+    uint8_t color = pgm_read_byte(sprite.data + offset++);
+    while (count-- && out < size) pixels[out++] = color;
+  }
+}
+
 static int runPauseSelection = 0;
 static const char *const RUN_PAUSE_ITEMS[] = {"Resume", "Restart", "High scores", "Main menu"};
 static bool runPauseReady = false;
 
 // One complete day/night orbit passes through all nine supplied frames. Each
 // segment continuously crossfades into the next, including night back to dawn.
-static constexpr unsigned long RUN_DAY_SEGMENT_MS = 6500;
+static constexpr unsigned long RUN_DAY_SEGMENT_MS = 12000;
 static uint32_t runDayCycleStarted = 0;
 static uint8_t runDayFrame = 0;
 static uint8_t runDayNextFrame = 1;
@@ -93,6 +132,12 @@ struct RunCloud {
 static constexpr uint8_t RUN_CLOUD_LAYER_COUNT = 7;
 static RunCloud runClouds[RUN_CLOUD_LAYER_COUNT];
 static unsigned long runCloudUpdateAt = 0;
+constexpr int RUN_RENDER_BAND = 16;
+constexpr int RUN_RENDER_BANDS = (RUN_H + RUN_RENDER_BAND - 1) / RUN_RENDER_BAND;
+static int runDirtyLeft[RUN_RENDER_BANDS], runDirtyRight[RUN_RENDER_BANDS];
+static uint16_t runRenderPixels[RUN_W * RUN_RENDER_BAND];
+static bool runMilestoneDirty = false;
+static TFT_eSprite runNotice(&tft);
 
 // A 64-step ordered pattern produces a visually smooth crossfade while each
 // screen pixel is copied from only one source frame. This removes the costly
@@ -160,9 +205,11 @@ static void syncRunnerDayCycle() {
 static uint16_t runnerBackdropAt(int x, int y) {
   x = constrain(x, 0, RUN_W - 1);
   y = constrain(y, 0, RUN_H - 1);
-  int index = y * RUN_W + x;
-  uint8_t phase = useNextRunnerTimePixel(x, y) ? runDayNextFrame : runDayFrame;
-  return pgm_read_word(&run_background_frames[phase][index]);
+  // True colour blend (no dither noise) between the two time-of-day frames.
+  uint16_t a = runBackgroundPixel(runDayFrame, x, y, 0);
+  if (runDayBlend == 0) return a;
+  uint16_t b = runBackgroundPixel(runDayNextFrame, x, y, 1);
+  return blendRun565(a, b, runDayBlend);
 }
 
 static void restoreRunnerBackdropRect(int x, int y, int w, int h) {
@@ -182,6 +229,7 @@ static void restoreRunnerBackdropRect(int x, int y, int w, int h) {
 }
 
 static void drawRunnerBackdrop() {
+  runMilestoneDirty = true;
   syncRunnerDayCycle();
   static uint16_t row[RUN_W];
   tft.setSwapBytes(true);
@@ -218,9 +266,12 @@ static void drawRunCloudClipped(uint8_t cloudIndex) {
     int runStart = -1;
     int count = 0;
     for (int sx = sourceLeft; sx < sourceRight; ++sx) {
-      bool useSecond = useNextRunnerTimePixel(x + sx, cloud.y + y);
-      uint16_t color = pgm_read_word(&(
-          useSecond ? secondImage : firstImage)[y * w + sx]);
+      uint16_t color = pgm_read_word(&firstImage[y * w + sx]);
+      if (color != RUN_CLOUD_TRANSPARENT && runDayBlend) {
+        uint16_t next = pgm_read_word(&secondImage[y * w + sx]);
+        if (next != RUN_CLOUD_TRANSPARENT)
+          color = blendRun565(color, next, runDayBlend);
+      }
       if (color != RUN_CLOUD_TRANSPARENT) {
         if (runStart < 0) runStart = sx;
         row[count++] = color;
@@ -240,27 +291,11 @@ static void drawRunCloudClipped(uint8_t cloudIndex) {
 }
 
 static void updateRunnerDayCycleBackdrop() {
-  syncRunnerDayCycle();
-  constexpr int rowsPerUpdate = 4;
-  int y0 = runDayRenderY;
-  int y1 = min(295, y0 + rowsPerUpdate);
-  static uint16_t pixels[RUN_W * rowsPerUpdate];
-  for (int y = y0; y < y1; ++y) {
-    for (int x = 0; x < RUN_W; ++x) {
-      pixels[(y - y0) * RUN_W + x] = runnerBackdropAt(x, y);
-    }
-  }
-  tft.setSwapBytes(true);
-  tft.pushImage(0, y0, RUN_W, y1 - y0, pixels);
-  tft.setSwapBytes(false);
-
-  // Repair only clouds touched by this background band. Each cloud occupies a
-  // separate vertical band, so this is both clean and inexpensive.
-  for (int i = 0; i < RUN_CLOUD_LAYER_COUNT; ++i) {
-    int cloudBottom = runClouds[i].y + run_cloud_height[runClouds[i].variant];
-    if (runClouds[i].y < y1 && cloudBottom > y0) drawRunCloudClipped(i);
-  }
-  runDayRenderY = y1 >= 295 ? 43 : y1;
+  if (runDayRenderY == 43) syncRunnerDayCycle();
+  int nextY = (runDayRenderY / RUN_RENDER_BAND + 1) * RUN_RENDER_BAND;
+  dirtyRunnerRect(0, runDayRenderY, RUN_W, nextY - runDayRenderY);
+  runDayRenderY = nextY;
+  if (runDayRenderY >= 295) runDayRenderY = 43;
 }
 
 static void initRunClouds() {
@@ -292,8 +327,7 @@ static void updateRunClouds() {
   runCloudUpdateAt = now;
 
   bool moved[RUN_CLOUD_LAYER_COUNT] = {};
-  // Remove every moved cloud first, then draw their new positions. The bands
-  // do not overlap, so one layer cannot erase another.
+  // Mark both positions; the compositor restores clouds and foreground together.
   for (int i = 0; i < RUN_CLOUD_LAYER_COUNT; ++i) {
     RunCloud &cloud = runClouds[i];
     float nextX = cloud.x - cloud.pixelsPerSecond * elapsed / 1000.0f;
@@ -301,9 +335,8 @@ static void updateRunClouds() {
       nextX = RUN_W + random(12, 70);
     }
     if ((int)nextX != cloud.drawnX) {
-      restoreRunnerBackdropRect(cloud.drawnX, cloud.y,
-                                run_cloud_width[cloud.variant],
-                                run_cloud_height[cloud.variant]);
+      dirtyRunnerRect(cloud.drawnX, cloud.y,
+                      run_cloud_width[cloud.variant], run_cloud_height[cloud.variant]);
       moved[i] = true;
     }
     cloud.x = nextX;
@@ -311,7 +344,9 @@ static void updateRunClouds() {
   for (int i = 0; i < RUN_CLOUD_LAYER_COUNT; ++i) {
     if (!moved[i]) continue;
     runClouds[i].drawnX = (int)runClouds[i].x;
-    drawRunCloudClipped(i);
+    dirtyRunnerRect(runClouds[i].drawnX, runClouds[i].y,
+                    run_cloud_width[runClouds[i].variant],
+                    run_cloud_height[runClouds[i].variant]);
   }
 }
 
@@ -319,27 +354,15 @@ static void updateRunClouds() {
 // SOUND EFFECTS
 // -----------------------------------------------------------------
 static void soundJump() {
-  setBuzzerTone(659); // E5
-  delay(20);
-  setBuzzerTone(880); // A5
-  delay(30);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Jump);
 }
 
 static void soundCrash() {
-  setBuzzerTone(220);
-  delay(60);
-  setBuzzerTone(165);
-  delay(100);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::GameOver);
 }
 
 static void soundMilestone() {
-  setBuzzerTone(1319);
-  delay(40);
-  setBuzzerTone(1760);
-  delay(60);
-  setBuzzerTone(0);
+  audio::play(audio::Cue::Milestone);
 }
 
 // -----------------------------------------------------------------
@@ -348,77 +371,111 @@ static void soundMilestone() {
 static void drawRunnerHeader() {
   TFT_eSprite header(&tft);
   header.setColorDepth(16);
-  if (!header.createSprite(224, 38)) return;
-  // Transparent outside the rounded card so the sky shows at the corners.
-  header.fillSprite(VAMPIRE_TRANSPARENT);
-  header.fillRoundRect(0, 0, 224, 38, 12, ui::CARD);
+  if (!header.createSprite(RUN_W, 43)) return;
+  header.fillSprite(ui::CARD);
+  // Refresh the top and both side margins with the same sky as the playfield.
+  for (int y = 0; y < 5; ++y) for (int x = 0; x < RUN_W; ++x)
+    header.drawPixel(x, y, runnerBackdropAt(x, y));
+  for (int y = 5; y < 43; ++y) for (int x = 0; x < 8; ++x) {
+    header.drawPixel(x, y, runnerBackdropAt(x, y));
+    header.drawPixel(239 - x, y, runnerBackdropAt(239 - x, y));
+  }
+  for (int y = 0; y < 12; ++y) for (int x = 0; x < 12; ++x) {
+    if ((12 - x) * (12 - x) + (12 - y) * (12 - y) <= 144) continue;
+    header.drawPixel(8 + x, 5 + y, runnerBackdropAt(8 + x, 5 + y));
+    header.drawPixel(231 - x, 5 + y, runnerBackdropAt(231 - x, 5 + y));
+    header.drawPixel(8 + x, 42 - y, runnerBackdropAt(8 + x, 42 - y));
+    header.drawPixel(231 - x, 42 - y, runnerBackdropAt(231 - x, 42 - y));
+  }
   header.setTextDatum(ML_DATUM);
   header.setTextColor(ui::LABEL);
-  header.drawString("Run", 12, 20, 4);
+  header.drawString("Coins", 20, 15, 2);
+  header.setTextColor(RUN_AMBER);
+  header.drawString(String(runRewards.coins), 20, 32, 2);
   header.setTextDatum(TR_DATUM);
   header.setTextColor(ui::SECONDARY);
-  header.drawString("Best", 150, 3, 2);
-  header.drawString("Distance", 212, 3, 2);
+  header.drawString("Combo", 142, 8, 2);
+  header.drawString("Distance", 220, 8, 2);
   header.setTextColor(RUN_ACCENT);
-  header.drawString(String(currentGame.highScores[0]) + " m", 150, 19, 2);
-  header.setTextColor(ui::LABEL);
-  header.drawString(String(score) + " m", 212, 19, 2);
-  header.pushSprite(8, 5, VAMPIRE_TRANSPARENT);
+  header.drawString("x" + String(runRewards.multiplier()), 142, 24, 2);
+  header.setTextColor(score > 0 && score % 50 < 4 ? RUN_ACCENT : ui::LABEL);
+  header.drawString(String(score) + " m", 220, 24, 2);
+  header.pushSprite(0, 0);
   header.deleteSprite();
 }
 
 static void updateRunnerScoreHUD() {
+  static int lastScore = -1, lastCoins = -1, lastCombo = -1;
+  if (score == lastScore && runRewards.coins == lastCoins &&
+      runRewards.multiplier() == lastCombo) return;
   drawRunnerHeader();
+  lastScore = score;
+  lastCoins = runRewards.coins;
+  lastCombo = runRewards.multiplier();
 }
 
-static void drawRunnerBottomBar() {
-  // Small floating pill so the scenery stays visible around it.
-  tft.fillRoundRect(52, 296, 136, 20, 10, ui::CARD);
-  ui::hint(306, "Up to jump", ui::CARD);
+static void drawRunnerBottomBar(bool force = false) {
+  static int lastSeconds = -1;
+  int seconds = (runRewards.shield + 999) / 1000;
+  if (!force && seconds == lastSeconds) return;
+  TFT_eSprite bar(&tft);
+  bar.setColorDepth(16);
+  if (!bar.createSprite(224, 20)) return;
+  bar.fillSprite(ui::CARD);
+  for (int y = 0; y < 10; ++y) for (int x = 0; x < 10; ++x) {
+    if ((10-x)*(10-x)+(10-y)*(10-y)<=100) continue;
+    bar.drawPixel(x,y,runnerBackdropAt(8+x,296+y));
+    bar.drawPixel(223-x,y,runnerBackdropAt(231-x,296+y));
+    bar.drawPixel(x,19-y,runnerBackdropAt(8+x,315-y));
+    bar.drawPixel(223-x,19-y,runnerBackdropAt(231-x,315-y));
+  }
+  String hint = seconds ? "Shield active " + String(seconds) + "s  Right: attack"
+                        : "Up: jump   Shoot: pause";
+  bar.setTextDatum(MC_DATUM);
+  bar.setTextColor(seconds ? RUN_ACCENT : ui::SECONDARY, ui::CARD);
+  bar.drawString(hint,112,10,2);
+  bar.pushSprite(8,296);
+  lastSeconds = seconds;
 }
 
 // -----------------------------------------------------------------
 // RUNNER SPRITE & OBSTACLE RENDERING
 // -----------------------------------------------------------------
-static void drawRunner(int px, int py, int anim, bool inAir) {
-  const uint16_t *frame = inAir
-      ? vampire_jump_frames[anim % VAMPIRE_FRAME_COUNT]
-      : vampire_run_frames[anim % VAMPIRE_FRAME_COUNT];
-  // Compose the character and the exact image behind it in RAM, then transfer
-  // one opaque rectangle. This prevents the display from briefly showing the
-  // erased background between animation frames.
-  static uint16_t composed[RUNNER_W * RUNNER_H];
-  for (int y = 0; y < RUNNER_H; ++y) {
-    for (int x = 0; x < RUNNER_W; ++x) {
-      uint16_t ink = pgm_read_word(&frame[y * RUNNER_W + x]);
-      composed[y * RUNNER_W + x] = ink == VAMPIRE_TRANSPARENT
-          ? runnerBackdropAt(px + x, py + y) : ink;
-    }
-  }
-  tft.setSwapBytes(true);
-  tft.pushImage(px, py, RUNNER_W, RUNNER_H, composed);
-  tft.setSwapBytes(false);
+static void drawRunner(int px, int py, int prevPy, int anim, bool inAir) {
+  (void)anim;
+  const auto &sprite = runner_characters[runCharacter].actions[runRewards.attack ? 3 : inAir ? 1 : 0];
+  static int previousLeft = 0, previousRight = RUNNER_W;
+  int left = min(previousLeft, (int)sprite.x);
+  int right = max(previousRight, sprite.x + sprite.width);
+  dirtyRunnerRect(px + left, min(py, prevPy) - 12,
+                  right - left, RUNNER_H + abs(prevPy - py) + 12);
+  previousLeft = sprite.x;
+  previousRight = sprite.x + sprite.width;
+  for (const auto &p : runDebris)
+    if (p.life) dirtyRunnerRect((int)p.x, (int)p.y, p.size, p.size);
+  for (const auto &coin : runCollectedCoins)
+    if (coin.life) dirtyRunnerRect((int)coin.x-5,(int)coin.y-5,11,11);
+  renderRunnerDirty();
 }
 
 static void eraseRunner(int px, int py) {
-  restoreRunnerBackdropRect(px - 2, py - 2, RUNNER_W + 4, RUNNER_H + 4);
+  restoreRunnerBackdropRect(px - 20, py - 12, 100, RUNNER_H + 12);
 }
 
 static void drawRunnerDeathFrame(int py, int frameIndex) {
-  const uint16_t *frame = vampire_dead_frames[
-      frameIndex % VAMPIRE_DEAD_FRAME_COUNT];
-  static uint16_t composed[VAMPIRE_DEAD_FRAME_PIXELS];
-  for (int y = 0; y < RUNNER_H; ++y) {
-    for (int x = 0; x < VAMPIRE_DEAD_FRAME_W; ++x) {
-      uint16_t ink = pgm_read_word(&frame[y * VAMPIRE_DEAD_FRAME_W + x]);
-      composed[y * VAMPIRE_DEAD_FRAME_W + x] =
-          ink == VAMPIRE_TRANSPARENT
-              ? runnerBackdropAt(RUNNER_DEATH_X + x, py + y) : ink;
+  const RunnerCharacter &character = runner_characters[runCharacter];
+  const RunnerSprite &sprite = character.actions[2];
+  static uint8_t frame[RUNNER_DEATH_W * RUNNER_H];
+  decodeRunnerFrame(sprite, frameIndex, frame);
+  static uint16_t composed[RUNNER_DEATH_W * RUNNER_H];
+  for (int y = 0; y < RUNNER_H; ++y)
+    for (int x = 0; x < RUNNER_DEATH_W; ++x) {
+      uint16_t ink = pgm_read_word(character.palette + frame[y * RUNNER_DEATH_W + x]);
+      composed[y * RUNNER_DEATH_W + x] = ink == VAMPIRE_TRANSPARENT
+          ? runnerBackdropAt(RUNNER_DEATH_X + x, py + y) : ink;
     }
-  }
   tft.setSwapBytes(true);
-  tft.pushImage(RUNNER_DEATH_X, py, VAMPIRE_DEAD_FRAME_W,
-                RUNNER_H, composed);
+  tft.pushImage(RUNNER_DEATH_X, py, RUNNER_DEATH_W, RUNNER_H, composed);
   tft.setSwapBytes(false);
 }
 
@@ -426,86 +483,269 @@ static void playRunnerDeathAnimation(int py) {
   // Remove the last live pose once, then replace each death frame atomically.
   eraseRunner(RUNNER_X, (int)prevRunnerY);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
-                            VAMPIRE_DEAD_FRAME_W, RUNNER_H);
-  setBuzzerTone(260);
-  for (int frame = 0; frame < VAMPIRE_DEAD_FRAME_COUNT; ++frame) {
-    if (frame == 3) setBuzzerTone(180);
-    if (frame == 6) setBuzzerTone(110);
-    if (frame == 8) setBuzzerTone(0);
+                            RUNNER_DEATH_W, RUNNER_H);
+  audio::play(audio::Cue::GameOver);
+  for (int frame = 0; frame < runner_characters[runCharacter].actions[2].count; ++frame) {
     drawRunnerDeathFrame(py, frame);
     delay(95);
   }
   setBuzzerTone(0);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
-                            VAMPIRE_DEAD_FRAME_W, RUNNER_H);
+                            RUNNER_DEATH_W, RUNNER_H);
+}
+
+static void addRunPickup(float x, int y, bool shield) {
+  for (auto &pickup : runPickups)
+    if (!pickup.active) { pickup = {x, y, shield, true}; return; }
 }
 
 static void spawnRunObstacle() {
-  for (int i = 0; i < MAX_RUN_OBS; i++) {
-    if (!obs[i].active) {
-      obs[i].x = RUN_W + 10;
-      int obsType = random(0, 3);
-      obs[i].style = obsType;
-      if (obsType == 0) {
-        // Short grass-topped brick block.
-        obs[i].w = 12;
-        obs[i].h = 18;
-        obs[i].color = 0xA347;
-      } else if (obsType == 1) {
-        // Taller moss-covered stone pillar.
-        obs[i].w = 14;
-        obs[i].h = 28;
-        obs[i].color = 0x738E;
-      } else {
-        // Wide weathered brick block.
-        obs[i].w = 22;
-        obs[i].h = 16;
-        obs[i].color = 0xB3A7;
-      }
-      obs[i].active = true;
-      lastObsSpawn = millis();
-      break;
+  if (runBonusNext) {
+    // A separate jump in open space, with landing room before the next obstacle.
+    const int heights[] = {76, 94, 106, 94, 76};
+    for (int i = 0; i < 5; ++i) addRunPickup(250 + i * 28, RUN_GROUND_Y - heights[i], false);
+    runSpawnDistance = 112 + 44 * gameSpeed;
+    runBonusNext = false;
+    return;
+  }
+  for (auto &obstacle : obs) {
+    if (obstacle.active) continue;
+    const auto &step = runrules::patterns[runPattern][runPatternStep];
+    const int widths[] = {11, 12, 18}, heights[] = {24, 36, 20};
+    obstacle = {250, widths[step.style], heights[step.style], 0, step.style, true};
+    // Coins describe the rising, peak and falling portions of a jump.
+    const int dx[] = {-60, -20, 20, 60};
+    const int dy[] = {52, 78, 92, 64};
+    for (int i = 0; i < 4; ++i) addRunPickup(250 + dx[i], RUN_GROUND_Y - dy[i], false);
+    runSpawnDistance = step.gapFrames * gameSpeed + obstacle.w;
+    runBonusNext = runPatternStep == 1;
+    if (++runPatternStep == 3) {
+      runPatternStep = 0;
+      runPattern = (runPattern + 1) % 3;
+      if (++runSequence % 2 == 0) addRunPickup(350, RUN_GROUND_Y - 28, true);
     }
+    return;
   }
 }
 
-static void drawRunnerObstacle(int index, int x, int y) {
-  const RunObstacle &obstacle = obs[index];
-  // Details stay inside the original obstacle bounds, preserving jump clearance.
-  static uint16_t pixels[22 * 28];
-  bool stone = obstacle.style == 1;
-  uint16_t base = runnerTimeColor(stone ? RUN_OBS_STONE : RUN_OBS_BRICK);
-  uint16_t mortar = runnerTimeColor(RUN_OBS_MORTAR);
-  uint16_t highlight = runnerTimeColor(RUN_OBS_HIGHLIGHT);
-  uint16_t shadow = runnerTimeColor(RUN_OBS_SHADOW);
-  uint16_t grassTop = runnerTimeColor(RUN_OBS_GRASS_TOP);
-  uint16_t grassMid = runnerTimeColor(RUN_OBS_GRASS_MID);
-  uint16_t grassDark = runnerTimeColor(RUN_OBS_GRASS_DARK);
-  uint16_t grassSpeck = runnerTimeColor(RUN_OBS_GRASS_SPECK);
-  if (obstacle.style == 2) base = blendRun565(base, highlight, 44);
-  for (int yy = 0; yy < obstacle.h; ++yy) {
-    for (int xx = 0; xx < obstacle.w; ++xx) {
-      int brickY = max(0, yy - 4);
-      int row = brickY / 6;
-      int brickX = (xx + (row & 1) * 4) % 8;
-      uint16_t color = base;
-      if (brickY % 6 == 0 || brickX == 0) color = mortar;
-      else if (brickY % 6 == 1) color = highlight;
-      else if (brickY % 6 == 5 || brickX == 7) color = shadow;
-      // A few chips in the stone faces, fixed to the block as it moves.
-      if (stone && yy > 7 && (xx + yy * 3) % 23 == 0) color = mortar;
-      if (xx == 0 || xx == obstacle.w - 1 || yy == obstacle.h - 1)
-        color = shadow;
-      if (yy < 3 || (yy < 5 && (xx / 2) % 3 == 0)) {
-        color = yy == 0 ? grassTop : yy == 1 ? grassMid : grassDark;
-        if ((xx + yy) % 5 == 0) color = grassSpeck;
-      }
-      pixels[yy * obstacle.w + xx] = color;
-    }
+static void collectRunCoin(float x, int y) {
+  int slot = 0;
+  for (int i = 1; i < 12; ++i)
+    if (runCollectedCoins[i].life < runCollectedCoins[slot].life) slot = i;
+  auto &coin = runCollectedCoins[slot];
+  if (coin.life) dirtyRunnerRect((int)coin.x-5,(int)coin.y-5,11,11);
+  coin = {x,(float)y,700};
+  dirtyRunnerRect((int)x-5,y-5,11,11);
+}
+
+static void updateRunCollectedCoins(uint32_t elapsed) {
+  for (auto &coin : runCollectedCoins) {
+    if (!coin.life) continue;
+    dirtyRunnerRect((int)coin.x-5,(int)coin.y-5,11,11);
+    coin.life = runrules::tick(coin.life,elapsed);
+    coin.y -= min(elapsed,(uint32_t)50) * 0.13f;
+    if (coin.life) dirtyRunnerRect((int)coin.x-5,(int)coin.y-5,11,11);
   }
+}
+
+static void burstRunObstacle(int index) {
+  const auto &o = obs[index];
+  uint16_t brick = runnerTimeColor(o.style == 1 ? RUN_OBS_STONE : RUN_OBS_BRICK);
+  uint16_t light = runnerTimeColor(RUN_OBS_HIGHLIGHT);
+  for (int i = 0; i < 12; ++i) {
+    // Reuse the shortest-lived piece if two bursts already fill the pool.
+    int slot = 0;
+    for (int j = 1; j < 24; ++j)
+      if (runDebris[j].life < runDebris[slot].life) slot = j;
+    auto &p = runDebris[slot];
+    if (p.life) dirtyRunnerRect((int)p.x, (int)p.y, p.size, p.size);
+    p = {o.x + o.w / 2.0f, RUN_GROUND_Y - o.h / 2.0f,
+         (float)(i % 4 * 48 - 72), (float)(-55 - i / 4 * 38),
+         (uint16_t)(320 + i * 20), i >= 8 ? RUN_ACCENT_HI : i & 1 ? light : brick,
+         (uint8_t)(i >= 8 ? 1 : 2 + i % 2)};
+    dirtyRunnerRect((int)p.x, (int)p.y, p.size, p.size);
+  }
+}
+
+static void updateRunDebris(uint32_t elapsed) {
+  float dt = min(elapsed, (uint32_t)50) / 1000.0f;
+  for (auto &p : runDebris) {
+    if (!p.life) continue;
+    dirtyRunnerRect((int)p.x, (int)p.y, p.size, p.size);
+    p.life = runrules::tick(p.life, elapsed);
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vy += 240 * dt;
+    if (p.x < -3 || p.x >= RUN_W || p.y >= RUN_GROUND_Y) p.life = 0;
+    if (p.life) dirtyRunnerRect((int)p.x, (int)p.y, p.size, p.size);
+  }
+}
+
+static uint16_t runObstacleColors[10];
+static void cacheRunnerObstacleColors() {
+  const uint16_t *palettes[] = {RUN_OBS_BRICK, RUN_OBS_STONE, RUN_OBS_MORTAR,
+    RUN_OBS_HIGHLIGHT, RUN_OBS_SHADOW, RUN_OBS_GRASS_TOP, RUN_OBS_GRASS_MID,
+    RUN_OBS_GRASS_DARK, RUN_OBS_GRASS_SPECK};
+  for (int i = 0; i < 9; ++i) runObstacleColors[i] = runnerTimeColor(palettes[i]);
+  runObstacleColors[9] = blendRun565(runObstacleColors[0], runObstacleColors[3], 44);
+}
+
+static uint16_t runnerObstaclePixel(int index, int xx, int yy) {
+  const RunObstacle &obstacle = obs[index];
+  bool stone = obstacle.style == 1;
+  uint16_t base = runObstacleColors[stone ? 1 : 0];
+  uint16_t mortar = runObstacleColors[2];
+  uint16_t highlight = runObstacleColors[3];
+  uint16_t shadow = runObstacleColors[4];
+  if (obstacle.style == 2) base = runObstacleColors[9];
+  int brickY = max(0, yy - 4);
+  int row = brickY / 6;
+  int brickX = (xx + (row & 1) * 4) % 8;
+  uint16_t color = base;
+  if (brickY % 6 == 0 || brickX == 0) color = mortar;
+  else if (brickY % 6 == 1) color = highlight;
+  else if (brickY % 6 == 5 || brickX == 7) color = shadow;
+  if (stone && yy > 7 && (xx + yy * 3) % 23 == 0) color = mortar;
+  if (xx == 0 || xx == obstacle.w - 1 || yy == obstacle.h - 1)
+    color = shadow;
+  if (yy < 3 || (yy < 5 && (xx / 2) % 3 == 0)) {
+    color = runObstacleColors[yy == 0 ? 5 : yy == 1 ? 6 : 7];
+    if ((xx + yy) % 5 == 0) color = runObstacleColors[8];
+  }
+  return color;
+}
+
+// Merge old/new bounds, then compose each affected band once. No erase pass.
+static void dirtyRunnerRect(int x, int y, int w, int h) {
+  int x0 = max(0, x), x1 = min(RUN_W, x + w);
+  int y0 = max(43, y), y1 = min(295, y + h);
+  if (x0 >= x1 || y0 >= y1) return;
+  for (int band = y0 / RUN_RENDER_BAND; band <= (y1 - 1) / RUN_RENDER_BAND; ++band) {
+    if (runDirtyRight[band] == 0) runDirtyLeft[band] = x0;
+    else runDirtyLeft[band] = min(runDirtyLeft[band], x0);
+    runDirtyRight[band] = max(runDirtyRight[band], x1);
+  }
+}
+
+static void renderRunnerDirty() {
+  prepareRunMilestone();
+  const auto &character = runner_characters[runCharacter];
+  int action = runRewards.attack ? 3 : isJumping ? 1 : 0;
+  const auto &sprite = character.actions[action];
+  int frameIndex = runRewards.attack
+      ? runrules::attackFrame(runRewards.attack, sprite.count) : legAnimFrame;
+  frameIndex %= sprite.count;
+  static uint8_t frame[100 * RUNNER_H];
+  static int cachedCharacter = -1, cachedAction = -1, cachedFrame = -1;
+  if (cachedCharacter != runCharacter || cachedAction != action || cachedFrame != frameIndex) {
+    decodeRunnerFrame(sprite, frameIndex, frame);
+    cachedCharacter = runCharacter; cachedAction = action; cachedFrame = frameIndex;
+  }
+  cacheRunnerObstacleColors();
   tft.setSwapBytes(true);
-  tft.pushImage(x, y, obstacle.w, obstacle.h, pixels);
+  tft.startWrite();
+  for (int band = 0; band < RUN_RENDER_BANDS; ++band) {
+    int x0 = runDirtyLeft[band], x1 = runDirtyRight[band];
+    if (x1 == 0) continue;
+    int y0 = max(43, band * RUN_RENDER_BAND), y1 = min(295, (band + 1) * RUN_RENDER_BAND);
+    int width = x1 - x0;
+    for (int y = y0; y < y1; ++y)
+      for (int x = x0; x < x1; ++x)
+        runRenderPixels[(y - y0) * width + x - x0] = runnerBackdropAt(x, y);
+    // Clip each layer to the band before visiting its pixels.
+    for (const auto &cloud : runClouds) {
+      int cx = (int)cloud.x, cw = run_cloud_width[cloud.variant];
+      int left = max(x0, cx), right = min(x1, cx + cw);
+      int top = max(y0, cloud.y), bottom = min(y1, cloud.y + run_cloud_height[cloud.variant]);
+      if (left >= right || top >= bottom) continue;
+      const auto *first = runCloudImage(cloud.variant, runDayFrame);
+      const auto *second = runCloudImage(cloud.variant, runDayNextFrame);
+      for (int y = top; y < bottom; ++y) for (int x = left; x < right; ++x) {
+        int source = (y - cloud.y) * cw + x - cx;
+        uint16_t ink = pgm_read_word(first + source);
+        if (ink == RUN_CLOUD_TRANSPARENT) continue;
+        if (runDayBlend) {
+          uint16_t next = pgm_read_word(second + source);
+          if (next != RUN_CLOUD_TRANSPARENT) ink = blendRun565(ink, next, runDayBlend);
+        }
+        runRenderPixels[(y - y0) * width + x - x0] = ink;
+      }
+    }
+    for (int i = 0; i < MAX_RUN_OBS; ++i) {
+      const auto &o = obs[i];
+      if (!o.active) continue;
+      int ox = (int)o.x, oy = RUN_GROUND_Y - o.h;
+      for (int y = max(y0, oy); y < min(y1, RUN_GROUND_Y); ++y)
+        for (int x = max(x0, ox); x < min(x1, ox + o.w); ++x)
+          runRenderPixels[(y - y0) * width + x - x0] = runnerObstaclePixel(i, x - ox, y - oy);
+    }
+    for (const auto &pickup : runPickups) {
+      if (!pickup.active) continue;
+      int cx = (int)pickup.x;
+      for (int y = max(y0, pickup.y - 6); y < min(y1, pickup.y + 7); ++y)
+        for (int x = max(x0, cx - 6); x < min(x1, cx + 7); ++x) {
+          int dx = x - cx, dy = y - pickup.y;
+          uint16_t ink;
+          if (pickup.shield) {
+            if (abs(dx) > 6 - (dy + 6) / 3) continue;
+            ink = abs(dx) >= 4 - (dy + 6) / 3 || dy == -6 ? RUN_ACCENT_HI : RUN_ACCENT;
+          } else {
+            if (dx * dx + dy * dy > 20) continue;
+            ink = abs(dx) > 2 || abs(dy) > 2 ? RUN_AMBER : 0xFFF0;
+          }
+          runRenderPixels[(y - y0) * width + x - x0] = ink;
+        }
+    }
+    int sx = RUNNER_X + sprite.x, sy = (int)runnerY;
+    for (int y = max(y0, sy); y < min(y1, sy + RUNNER_H); ++y)
+      for (int x = max(x0, sx); x < min(x1, sx + sprite.width); ++x) {
+        uint16_t ink = pgm_read_word(character.palette + frame[(y - sy) * sprite.width + x - sx]);
+        if (ink != VAMPIRE_TRANSPARENT) runRenderPixels[(y - y0) * width + x - x0] = ink;
+      }
+    if (runRewards.shield) {
+      for (int y = max(y0, sy - 10); y < min(y1, sy - 2); ++y)
+        for (int x = max(x0, RUNNER_X + 16); x < min(x1, RUNNER_X + 25); ++x) {
+          int dx = abs(x - RUNNER_X - 20), dy = y - sy + 10;
+          if (dx <= 4 - dy / 2)
+            runRenderPixels[(y - y0) * width + x - x0] = dx == 4 - dy / 2 || dy == 0 ? RUN_ACCENT_HI : RUN_ACCENT;
+        }
+    }
+    for (const auto &p : runDebris) {
+      if (!p.life) continue;
+      int px = (int)p.x, py = (int)p.y;
+      for (int y = max(y0, py); y < min(y1, py + p.size); ++y)
+        for (int x = max(x0, px); x < min(x1, px + p.size); ++x)
+          runRenderPixels[(y - y0) * width + x - x0] = p.color;
+    }
+    for (const auto &coin : runCollectedCoins) {
+      if (!coin.life) continue;
+      int cx=(int)coin.x, cy=(int)coin.y;
+      uint8_t opacity = coin.life >= 250 ? 255 : coin.life * 255 / 250;
+      for (int y=max(y0,cy-4); y<min(y1,cy+5); ++y)
+        for (int x=max(x0,cx-4); x<min(x1,cx+5); ++x) {
+          int dx=x-cx, dy=y-cy;
+          if (dx*dx+dy*dy>20) continue;
+          auto &pixel=runRenderPixels[(y-y0)*width+x-x0];
+          pixel=blendRun565(pixel,abs(dx)>2 || abs(dy)>2 ? RUN_AMBER : 0xFFF0,opacity);
+        }
+    }
+    // The notice is part of the final band, never erased and redrawn on the panel.
+    if (runMilestoneTime && runNotice.created()) {
+      for (int y=max(y0,52); y<min(y1,76); ++y)
+        for (int x=max(x0,32); x<min(x1,208); ++x) {
+          uint16_t ink=runNotice.readPixel(x-32,y-52);
+          if (ink!=VAMPIRE_TRANSPARENT) runRenderPixels[(y-y0)*width+x-x0]=ink;
+        }
+    }
+    tft.pushImage(x0, y0, width, y1 - y0, runRenderPixels);
+    runDirtyRight[band] = 0;
+  }
+  tft.endWrite();
   tft.setSwapBytes(false);
+}
+
+static void drawRunnerObstacle(int index, int x, int y) {
+  dirtyRunnerRect(x, y, obs[index].w, obs[index].h);
 }
 
 static void updateAndDrawObstacles() {
@@ -516,31 +756,49 @@ static void updateAndDrawObstacles() {
 
       obs[i].x -= gameSpeed;
       int curX = (int)obs[i].x;
-      // Fractional speeds sometimes move an extra pixel; erase the exact trail.
-      restoreRunnerBackdropRect(curX + obs[i].w, oy,
-                                prevX - curX, obs[i].h);
+      // Include the exact trail when a fractional step moves an extra pixel.
+      dirtyRunnerRect(curX + obs[i].w, oy, prevX - curX, obs[i].h);
 
       // If obstacle completely passed screen
       if (obs[i].x + obs[i].w < 0) {
-        restoreRunnerBackdropRect(0, oy, obs[i].w + 2, obs[i].h);
+        dirtyRunnerRect(0, oy, obs[i].w + 2, obs[i].h);
         obs[i].active = false;
         continue;
       }
 
-      if (curX < RUN_W) {
-        drawRunnerObstacle(i, curX, oy);
+      const RunnerSprite &attack = runner_characters[runCharacter].actions[3];
+      int attackFrame = runrules::attackFrame(runRewards.attack, attack.count);
+      if (attackFrame == attack.count / 2 &&
+          runrules::overlaps(RUNNER_X + 7, (int)runnerY + 12, 79, 48,
+                             curX, oy, obs[i].w, obs[i].h)) {
+        burstRunObstacle(i);
+        obs[i].active = false;
+        dirtyRunnerRect(curX, oy, obs[i].w, obs[i].h);
+        runRewards.coins += 5;
+        audio::play(audio::Cue::Brick);
+        continue;
       }
+      if (curX < RUN_W) drawRunnerObstacle(i, curX, oy);
 
       // Collision Check with Runner (AABB with 2px forgiveness)
       // The transparent canvas is wider than her body. Keep collision bounds
       // centered on the visible sprite so the larger art does not feel unfair.
-      int rx = RUNNER_X + 5;
-      int ry = (int)runnerY + 5;
-      int rw = RUNNER_W - 10;
-      int rh = RUNNER_H - 7;
+      int rx = RUNNER_X + 7;
+      int ry = (int)runnerY + 6;
+      int rw = RUNNER_W - 14;
+      int rh = RUNNER_H - 8;
 
       if (curX < rx + rw && curX + obs[i].w > rx &&
           oy < ry + rh && oy + obs[i].h > ry) {
+        // Contact during wind-up must not consume the shield and erase the block early.
+        if (runRewards.attack && attackFrame < attack.count / 2) continue;
+        if (runRewards.hit()) {
+          burstRunObstacle(i);
+          obs[i].active = false;
+          dirtyRunnerRect(curX, oy, obs[i].w, obs[i].h);
+          audio::play(audio::Cue::Hit);
+          continue;
+        }
         playRunnerDeathAnimation((int)runnerY);
         gameState = 2; // Game Over
         menu_drawn = false;
@@ -553,9 +811,64 @@ static void updateAndDrawObstacles() {
 // -----------------------------------------------------------------
 // GAME INITIALIZATION
 // -----------------------------------------------------------------
+static void drawRunPickups() {
+  for (const auto &pickup : runPickups)
+    if (pickup.active) dirtyRunnerRect((int)pickup.x - 7, pickup.y - 7, 15, 15);
+}
+
+static void updateRunPickups() {
+  for (auto &pickup : runPickups) {
+    if (!pickup.active) continue;
+    dirtyRunnerRect((int)pickup.x - 7, pickup.y - 7, 15, 15);
+    pickup.x -= gameSpeed;
+    if (runrules::overlaps(RUNNER_X + 7, (int)runnerY + 6, RUNNER_W - 14, RUNNER_H - 8,
+                           (int)pickup.x - 6, pickup.y - 6, 12, 12)) {
+      pickup.active = false;
+      if (pickup.shield) {
+        runRewards.shield = runrules::shieldDuration;
+        audio::play(audio::Cue::Powerup);
+      } else {
+        runRewards.collect();
+        collectRunCoin(pickup.x,pickup.y);
+        audio::play(audio::Cue::Pickup);
+      }
+    } else if (pickup.x < -7) {
+      pickup.active = false;
+      if (!pickup.shield) runRewards.streak = 0;
+    }
+  }
+}
+
+static void prepareRunMilestone() {
+  if (!runMilestoneTime) { runNotice.deleteSprite(); return; }
+  if (!runMilestoneDirty && runNotice.created()) return;
+  runNotice.setColorDepth(16);
+  if (!runNotice.created() && !runNotice.createSprite(176,24)) return;
+  runNotice.fillSprite(VAMPIRE_TRANSPARENT);
+  runNotice.fillRoundRect(0,0,176,24,12,ui::CARD);
+  runNotice.setTextDatum(MC_DATUM);
+  runNotice.setTextColor(RUN_ACCENT,ui::CARD);
+  runNotice.drawString(String(runMilestone)+" m  -  Keep going",88,12,2);
+  runMilestoneDirty=false;
+  dirtyRunnerRect(32,52,176,24);
+}
+
 static void initRunnerGame() {
+  audio::restartMusic();
   score = 0;
-  gameSpeed = 4.2f;
+  runRewards = {};
+  runMilestoneTime = 0;
+  runNotice.deleteSprite();
+  runBonusNext = false;
+  for (auto &coin : runCollectedCoins) coin.life = 0;
+  runMilestone = 0;
+  runPattern = runPatternStep = runSequence = 0;
+  runSpawnDistance = 120;
+  runFrameAt = runTickAt = millis();
+  for (auto &right : runDirtyRight) right = 0;
+  for (auto &pickup : runPickups) pickup.active = false;
+  for (auto &p : runDebris) p.life = 0;
+  gameSpeed = runrules::startSpeed;
   runnerY = RUN_GROUND_Y - RUNNER_H;
   prevRunnerY = runnerY;
   runnerVY = 0;
@@ -575,14 +888,34 @@ static void initRunnerGame() {
   initRunClouds();
   drawRunClouds();
   drawRunnerHeader();
-  drawRunnerBottomBar();
+  drawRunnerBottomBar(true);
 
-  drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+  drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
 }
 
 // -----------------------------------------------------------------
 // MODAL SCREENS (START / PAUSE / GAME OVER)
 // -----------------------------------------------------------------
+static void drawRunnerChoice() {
+  // Native-size portrait: no second scaling pass in the selector either.
+  const auto &character = runner_characters[runCharacter];
+  const auto &sprite = character.actions[0];
+  uint8_t frame[RUNNER_W * RUNNER_H];
+  decodeRunnerFrame(sprite, 0, frame);
+  for (int i = 0; i < RUNNER_W * RUNNER_H; ++i) {
+    uint16_t ink = pgm_read_word(character.palette + frame[i]);
+    runRenderPixels[i] = ink == VAMPIRE_TRANSPARENT ? ui::CARD : ink;
+  }
+  tft.setSwapBytes(true);
+  tft.pushImage(100, 104, RUNNER_W, RUNNER_H, runRenderPixels);
+  tft.setSwapBytes(false);
+  tft.setTextPadding(176);
+  ui::hint(180, character.name, ui::CARD, ui::LABEL);
+  tft.setTextPadding(0);
+  for (int i = 0; i < 3; ++i)
+    tft.fillCircle(108 + i * 12, 198, 3, i == runCharacter ? RUN_ACCENT : ui::SEPARATOR);
+}
+
 static void showRunnerStartScreen() {
   gameState = -1;
   tft.setRotation(2);
@@ -590,10 +923,17 @@ static void showRunnerStartScreen() {
   drawRunnerBackdrop();
   drawRunClouds();
   drawRunnerHeader();
-  static const ui::Control controls[] = {
-    {"Up", "Jump"}, {"Shoot", "Pause"}, {"Score", "Distance"}};
-  ui::startCard(52, "Run", "Jump and keep running", controls, 3,
-                currentGame.highScores[0], RUN_ACCENT, " m", "Press Shoot to start");
+  ui::card(18, 52, 204, 236);
+  ui::heading(34, 62, "Choose your character", "Run");
+  drawRunnerChoice();
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(ui::SECONDARY, ui::CARD);
+  tft.drawString("<", 52, 136, 4);
+  tft.drawString(">", 188, 136, 4);
+  ui::hint(218, "Up: jump  Right: attack", ui::CARD);
+  ui::hint(237, "Collect a shield to attack", ui::CARD);
+  ui::pill(34, 254, 172, 26, "Shoot to start", RUN_ACCENT);
+  buttonsRequireRelease();
 }
 
 static void drawRunnerPauseOption(int item) {
@@ -626,13 +966,14 @@ static void handleRunnerPause() {
       drawRunnerBackdrop();
       drawRunClouds();
       drawRunnerHeader();
-      drawRunnerBottomBar();
+      drawRunnerBottomBar(true);
       for (int i = 0; i < MAX_RUN_OBS; ++i)
         if (obs[i].active)
           drawRunnerObstacle(i, (int)obs[i].x, RUN_GROUND_Y - obs[i].h);
-      drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+      drawRunPickups();
+      drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
       });
-      runLastAnimTime = runLastScoreTime = lastObsSpawn = runCloudUpdateAt = millis();
+      runLastAnimTime = runLastScoreTime = lastObsSpawn = runCloudUpdateAt = runTickAt = runFrameAt = millis();
       gameState = 0;
       menu_drawn = false;
     } else if (runPauseSelection == 1) { // Restart
@@ -645,14 +986,16 @@ static void handleRunnerPause() {
       drawRunnerBackdrop();
       drawRunClouds();
       drawRunnerHeader();
-      drawRunnerBottomBar();
+      drawRunnerBottomBar(true);
       for (int i = 0; i < MAX_RUN_OBS; ++i)
         if (obs[i].active)
           drawRunnerObstacle(i, (int)obs[i].x, RUN_GROUND_Y - obs[i].h);
-      drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+      drawRunPickups();
+      drawRunner(RUNNER_X, (int)runnerY, (int)runnerY, legAnimFrame, isJumping);
       drawRunnerPauseMenu();
       runPauseReady = false;
     } else { // Exit
+      runNotice.deleteSprite();
       switchGame(0);
     }
   }
@@ -660,7 +1003,9 @@ static void handleRunnerPause() {
 
 static void drawRunnerGameOver() {
   currentGame.recordScore(score);
-  ui::gameOverSheet("Run", score, currentGame.highScores[0], RUN_ACCENT, "Crashed", " m");
+  String coins = String(runRewards.coins);
+  ui::gameOverSheet("Run", score, currentGame.highScores[0], RUN_ACCENT,
+                    "Crashed", " m", coins.c_str(), "Coins");
 }
 
 static void handleRunnerGameOver() {
@@ -672,6 +1017,7 @@ static void handleRunnerGameOver() {
     menu_drawn = false;
   } else if (cmd == 0) {
     playSelectTone();
+    runNotice.deleteSprite();
     switchGame(0);
   }
 }
@@ -692,16 +1038,30 @@ void runSetup() {
 }
 
 void runLoop() {
+  audio::gameState(gameState);
   if (gameState == 0) {
+    uint32_t frameStarted = millis();
+    if (frameStarted - runFrameAt < runrules::frameMs) { delay(1); return; }
+    runFrameAt = frameStarted;
     // Each confirmed Up press jumps; Shoot opens the pause menu immediately.
     int cmd = findCommand(false);
     if (cmd == 4) {
-      gameState = 1;
+      audio::pauseMusic(true); gameState = 1;
       menu_drawn = false;
       runPauseSelection = 0;
       runPauseReady = false;
       return;
     }
+    uint32_t elapsed = millis() - runTickAt;
+    runTickAt = millis();
+    runRewards.update(elapsed);
+    updateRunDebris(elapsed);
+    updateRunCollectedCoins(elapsed);
+    uint32_t oldMilestoneTime = runMilestoneTime;
+    runMilestoneTime = runrules::tick(runMilestoneTime, elapsed);
+    if (oldMilestoneTime && !runMilestoneTime) dirtyRunnerRect(32, 52, 176, 24);
+    if (cmd == 1 && runRewards.startAttack(runner_characters[runCharacter].actions[3].count * runrules::attackFrameMs))
+      audio::play(audio::Cue::Laser);
     if (cmd == 0 && !isJumping) {
       runnerVY = JUMP_VELOCITY;
       isJumping = true;
@@ -720,23 +1080,26 @@ void runLoop() {
       isJumping = false;
     }
 
-    // Animate ground running more quickly while retaining the existing jump
-    // animation rate. Scoring remains on its original independent 120ms clock.
+    // Match animation to the faster physics; scoring uses its own 120ms clock.
     unsigned long now = millis();
-    const unsigned long animationInterval = isJumping ? 120 : 75;
+    const unsigned long animationInterval = isJumping ? 90 : 56;
     if (now - runLastAnimTime >= animationInterval) {
-      legAnimFrame = (legAnimFrame + 1) % VAMPIRE_FRAME_COUNT;
+      legAnimFrame = (legAnimFrame + 1) % runner_characters[runCharacter].actions[isJumping ? 1 : 0].count;
       runLastAnimTime = now;
     }
 
     if (now - runLastScoreTime >= 120) {
       runLastScoreTime = now;
       score++; // Increment distance
-      updateRunnerScoreHUD();
-
+      if (score == 100 || score == 250 || score == 500) {
+        runMilestone = score;
+        runMilestoneTime = 1800;
+        runMilestoneDirty = true;
+        soundMilestone();
+      }
       // Progressive speed increase
-      if (score % 50 == 0 && gameSpeed < 7.5f) {
-        gameSpeed += 0.25f;
+      if (score % 50 == 0 && gameSpeed < runrules::maxSpeed) {
+        gameSpeed = min(runrules::maxSpeed, gameSpeed + 0.3125f);
         soundMilestone();
       }
     }
@@ -748,20 +1111,23 @@ void runLoop() {
     // Update cloud parallax and obstacles.
     updateRunClouds();
 
-    // Spawn obstacles at dynamic distance
-    if (millis() - lastObsSpawn > (unsigned long)(random(1100, 2200) * (4.2f / gameSpeed))) {
-      spawnRunObstacle();
-    }
+    // Advance a fixed pattern in world distance; speed changes retain landing room.
+    runSpawnDistance -= gameSpeed;
+    if (runSpawnDistance <= 0) spawnRunObstacle();
+    updateRunPickups();
     updateAndDrawObstacles();
+    if (gameState != 0) return;
+    drawRunPickups();
 
     // Redraw the runner without an exposed clear interval. At ground level the
     // opaque composite directly replaces the previous animation frame.
-    if ((int)prevRunnerY != (int)runnerY)
-      eraseRunner(RUNNER_X, (int)prevRunnerY);
-    drawRunner(RUNNER_X, (int)runnerY, legAnimFrame, isJumping);
+    drawRunner(RUNNER_X, (int)runnerY, (int)prevRunnerY, legAnimFrame,
+               isJumping);
     prevRunnerY = runnerY;
 
-    delay(14); // ~60 FPS smooth motion
+    updateRunnerScoreHUD();
+    drawRunnerBottomBar();
+    yield();
     return;
   } else if (gameState == 1) { // Pause
     if (!menu_drawn) {
@@ -777,7 +1143,11 @@ void runLoop() {
     handleRunnerGameOver();
   } else if (gameState == -1) { // Title Screen
     int cmd = findCommand();
-    if (cmd == 4) {
+    if (cmd == 1 || cmd == 3) {
+      runCharacter = (runCharacter + (cmd == 1 ? 1 : 2)) % 3;
+      playNavClick();
+      drawRunnerChoice();
+    } else if (cmd == 4) {
       playSelectTone();
       initRunnerGame();
       gameState = 0;

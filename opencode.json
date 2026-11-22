@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "supervisor",
+  "agents": {
+    "supervisor": {
+      "mode": "primary",
+      "model": "openrouter/anthropic/claude-haiku-5.5",
+      "prompt": "You are the project supervisor. Understand the user's request, write a clear plan, and delegate all file edits, code writing, and shell commands to the worker subagent with detailed instructions. Inspect its results and request corrections. Never write code yourself.",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "worker", "effect": "allow" }
+      ]
+    },
+    "worker": {
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "description": "Implements coding tasks delegated by the supervisor, runs tests, and reports results.",
+      "prompt": "You are a coding worker. Implement the supervisor's instructions, run relevant tests, and report changes, errors, and unresolved problems.",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "pio run *", "effect": "allow" },
+        { "action": "shell", "resource": "pio run -t upload *", "effect": "allow" },
+        { "action": "shell", "resource": "pio run --target upload *", "effect": "allow" }
+      ]
+    }
+  }
+}

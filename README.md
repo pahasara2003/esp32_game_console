@@ -1,135 +1,143 @@
-# ESP32-C3 Retro Game Console (PlatformIO & TFT_eSPI)
+<div align="center">
 
-A retro game console project running on the **ESP32-C3** with an **ILI9341 SPI TFT Display (320x240)** and **ADS1115 I2C ADC** for analog gamepad/button controls.
+# 🎮 ESP32-C3 Game Console
+
+**A pocket-sized retro handheld you can build yourself.**
+Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3.
+
+![MCU](https://img.shields.io/badge/MCU-ESP32--C3-E7352C?style=for-the-badge&logo=espressif&logoColor=white)
+![Framework](https://img.shields.io/badge/Arduino-PlatformIO-00979D?style=for-the-badge&logo=platformio&logoColor=white)
+![Display](https://img.shields.io/badge/Display-ILI9341%20240×320-8A2BE2?style=for-the-badge)
+![Audio](https://img.shields.io/badge/Audio-I2S%20MAX98357A-F5A623?style=for-the-badge)
+
+<br>
+
+<img src="assets/home/tetris-52.png" width="52" alt="Tetris"> <img src="assets/home/snake-52.png" width="52" alt="Snake"> <img src="assets/home/breakout-52.png" width="52" alt="Breakout"> <img src="assets/home/run-52.png" width="52" alt="Run"> <img src="assets/home/galaga-52.png" width="52" alt="Galaga"> <img src="assets/home/tic_tac-52.png" width="52" alt="Tic-tac-toe"> <img src="assets/home/pong-52.png" width="52" alt="Pong"> <img src="assets/home/mines-52.png" width="52" alt="Minesweeper"> <img src="assets/home/life-52.png" width="52" alt="Life"> <img src="assets/home/mandelbrot-52.png" width="52" alt="Mandelbrot"> <img src="assets/home/sound-52.png" width="52" alt="Music"> <img src="assets/home/settings-52.png" width="52" alt="Settings">
+
+</div>
 
 ---
 
-## 🎮 Included Games & Menus
+## ✨ Highlights
 
-- **Main Menu:** Modern phone-style home screen over the blue-purple wallpaper: a frosted-glass "Games" header widget with an accent orb showing the playable count, floating 52×52 icons with soft drop shadows and white shadowed labels, a frosted focus card with an accent glow and underline capsule on the selected app, and a frosted page dock where the active page is an elongated pill. Nine apps fit each page; D-pad movement crosses between pages automatically.
-- **Snake:** Nokia-style retro snake with particle effects and stars.
-- **Breakout:** Brick-breaker game with bat and bouncing ball physics.
-- **Tetris:** Classic block puzzle with rotation, line clearing, and pause menu. A theme-matched pastel gradient header sits above the centered 17×17 board with 12-pixel cells, solid square blocks over a seamless purple-black checkerboard, and separate score, centered next-piece, and time cards. Small off-screen sprites compose changing HUD values; moving pieces redraw only changed cells. Pause uses a bright selected row with dark text.
-- **Tic-tac-toe:** Play X against the console's O opponent. Move with the D-pad, tap Shoot to place, and hold Shoot to pause.
-- **Pong:** Move the paddle with Left and Right, keep the ball in play, and survive three misses. Shoot pauses.
-- **Minesweeper:** Clear an 8×8 board with ten mines. White raised tiles, colored numbers, red flags, and a magenta selection outline follow the supplied icon's style. Tap Shoot to reveal, hold Shoot to flag, and press Up while holding Shoot to pause. The first reveal is safe. A small dot marks a revealed tile with no neighboring mines.
-- **Conway's Life:** Opens directly into an automatic B3/S23 simulation with wrapping edges. The launcher calls it **Conway's**. Random mode is the only simulation mode; the Info field guide explains the rules and illustrates common patterns across 16 pages. Only changed cells redraw during simulation.
-- **Launcher pages:** Two pages contain all games and utilities; move with the D-pad and press Shoot to open. Selection changes redraw two small composed tiles; a page change slides the app foreground sideways with a short eased transition, while the wallpaper and title stay fixed. The transition uses RGB565 strips and small masks rather than two full-screen buffers.
-- **High Score System:** High scores persisted to ESP32 Flash via `Preferences` (NVS).
+- 🕹️ **10 games**, each with its own music, sound effects, pause menu and saved high scores
+- 🧬 **Simulations**: Conway's Game of Life and an interactive Mandelbrot explorer
+- 🎵 **Media**: music player and video player straight from the SD card, plus a camera viewer
+- 🎨 **Polished UI**: phone-style launcher, 8 colour themes, light and dark mode, one shared UI kit for every screen
+- 🔊 **Game music built in**: tracks are embedded in flash, no SD card needed to play
+- ⚡ **Fast display**: 40 MHz SPI, about 29 full-screen frames per second
+- 🧠 **RAM-smart**: big buffers exist only while their app is running
 
----
+## 🕹️ What's inside
 
-## Tetris controls
-
-Tetris uses its own asynchronous ADS1115 scanner with settling, debounce, and separate held-button states. Up rotates once per press; Left/Right repeat after 180 ms, then every 65 ms; holding Down targets one fall step every 35 ms and can be combined with horizontal movement. Shoot pauses, and screen transitions require release before another action. Its checkerboard and HUD accents follow the selected theme; solid square pieces use a coordinated bright palette. Pieces spawn centrally. Input regression checks: `python3 tools/check_tetris_input.py` and `python3 tools/check_tetris_controls.py`.
-
-## Conway's Life controls
-
-| Screen | Controls |
+| | Apps |
 | :--- | :--- |
-| Running | Shoot pauses; Up/Down changes speed. |
-| Paused | Shoot resumes; Up/Down changes speed. |
-| Run or pause | Hold Shoot to open options. |
-| Options | Up/Down chooses; Shoot selects. Resume, new random, speed, Info, or main menu. Hold Shoot to return. |
+| **Arcade** | Snake · Tetris · Breakout · Run · Galaga · Rally |
+| **Puzzle & classic** | Sliding Puzzle · Tic-tac-toe · Pong · Minesweeper |
+| **Simulations** | Conway's Game of Life · Mandelbrot explorer |
+| **Media** | Music player · Video player · Camera viewer |
+| **System** | Launcher · Settings · Info |
 
-Speed limits: 1, 2, 4, 8, 12, 20, or 30 generations per second; actual speed depends on how many pixels change. Default target is 20. The app reads the D-pad asynchronously, batches same-color cell updates, and refreshes counters five times per second. USB serial `p` reports measured generation rate and the last frame's duration.
+**Settings** cover theme, brightness, sound, effects volume, music volume, game music, battery saver and score reset.
 
-Random mode uses 2-pixel cells on a 112×96 board (10,752 cells). There is no cell editor or start prompt.
+## 🧰 Hardware
 
-Hold Shoot → Info to read the field guide. Left/Right changes pages; Shoot returns to options. It includes the laws, population changes, blocks, beehives, loaves, boats, blinkers, toads, beacons, gliders, lightweight spaceships, and pulsars. Moving examples animate independently while your random world stays paused and unchanged.
+| Part | Details |
+| :--- | :--- |
+| 🧠 MCU | ESP32-C3 (`esp32-c3-devkitm-1`) |
+| 🖥️ Display | ILI9341, 240×320 portrait, SPI at 40 MHz |
+| 🎛️ Controls | D-pad through an ADS1115 ADC (I2C `0x48`) plus a Shoot button on a GPIO |
+| 💾 Storage | SD card for music and video |
+| 🔈 Audio | MAX98357A I2S amplifier and speaker |
 
-A cell is born with three live neighbors; a live cell survives with two or three. Populations naturally shrink from isolation or overcrowding, and may become still, oscillate, or die out. Opposite edges are connected, so traveling patterns can eventually collide with existing cells. Extinction is labeled on screen; the app does not silently reseed or alter Conway's rules.
+### 🔌 Pinout
 
-The supplied Tic-tac-toe, Pong, Minesweeper, Life, and Mandelbrot icons are in the launcher. Gallery artwork is converted and ready for a future app.
+| Signal | GPIO | | Signal | GPIO |
+| :--- | :---: | :---: | :--- | :---: |
+| Display CS | 4 | | Shoot button | 8 |
+| Display DC | 3 | | SD card CS | 9 |
+| Display MOSI | 2 | | I2S BCLK | 6 |
+| Display SCK | 1 | | I2S LRCLK | 7 |
+| Display MISO | 21 | | I2S DOUT | 5 |
+| Backlight | 0 | | I2C SDA | 10 |
+| Display RST | 3V3 | | I2C SCL | 20 |
 
-## Mandelbrot explorer
+> The Shoot button is active-low with a 10k pull-up. Backlight is HIGH = on. Display pins live in `lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`, the rest in `src/config.h`.
 
-Open **MANDEL** in the launcher. Each fresh arrow press moves the view center once; the crosshair marks the zoom center. Release between presses. Shoot opens view options, with **Zoom in 2x**, **Zoom out 2x**, **Reset view**, **Back to view**, and **Main menu**. In options, Up/Down moves once per press; Left/Right immediately zooms out/in and returns to the view. Hold Shoot to close options. The explorer uses completed ADC scans, a 30ms stable-reading filter, and release gating between actions and screens.
+## 🚀 Quick start
 
-The explorer starts at center -0.5 + 0i with a horizontal span of 3.5. Zoom ranges from 1x to 1,048,576x, with equal real/imaginary pixel scales and progressively higher iteration limits (96–496). Black denotes points that have not escaped within the current iteration limit. Deep views entirely inside the set can be solid black; pan to a boundary or reset the view to explore detail.
+You need [PlatformIO](https://platformio.org/).
 
-Rendering proceeds through 8-, 4-, 2-, and 1-pixel previews. CPU slices are limited to about 2ms, including checks inside expensive pixel calculations, and only one ADC channel is read between slices. A possible button press pauses refinement during debounce. Confirmed navigation cancels the old render, including any partially computed pixel, and immediately starts a low-iteration preview at the new center. Later passes add detail. Only the plot and changing status fields are updated; a small strip buffer avoids a full-screen frame buffer.
-
-## Home-screen assets
-
-The launcher uses a subtle 18% black tint baked into the wallpaper. Its title starts 12 pixels below the top edge and uses an opaque pastel gradient with dark lettering. Three app rows start at y=68, 143, and 218, with eight pixels of top padding inside each tile and extra space below the app name. Settings offers Aurora, Ocean, Orchid, Rose, Citrus, Sunset, Mint, and Silver: each changes the title gradient and selection accents, with a live gradient preview in Settings. Utility surfaces stay charcoal for readable contrast.
-
-The final user-selected wallpaper source and converted display image are `assets/home/abstract-blue-purple-source.png` and `assets/home/abstract-blue-purple-240x320.png`. Existing user-supplied app artwork is converted with clean transparency at 52×52 by `tools/build_home_assets.py`, which also builds `src/home_icons.h` and `src/home_wallpaper.h`. The launcher preview is `assets/home/launcher-preview.png`. A small temporary tile sprite composes the wallpaper, selection styling, icon, and label before transfer, and is freed when launching an app.
-
-## Display speed
-
-The ILI9341 write clock is now 40 MHz, previously 4 MHz. On the connected ESP32-C3, eight 240×320 RGB565 image transfers measured:
-
-| SPI write clock | Time per full image | Image transfers per second |
-| :--- | :--- | :--- |
-| 4 MHz | 312.504 ms | 3.20 |
-| 40 MHz | 34.697 ms | 28.82 |
-
-These numbers measure image transfers, not game or Mandelbrot frame rates. A generated full-screen gradient/checkerboard/ball demo measured approximately 16.1 FPS including image generation and text after composing the text panels off-screen. Each transferred frame includes the finished panels, avoiding an intermediate background-only repaint. The panel is connected for writes only, so clean reception must be checked visually; upload success and throughput do not verify pixel accuracy.
-
-The temporary visual demo was confirmed clean on this console and then removed from the normal firmware. Its source is archived in `backups/display-demo-40mhz.zip`. Normal games and apps retain the 40 MHz write clock.
-
----
-
-## 🔌 Hardware Circuit & Pinout
-
-### 1. ILI9341 Display (SPI)
-Configured via [`lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`](file:///home/pahasara/Documents/antigravity/embedded/esp32c3-ili9341/lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h):
-
-| ILI9341 Pin | ESP32-C3 Pin | Notes |
-| :--- | :--- | :--- |
-| **CS** | **GPIO 3** | Chip Select |
-| **DC / RS** | **GPIO 1** | Data / Command Select |
-| **RST / RESET** | **GPIO 2** | Display Hardware Reset |
-| **MOSI / SDI** | **GPIO 0** | SPI Data Out |
-| **SCLK / CLK** | **GPIO 4** | SPI Clock |
-| **MISO / SDO** | **GPIO 10** | SPI Data In |
-| **VCC** | **3.3V** / **5V** | Power |
-| **GND** | **GND** | Ground |
-| **LED / BL** | **3.3V** *(or GPIO)* | Backlight |
-
-### 2. Controls & Peripherals
-
-| Peripheral | ESP32-C3 Pin | Notes |
-| :--- | :--- | :--- |
-| **I2C SDA** | **GPIO 8** | Connected to ADS1115 ADC (`0x48`) |
-| **I2C SCL** | **GPIO 9** | Connected to ADS1115 ADC (`0x48`) |
-| **Shoot Button** | **GPIO 5** | Digital Input (`INPUT_PULLDOWN`) |
-
----
-
-## 📁 Project Structure
-
-```text
-esp32c3-ili9341/
-├── lib/
-│   └── TFT_eSPI/           # Customized TFT_eSPI with ESP32-C3 register & timing fixes
-├── src/
-│   ├── gameConsoleNew.ino  # Entry point (setup and loop)
-│   ├── game.h / game.ino   # Core Game engine, ADC input handler, high score manager
-│   ├── menu.ino            # Main menu launcher & icon renderer
-│   ├── snake.ino           # Snake game
-│   ├── breakout.ino        # Breakout game
-│   ├── tetris.ino          # Tetris game
-│   ├── mini_games.ino      # Tic-tac-toe, Pong, and Minesweeper
-│   ├── life.cpp            # Life interface, random world, and controls
-│   ├── life_model.h        # Conway B3/S23 simulation
-│   ├── life_guide.h        # Offline rules and animated pattern diagrams
-│   ├── life_input.cpp      # Nonblocking ADS1115 controls for Life
-│   ├── config.h            # Colors, screen dimensions, button pins
-│   ├── icons.h             # 60x60 game icon bitmaps
-│   ├── images.h            # UI bitmaps (pause, undo, play)
-│   └── Petme8x8.h          # 8x8 bitmap font
-├── platformio.ini          # PlatformIO config & library dependencies
-└── README.md
+```sh
+pio run                # build
+pio run -t upload      # flash the console
+pio device monitor     # serial monitor at 115200 baud
 ```
 
----
+<details>
+<summary><b>Flashing tips</b></summary>
 
-## 🛠️ Build and Upload in VS Code
+- USB CDC on boot is on, so serial output comes over the native USB port.
+- The partition table is `console_partitions.csv`.
+- Close the serial monitor before flashing, otherwise the port is busy.
+- `tools/flasher_gui.py` is a small point-and-click flasher.
 
-1. Open folder in VS Code:
-   `/home/pahasara/Documents/antigravity/embedded/esp32c3-ili9341`
-2. Click **Build (`✓`)** or press `Ctrl+Alt+B`.
-3. Connect ESP32-C3 and click **Upload (`→`)**.
-4. Open the Serial Monitor at `115200` baud.
+</details>
+
+## 🎛️ Controls
+
+The same buttons do the same thing everywhere.
+
+| Button | Action |
+| :--- | :--- |
+| ⬅️ ➡️ ⬆️ ⬇️ D-pad | Move, choose, change a value |
+| 🔴 Shoot (tap) | Select or act |
+| 🔴 Shoot (hold) | Pause or open options |
+
+Every game's start card lists its exact controls.
+
+## 🗂️ Project layout
+
+```text
+src/
+├── gameConsoleNew.ino     entry point
+├── game.h / game.ino      engine, input, high scores, countdown, tone task
+├── menu.ino               launcher, Settings, Info
+├── ui_kit.h / .cpp        shared ui:: helpers (cards, rows, pause sheets)
+├── buttons.cpp            ADS1115 button scanning
+├── audio_kit.*            sound effects and music helpers
+├── sd_game_music.*        embedded game music
+├── snake / tetris / breakout / run / galaga / sliding_puzzle / mini_games
+├── rally.cpp  life.cpp  mandelbrot.cpp
+└── music_player.cpp  video_player.cpp  camera_viewer.cpp
+lib/TFT_eSPI/              customised display driver
+assets/                    graphics, audio, generated data
+tools/                     asset converters, flasher, music selector
+tests/                     host-side tests
+docs/                      audio and game-music notes
+menu_preview/              menu-only preview firmware (separate project)
+```
+
+## 🛠️ Tools
+
+| Tool | What it does |
+| :--- | :--- |
+| `tools/make_icons.py`, `tools/build_home_assets.py` | Rebuild launcher icons and wallpaper headers |
+| `tools/select_game_music.py`, `tools/prepare_game_music.py` | Pick and convert embedded game music (see `docs/game-music.md`) |
+| `tools/yt_to_console.py` | Turn a video into the `/videos/<name>/` layout (`video.mjpeg`, `audio.wav`, `info.txt`) |
+| `tools/flasher_gui.py` | GUI flasher |
+
+## ✅ Tests
+
+Host-side tests live in `tests/` and cover audio, puzzle, rally, run, breakout, galaga and life. Tetris input checks:
+
+```sh
+python3 tools/check_tetris_input.py
+python3 tools/check_tetris_controls.py
+```
+
+## 📝 Developer notes
+
+- Keep new large buffers off static RAM; allocate them while the app runs.
+- UI text uses TFT_eSPI fonts 2 and 4 only, so avoid characters they can't draw.
+- Raising the SPI clock from 4 to 40 MHz took full-screen transfers from 3.2 to about 28.8 per second.

@@ -2,6 +2,7 @@
 """Build the Run background and clean transparent parallax cloud sprites."""
 from pathlib import Path
 from PIL import Image
+from run_background_codec import write_backgrounds
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets" / "run-scene"
@@ -51,15 +52,8 @@ def main():
             backgrounds.append(frame)
     backgrounds[0].save(BG_PREVIEW)
 
-    lines = ["#pragma once", "#include <stdint.h>", "#include <pgmspace.h>", "",
-             f"constexpr uint8_t RUN_BACKGROUND_FRAME_COUNT = {len(backgrounds)};",
-             "const uint16_t run_background_frames[RUN_BACKGROUND_FRAME_COUNT][240*320] PROGMEM = {"]
-    for frame in backgrounds:
-        lines.append("{")
-        emit_values(lines, [rgb565(*pixel) for pixel in frame.getdata()])
-        lines.append("},")
-    lines += ["};", ""]
-    BG_HEADER.write_text("\n".join(lines))
+    write_backgrounds(BG_HEADER, [[rgb565(*pixel) for pixel in frame.getdata()]
+                                 for frame in backgrounds])
 
     cloud_sheet = Image.open(CLOUD_SOURCE).convert("RGBA")
     lines = ["#pragma once", "#include <Arduino.h>", "",

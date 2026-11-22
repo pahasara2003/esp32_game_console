@@ -4,7 +4,6 @@
 #include "home_wallpaper.h"
 #include "config.h"
 #include "birthday.h"
-#include "birthday_code.h"
 
 // Define apps
 struct App {
@@ -21,6 +20,7 @@ App Apps[] = {
   {"Breakout", 0, 0, breakout_home_icon, 3},
   {"Run",      0, 0, run_home_icon,      4},
   {"Galaga",   0, 0, galaga_home_icon,   5},
+  {"Rally",    0, 0, rally_home_icon,   12},
   {"Puzzle",   0, 0, puzzle_home_icon,   6},
   {"Tic-Tac",  0, 0, tic_tac_home_icon,  7},
   {"Pong",     0, 0, pong_home_icon,     8},
@@ -28,6 +28,7 @@ App Apps[] = {
   {"Conway's", 0, 0, life_home_icon,    10},
   {"Mandel",   0, 0, mandelbrot_home_icon,11},
   {"Music",    0, 0, sound_home_icon,   -1},
+  {"Videos",   0, 0, videos_home_icon,  -1},
   {"Settings", 0, 0, settings_home_icon,-1},
   {"Info",     0, 0, about_home_icon,   -1}
 };
@@ -349,7 +350,6 @@ void showAboutScreen() {
   Serial.println("[Info] Open");
   drawAboutInformation();
   buttonsRequireRelease();
-  BirthdayCode secret;
   while (true) {
     int c = findCommand(false);
     if (Serial.available()) {
@@ -361,11 +361,6 @@ void showAboutScreen() {
       else if (key == ' ' || key == 'e' || key == 'E' || key == '\r' || key == '\n') c = 4;
     }
     if (c == 4) break;
-    if (secret.press(c, millis())) {
-      showBirthdayScene();
-      drawAboutInformation();
-      buttonsRequireRelease();
-    }
     delay(2);
   }
   menuSetup();
@@ -585,13 +580,18 @@ static String titleCase(const char *name) {
   return s;
 }
 
-static const ui::List settingsList = {16, 74, 208, 44, 3};
+static const ui::List settingsList = {16, 58, 208, 21, 9};
 void drawSettingsRow(int row, bool selected) {
-  const char *labels[] = {"Theme", "Sound", "Reset scores"};
+  const char *labels[] = {"Theme", "Brightness", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores", "Battery saver", "Show it"};
   String value = row == 0 ? titleCase(themeName(activeTheme)) :
-                 row == 1 ? String(soundEnabled ? "On" : "Off") : String("Reset");
+                 row == 1 ? (batterySaver ? String("10% locked") : String(displayBrightness) + "%") :
+                 row == 2 ? String(soundEnabled ? "On" : "Off") :
+                 row == 3 ? String(audio::effectsVolume) + "%" :
+                 row == 4 ? String(audio::musicVolume) + "%" :
+                 row == 5 ? String(batterySaver ? "Off locked" : (audio::gameMusic ? "On" : "Off")) :
+                 row == 6 ? String("Reset") : row == 7 ? String(batterySaver ? "On" : "Off") : String("Open");
   ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
-               row == 2 ? UI_RED : ui::SECONDARY);
+               row == 6 ? UI_RED : ui::SECONDARY);
 }
 
 static void drawSettingsHeader() {
@@ -600,20 +600,20 @@ static void drawSettingsHeader() {
 
 static void drawSettingsPalette() {
   // Theme swatches; the ring marks the active one.
-  tft.fillRect(16, 216, 208, 30, UI_BG);
+  tft.fillRect(16, 250, 208, 24, UI_BG);
   const uint16_t swatches[] = {0x7DFF, 0x4DDF, 0xCB5F, 0xFB75,
                                0xCFE8, 0xFD8B, 0x67D4, 0xC638};
   for (int i = 0; i < THEME_COUNT; ++i) {
     int x = 36 + i * 24;
-    tft.fillCircle(x, 231, 7, swatches[i]);
-    if (i == activeTheme) tft.drawCircle(x, 231, 10, ui::LABEL);
+    tft.fillCircle(x, 261, 6, swatches[i]);
+    if (i == activeTheme) tft.drawCircle(x, 261, 9, ui::LABEL);
   }
 }
 
 static void drawSettingsFooter() {
-  tft.fillRect(0, 266, 240, 54, UI_BG);
-  ui::hint(280, "Left / Right changes the value", UI_BG, ui::LABEL);
-  ui::hint(298, "Shoot saves and exits", UI_BG);
+  tft.fillRect(0, 277, 240, 43, UI_BG);
+  ui::hint(286, "Left / Right changes value", UI_BG, ui::LABEL);
+  ui::hint(306, "Shoot saves and exits", UI_BG);
 }
 
 static void refreshSettingsTheme(int selectedRow) {
@@ -621,9 +621,7 @@ static void refreshSettingsTheme(int selectedRow) {
   // stays identical. Updating these regions in place avoids a visible black
   // frame between the old and new themes.
   drawSettingsHeader();
-  drawSettingsRow(0, selectedRow == 0);
-  drawSettingsRow(1, selectedRow == 1);
-  drawSettingsRow(2, selectedRow == 2);
+  for (int row=0; row<9; ++row) drawSettingsRow(row, selectedRow == row);
   drawSettingsPalette();
   drawSettingsFooter();
 }
@@ -679,7 +677,7 @@ void showSettingsScreen() {
 
     if (cmd == 0 || cmd == 2) {
       int previousRow = selectedRow;
-      selectedRow = (selectedRow + (cmd == 0 ? 2 : 1)) % 3;
+      selectedRow = (selectedRow + (cmd == 0 ? 8 : 1)) % 9;
       playNavClick();
       drawSettingsRow(previousRow, false);
       drawSettingsRow(selectedRow, true);
@@ -689,24 +687,46 @@ void showSettingsScreen() {
         applyThemePreset((activeTheme + direction + THEME_COUNT) % THEME_COUNT, false);
         playNavClick();
         refreshSettingsTheme(selectedRow);
-      } else if (selectedRow == 1) {
+      } else if (selectedRow == 7) {
+        setBatterySaver(!batterySaver);
+        drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 1 && !batterySaver) {
+        setDisplayBrightness(constrain(int(displayBrightness) + (cmd == 1 ? 10 : -10), 10, 100), false);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 2) {
         setSoundEnabled(!soundEnabled, false);
+        playNavClick();
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 3 || selectedRow == 4) {
+        uint8_t &volume = selectedRow == 3 ? audio::effectsVolume : audio::musicVolume;
+        volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
+        audio::play(audio::Cue::Move);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 5 && !batterySaver) {
+        audio::gameMusic = !audio::gameMusic;
         playNavClick();
         drawSettingsRow(selectedRow, true);
       }
     } else if (cmd == 4) {
-      if (selectedRow == 2) {
+      if (selectedRow == 6) {
         if (confirmResetScores()) {
           resetAllGameScores();
+          audio::play(audio::Cue::Saved);
           tft.fillScreen(UI_BG);
           ui::hint(160, "Scores reset", UI_BG, UI_GREEN);
           delay(650);
         }
         drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 8) {
+        showBirthdayScene();
+        menuSetup();
+        return;
       } else {
         applyThemePreset(activeTheme, true);
+        setDisplayBrightness(displayBrightness, true);
         setSoundEnabled(soundEnabled, true);
-        playSelectTone();
+        audio::save();
+        audio::play(audio::Cue::Saved);
         menuSetup();
         return;
       }
@@ -733,6 +753,7 @@ void showNotice(const char* name) {
 }
 
 void menuSetup() {
+  audio::scene(0);
   Serial.println("[Menu] Opening phone launcher (9 apps per page)...");
   tft.setRotation(2); // Vertical (Portrait) mode: 240x320
   buttonsRequireRelease();
@@ -815,6 +836,14 @@ void menuLoop() {
         } else if (strcasecmp(Apps[selectedApp].label, "music") == 0) {
           audioReleaseForMusic();
           runMusicPlayer();
+          audioReclaimFromMusic();
+          tft.setSwapBytes(true);
+          buttonsRequireRelease();
+          menuSetup();
+          return;
+        } else if (strcasecmp(Apps[selectedApp].label, "videos") == 0) {
+          audioReleaseForMusic();
+          runVideoPlayer();
           audioReclaimFromMusic();
           tft.setSwapBytes(true);
           buttonsRequireRelease();

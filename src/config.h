@@ -19,6 +19,7 @@ extern uint16_t uiHeaderStart;
 extern uint16_t uiHeaderEnd;
 extern bool lightThemeEnabled;
 extern uint8_t activeTheme;
+extern uint8_t displayBrightness;
 extern bool soundEnabled;
 constexpr uint8_t THEME_COUNT = 8;
 
@@ -46,15 +47,15 @@ constexpr uint8_t THEME_COUNT = 8;
 #define TITLE_COLOR  UI_YELLOW
 #define BG_COLOR     UI_BG
 
-#define SHOOT 8   // NET5: 10k pull-up, pressed = LOW
+#define RIGHT_BTN 8   // D8, Right: 10k pull-up, pressed = LOW
 #define SD_CS_PIN 9
 #define I2S_BCLK_PIN 6
 #define I2S_LRCLK_PIN 7
 #define I2S_DOUT_PIN 5
 #define I2C_SDA_PIN 10
 #define I2C_SCL_PIN 20
-// Returns HIGH while Shoot is pressed (button is active-low on this board).
-#define readShoot() (!digitalRead(SHOOT))
+// Returns true while Shoot is pressed (ADS1115 A1, debounced in buttons.cpp).
+bool readShoot();
 
 inline uint16_t bg() {
   switch (random(5)) {

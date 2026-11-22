@@ -61,7 +61,8 @@ void pauseItem(const char *const *items, int count, int item, int selected, uint
 
 // Game-over sheet with score/best and a "Play again" button.
 void gameOverSheet(const char *game, int score, int best, uint16_t accent,
-                   const char *title = "Game over", const char *unit = nullptr);
+                   const char *title = "Game over", const char *unit = nullptr,
+                   const char *distance = nullptr, const char *distanceLabel = "Distance");
 
 // Start card: name, tagline, controls list, best score, start button.
 struct Control { const char *key, *action; };

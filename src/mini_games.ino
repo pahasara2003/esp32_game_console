@@ -3,6 +3,7 @@
 
 // Portrait games share the same 240 x 320 content frame and input conventions.
 #include "ui_kit.h"
+#include "arcade_style.h"
 
 namespace mini {
 enum Phase { INTRO, PLAY, PAUSE, FINISH };
@@ -77,28 +78,6 @@ static void footer(const char *top, const char *bottom) {
   ui::hint(303, bottom, UI_BG);
 }
 
-static constexpr uint16_t BOARD_TILE_COLOR = 0xBFE0;
-
-// Both boards share one yellow-green face; bevels distinguish covered mines.
-static void boardTile(int x, int y, int size, int radius,
-                      bool selected, bool recessed = false) {
-  tft.fillRect(x, y, size, size, UI_BG);
-  tft.fillRoundRect(x, y, size, size, radius, BOARD_TILE_COLOR);
-  tft.drawRoundRect(x, y, size, size, radius, 0x7C80);
-  if (recessed) {
-    tft.drawRoundRect(x + 2, y + 2, size - 4, size - 4, radius - 1, 0x9DC0);
-  } else {
-    tft.drawFastHLine(x + radius, y + 2, size - radius * 2, 0xDFF0);
-    tft.drawFastHLine(x + radius, y + size - 3, size - radius * 2, 0x9DC0);
-    tft.drawFastVLine(x + size - 3, y + radius, size - radius * 2, 0x9DC0);
-  }
-  if (selected) {
-    for (int inset = 0; inset < 3; ++inset)
-      tft.drawRoundRect(x + inset, y + inset, size - inset * 2,
-                        size - inset * 2, radius - inset, TFT_MAGENTA);
-  }
-}
-
 static void intro(const char *name, const char *line1, const char *line2,
                   const char *line3) {
   header(name, "New game");
@@ -144,7 +123,7 @@ static bool commonPause(int cmd, void (*draw)(), void (*start)()) {
     pause("PAUSED");
   } else if (cmd == 4) {
     playSelectTone();
-    if (pauseChoice == 0) { showResumeCountdown(draw); resetInput(); phase = PLAY; }
+    if (pauseChoice == 0) { showResumeCountdown(draw); resetInput(); phase = PLAY; audio::play(audio::Cue::Resume); }
     else if (pauseChoice == 1) start();
     else if (pauseChoice == 2) {
       showGameHighScores();
@@ -156,8 +135,10 @@ static bool commonPause(int cmd, void (*draw)(), void (*start)()) {
 }
 
 static void enterPause() {
+  audio::play(audio::Cue::Pause);
   buttonsRequireRelease();
   pauseChoice = 0;
+  audio::pauseMusic(true);
   phase = PAUSE;
   pause("PAUSED");
 }
@@ -202,36 +183,69 @@ static int solve(int turn, int depth) {
   return best;
 }
 
-static void drawTile(int i) {
-  const int x0 = 27, y0 = 75, size = 60, gap = 3;
-  int x = x0 + (i % 3) * (size + gap);
-  int y = y0 + (i / 3) * (size + gap);
-  mini::boardTile(x, y, size, 9, i == cursor);
+template<class Surface>
+static void paintTile(Surface &canvas, int i, int x, int y) {
+  constexpr int size = 60;
+  const uint16_t colors[3] = {0xF98B, 0xFD24, 0xFE64};
+  uint16_t color = colors[i / 3];
+  canvas.fillRoundRect(x, y, size, size, 9, color);
+  canvas.drawRoundRect(x, y, size, size, 9, arcadeStyle::fade(color, 135));
+  canvas.drawFastHLine(x + 7, y + 2, size - 14, arcadeStyle::mix(color, 0xFFFF, 125));
+  canvas.drawFastHLine(x + 9, y + 4, 10, TFT_WHITE);
+  canvas.drawFastHLine(x + 7, y + size - 3, size - 14, arcadeStyle::fade(color, 135));
+  uint16_t ink = ui::inkOn(color);
   if (cells[i] == 1) {
     for (int offset = -2; offset <= 2; ++offset) {
-      tft.drawLine(x + 17 + offset, y + 18, x + 43 + offset, y + 44, TFT_BLACK);
-      tft.drawLine(x + 43 + offset, y + 18, x + 17 + offset, y + 44, TFT_BLACK);
+      canvas.drawLine(x + 17 + offset, y + 18, x + 43 + offset, y + 44, ink);
+      canvas.drawLine(x + 43 + offset, y + 18, x + 17 + offset, y + 44, ink);
     }
   } else if (cells[i] == 2) {
     for (int radius = 14; radius <= 18; ++radius)
-      tft.drawCircle(x + 30, y + 31, radius, TFT_BLACK);
+      canvas.drawCircle(x + 30, y + 31, radius, ink);
+  }
+  if (i == cursor) {
+    canvas.drawRoundRect(x, y, size, size, 9, 0x36FF);
+    canvas.drawRoundRect(x + 1, y + 1, size - 2, size - 2, 8, 0x36FF);
+    canvas.drawPixel(x + size - 7, y + 5, TFT_WHITE);
+    canvas.drawPixel(x + size - 5, y + 7, TFT_WHITE);
+  }
+}
+
+static void drawTile(int i) {
+  const int size = 60, gap = 3;
+  int x = 27 + (i % 3) * (size + gap);
+  int y = 75 + (i / 3) * (size + gap);
+  TFT_eSprite tile(&tft);
+  tile.setColorDepth(16);
+  if (tile.createSprite(size, size)) {
+    tile.setOrigin(-x, -y);
+    arcadeStyle::drawBackdrop(tile, y, y + size - 1);
+    tic::paintTile(tile, i, x, y);
+    tile.pushSprite(x, y);
+    tile.deleteSprite();
+  } else {
+    tic::paintTile(tft, i, x, y);
   }
 }
 
 static void draw() {
   mini::header("Tic-tac-toe", "You are X");
-  if (restoringCountdownDigit()) {
-    for (int gap = 0; gap < 2; ++gap) {
-      tft.fillRect(87 + gap * 63, 75, 3, 186, UI_BG);
-      tft.fillRect(27, 135 + gap * 63, 186, 3, UI_BG);
-    }
+  uint16_t row[240];
+  bool swap = tft.getSwapBytes();
+  tft.setSwapBytes(true);
+  for (int y = 58; y <= 276; ++y) {
+    for (int x = 0; x < 240; ++x) row[x] = arcadeStyle::backdrop(x, y);
+    tft.pushImage(0, y, 240, 1, row);
   }
+  tft.setSwapBytes(swap);
   for (int i = 0; i < 9; ++i) drawTile(i);
   mini::footer(cpuPending ? "Console is thinking..." : "Shoot to place",
                "Hold Shoot to pause");
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   memset(cells, 0, sizeof(cells));
   cursor = 4;
   recorded = false;
@@ -241,8 +255,10 @@ static void start() {
 }
 
 static void finish() {
+  audio::pauseMusic(true);
   outcome = winner();
   if (!outcome) return;
+  audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Lose : audio::Cue::Draw);
   mini::phase = mini::FINISH;
   if (outcome == 1 && !recorded) {
     currentGame.recordScore(100);
@@ -275,6 +291,7 @@ void ticTacToeSetup() {
 }
 
 void ticTacToeLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   int cmd = mini::input();
   if (mini::commonIntro(cmd, tic::start)) return;
   if (mini::phase == mini::PAUSE) {
@@ -292,7 +309,7 @@ void ticTacToeLoop() {
     if (millis() - tic::cpuAt >= 1000) {
       tic::cpuPending = false;
       int reply = tic::computerTurn();
-      if (reply >= 0) { tic::drawTile(reply); playNavClick(); }
+      if (reply >= 0) { tic::drawTile(reply); audio::play(audio::Cue::CpuMove); }
       mini::footer("Shoot to place", "Hold Shoot to pause");
       tic::finish();
     }
@@ -314,7 +331,7 @@ void ticTacToeLoop() {
     }
   } else if (cmd == 4 && !tic::cells[tic::cursor]) {
     tic::cells[tic::cursor] = 1;
-    playSelectTone();
+    audio::play(audio::Cue::PlayerMove);
     tic::drawTile(tic::cursor);
     tic::finish();
     if (mini::phase == mini::PLAY) {
@@ -337,56 +354,85 @@ static bool shootWasDown;
 static bool recorded;
 static constexpr uint16_t ACCENT = 0xFD20;
 static constexpr uint16_t ACCENT_LIGHT = 0xFFE0;
-static constexpr uint16_t DARK_TEXT = 0x20A0;
-static constexpr uint16_t FRAME = 0x6A20;
-static constexpr int GRID = 10;
 static constexpr int FIELD_TOP = 48;
 static constexpr int FIELD_BOTTOM = 290;
-static constexpr int GRID_ROWS = (FIELD_BOTTOM - FIELD_TOP + GRID) / GRID;
-static const uint16_t GRID_COLORS[4] = {0x0003, 0x0005, 0x0007, 0x0808};
-static uint8_t grid[24][GRID_ROWS];
+static float trailX[8], trailY[8];
+static int trailCount = 0, impactLife = 0, impactX = 0, impactY = 0;
+static uint16_t dirtyBands = 0;
 
-static void initBackdrop() {
-  for (int x = 0; x < 24; ++x)
-    for (int y = 0; y < GRID_ROWS; ++y)
-      grid[x][y] = random(4);
+static void dirty(int y, int h) {
+  int first = max(y, FIELD_TOP), last = min(y + h - 1, FIELD_BOTTOM);
+  if (first > last) return;
+  for (int i = (first - FIELD_TOP) / 16; i <= (last - FIELD_TOP) / 16; ++i)
+    dirtyBands |= uint16_t(1) << i;
 }
 
-static void drawBackdrop() {
-  for (int gy = 0; gy < GRID_ROWS; ++gy) {
-    int y = FIELD_TOP + gy * GRID;
-    int h = min(GRID, FIELD_BOTTOM - y + 1);
-    for (int gx = 0; gx < 24; ++gx)
-      tft.fillRect(gx * GRID, y, GRID, h, GRID_COLORS[grid[gx][gy]]);
+static void dirtyObjects() {
+  dirty((int)ballY - 6, 13);
+  for (int i = 0; i < trailCount; ++i) dirty((int)trailY[i] - 3, 7);
+  if (impactLife) dirty(impactY - 20, 41);
+}
+
+static void impact(int x, int y) {
+  impactX = x; impactY = y; impactLife = 7;
+}
+
+template<class Surface>
+static void compose(Surface &canvas, int top, int bottom) {
+  arcadeStyle::drawBackdrop(canvas, top, bottom);
+  canvas.drawFastHLine(16, 107, 208, 0x36FF);
+  if (impactLife) {
+    int radius = 3 + (7 - impactLife) * 2;
+    canvas.drawCircle(impactX, impactY, radius, arcadeStyle::fade(0x36FF, impactLife * 36));
+    canvas.fillCircle(impactX - radius, impactY, 1, arcadeStyle::fade(ACCENT, impactLife * 36));
+    canvas.fillCircle(impactX + radius, impactY, 1, arcadeStyle::fade(ACCENT, impactLife * 36));
   }
-  for (int x = 0; x < 240; x += GRID)
-    tft.drawFastVLine(x, FIELD_TOP, FIELD_BOTTOM - FIELD_TOP + 1, 0x0001);
-  for (int y = FIELD_TOP; y <= FIELD_BOTTOM; y += GRID)
-    tft.drawFastHLine(0, y, 240, 0x0001);
-  tft.drawFastHLine(16, 107, 208, ACCENT_LIGHT);
+  for (int i = trailCount - 1; i >= 0; --i) {
+    uint16_t c = arcadeStyle::mix(ACCENT, 0x36FF, i * 255 / 7);
+    canvas.fillCircle((int)trailX[i], (int)trailY[i], i < 3 ? 2 : 1,
+                      arcadeStyle::fade(c, 165 - i * 18));
+  }
+  canvas.fillRoundRect(paddleX, 249, 52, 7, 3, 0xDEFB);
+  canvas.fillRoundRect(paddleX + 1, 250, 50, 5, 2, TFT_WHITE);
+  canvas.fillRoundRect(paddleX + 1, 250, 6, 5, 2, ACCENT);
+  canvas.fillRoundRect(paddleX + 45, 250, 6, 5, 2, ACCENT);
+  canvas.drawFastHLine(paddleX + 9, 254, 34, 0x9CF3);
+  canvas.fillCircle((int)ballX, (int)ballY, 5, arcadeStyle::fade(ACCENT, 75));
+  canvas.fillCircle((int)ballX, (int)ballY, 3, 0xFFE8);
+  canvas.drawPixel((int)ballX - 1, (int)ballY - 1, TFT_WHITE);
 }
 
-static void restoreBackdropRect(int x, int y, int w, int h) {
-  int x0 = max(0, x), x1 = min(240, x + w);
-  int y0 = max(FIELD_TOP, y), y1 = min(FIELD_BOTTOM + 1, y + h);
-  if (x1 <= x0 || y1 <= y0) return;
-  for (int gy = (y0 - FIELD_TOP) / GRID; gy <= (y1 - 1 - FIELD_TOP) / GRID; ++gy) {
-    int cellY = FIELD_TOP + gy * GRID;
-    int sy = max(y0, cellY), ey = min(y1, cellY + GRID);
-    for (int gx = x0 / GRID; gx <= (x1 - 1) / GRID; ++gx) {
-      int cellX = gx * GRID;
-      int sx = max(x0, cellX), ex = min(x1, cellX + GRID);
-      tft.fillRect(sx, sy, ex - sx, ey - sy, GRID_COLORS[grid[gx][gy]]);
-      if (sx == cellX) tft.drawFastVLine(cellX, sy, ey - sy, 0x0001);
-      if (sy == cellY) tft.drawFastHLine(sx, cellY, ex - sx, 0x0001);
+static void render(bool full = false) {
+  if (full) dirtyBands = 0xFFFF;
+  if (!dirtyBands) return;
+  TFT_eSprite band(&tft);
+  band.setColorDepth(16);
+  if (!band.createSprite(240, 16)) {
+    int x = tft.getViewportX(), y = tft.getViewportY();
+    int w = tft.getViewportWidth(), h = tft.getViewportHeight();
+    int top = max(y, FIELD_TOP), bottom = min(y + h - 1, FIELD_BOTTOM);
+    if (top <= bottom) {
+      tft.setViewport(x, top, w, bottom - top + 1, false);
+      pong::compose(tft, FIELD_TOP, FIELD_BOTTOM);
     }
+    tft.setViewport(x, y, w, h, false);
+  } else {
+    for (int i = 0; i < 16; ++i) {
+      if (!(dirtyBands & (uint16_t(1) << i))) continue;
+      int y = FIELD_TOP + i * 16;
+      int h = min(16, FIELD_BOTTOM - y + 1);
+      band.setViewport(0, 0, 240, h);
+      band.setOrigin(0, -y);
+      pong::compose(band, y, y + h - 1);
+      band.pushSprite(0, y, 0, 0, 240, h);
+    }
+    band.deleteSprite();
   }
-  if (y0 <= 107 && y1 > 107) {
-    int sx = max(x0, 16), ex = min(x1, 224);
-    if (ex > sx) tft.drawFastHLine(sx, 107, ex - sx, ACCENT_LIGHT);
-  }
+  dirtyBands = 0;
 }
 
+static unsigned long scoreFlashAt = 0;
+static bool drawnScoreFlash = false;
 static void drawHeader() {
   TFT_eSprite header(&tft);
   header.setColorDepth(16);
@@ -395,12 +441,13 @@ static void drawHeader() {
   header.fillRoundRect(0, 0, 224, 38, 12, ui::CARD);
   header.setTextDatum(ML_DATUM);
   header.setTextColor(ui::LABEL);
-  header.drawString("Pong", 12, 20, 4);
+  header.drawString("Pong", 12, 20, 2);
   header.setTextDatum(TR_DATUM);
-  header.setTextColor(ui::SECONDARY);
+  header.setTextColor(ACCENT);
   header.drawString("Score", 150, 3, 2);
+  header.setTextColor(ui::SECONDARY);
   header.drawString("Lives", 212, 3, 2);
-  header.setTextColor(ui::LABEL);
+  header.setTextColor(scoreFlashAt && millis() - scoreFlashAt < 320 ? ACCENT_LIGHT : ui::LABEL);
   header.drawString(String(score), 150, 19, 2);
   for (int i = 0; i < 3; ++i)
     header.fillCircle(184 + i * 12, 27, 4, i < lives ? 0xF800 : 0x4208);
@@ -409,8 +456,8 @@ static void drawHeader() {
 }
 
 static void drawFooter() {
-  tft.fillRoundRect(52, 296, 136, 20, 10, ui::CARD);
-  ui::hint(306, "Shoot to pause", ui::CARD);
+  tft.fillRect(0, 294, 240, 26, UI_BG);
+  ui::hint(306, "Shoot to pause", UI_BG);
 }
 
 static void serve() {
@@ -418,36 +465,36 @@ static void serve() {
   vx = random(2) ? 1.5f : -1.5f;
   vy = -2.5f;
   paddleX = 94;
+  trailCount = 0; impactLife = 0;
   lastFrame = millis();
 }
 
 static void draw() {
   if (!restoringCountdownDigit()) tft.fillScreen(UI_BG);
-  drawBackdrop();
+  render(true);
   tft.drawFastHLine(0, FIELD_TOP - 1, 240, UI_SURFACE);
   tft.drawFastHLine(0, FIELD_BOTTOM + 1, 240, UI_SURFACE);
   drawHeader();
   drawFooter();
-  tft.fillRoundRect(paddleX, 249, 52, 7, 3, TFT_WHITE);
-  tft.fillCircle((int)ballX, (int)ballY, 5, ACCENT_LIGHT);
   drawnX = (int)ballX; drawnY = (int)ballY;
   drawnPaddle = paddleX; drawnScore = score; drawnLives = lives;
+  drawnScoreFlash = scoreFlashAt && millis() - scoreFlashAt < 320;
 }
 
 static void drawMotion() {
-  int nextX = (int)ballX, nextY = (int)ballY;
-  if (nextX != drawnX || nextY != drawnY) {
-    restoreBackdropRect(drawnX - 5, drawnY - 5, 11, 11);
-    if (drawnY + 5 >= 249 && drawnY - 5 <= 255)
-      tft.fillRoundRect(paddleX, 249, 52, 7, 3, TFT_WHITE);
-    tft.fillCircle(nextX, nextY, 5, ACCENT_LIGHT);
+  dirtyObjects();
+  for (int i = min(trailCount, 7); i > 0; --i) {
+    trailX[i] = trailX[i - 1]; trailY[i] = trailY[i - 1];
   }
-  if (paddleX != drawnPaddle) {
-    restoreBackdropRect(drawnPaddle, 249, 52, 7);
-    tft.fillRoundRect(paddleX, 249, 52, 7, 3, TFT_WHITE);
-  }
-  if (score != drawnScore || lives != drawnLives) drawHeader();
-  drawnX = nextX; drawnY = nextY;
+  trailX[0] = drawnX; trailY[0] = drawnY;
+  trailCount = min(8, trailCount + 1);
+  if (impactLife) --impactLife;
+  dirtyObjects();
+  render();
+  bool flash = scoreFlashAt && millis() - scoreFlashAt < 320;
+  if (score != drawnScore || lives != drawnLives || flash != drawnScoreFlash) drawHeader();
+  drawnScoreFlash = flash;
+  drawnX = (int)ballX; drawnY = (int)ballY;
   drawnPaddle = paddleX; drawnScore = score; drawnLives = lives;
 }
 
@@ -459,12 +506,8 @@ static void movePaddle(int direction) {
   lastPaddleStep = now;
   int next = constrain(paddleX + direction * 4, 19, 169);
   if (next == paddleX) return;
-  restoreBackdropRect(drawnPaddle, 249, 52, 7);
+  dirty(245, 15);
   paddleX = next;
-  tft.fillRoundRect(paddleX, 249, 52, 7, 3, TFT_WHITE);
-  if ((int)ballY + 5 >= 249 && (int)ballY - 5 <= 255)
-    tft.fillCircle((int)ballX, (int)ballY, 5, ACCENT_LIGHT);
-  drawnPaddle = paddleX;
 }
 
 static void showIntro() {
@@ -485,9 +528,11 @@ static void drawPongPauseMenu() {
 }
 
 static void enterPause() {
+  audio::play(audio::Cue::Pause);
   buttonsRequireRelease();
   mini::resetInput();
   mini::pauseChoice = 0;
+  audio::pauseMusic(true);
   mini::phase = mini::PAUSE;
   drawPongPauseMenu();
 }
@@ -506,6 +551,7 @@ static bool handlePause(int cmd) {
     playSelectTone();
     if (mini::pauseChoice == 0) {
       showResumeCountdown(draw);
+      audio::play(audio::Cue::Resume);
       mini::resetInput();
       mini::phase = mini::PLAY;
       shootWasDown = false;
@@ -525,17 +571,21 @@ static void drawGameOver() {
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   lives = 3; score = 0; recorded = false;
+  scoreFlashAt = 0; drawnScoreFlash = false;
   lastPaddleDir = 0;
   lastPaddleStep = 0;
   shootWasDown = false;
-  initBackdrop();
   serve();
   mini::phase = mini::PLAY;
   draw();
 }
 
 static void end() {
+  audio::pauseMusic(true);
+  audio::play(audio::Cue::GameOver);
   mini::phase = mini::FINISH;
   if (!recorded) { currentGame.recordScore(score); recorded = true; }
   drawGameOver();
@@ -552,6 +602,7 @@ void pongSetup() {
 }
 
 void pongLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   // During play, use cached held controls without menu key-repeat.
   int cmd = mini::phase == mini::PLAY ? -1 : mini::input();
   if (mini::commonIntro(cmd, pong::start)) return;
@@ -583,14 +634,22 @@ void pongLoop() {
   if (now - pong::lastFrame < 28) return;
   float steps = min(3.0f, (now - pong::lastFrame) / 28.0f);
   pong::lastFrame = now;
+  pong::dirtyObjects();
   pong::ballX += pong::vx * steps;
   pong::ballY += pong::vy * steps;
-  if (pong::ballX <= 20 || pong::ballX >= 220) { pong::vx = -pong::vx; pong::ballX = constrain(pong::ballX, 20.0f, 220.0f); }
+  if (pong::ballX <= 20 || pong::ballX >= 220) {
+    pong::vx = -pong::vx;
+    pong::ballX = constrain(pong::ballX, 20.0f, 220.0f);
+    pong::impact((int)pong::ballX, (int)pong::ballY);
+    audio::play(audio::Cue::Wall);
+  }
   if (pong::ballY <= 112) {
     pong::ballY = 112;
     pong::vy = abs(pong::vy);
     ++pong::score;
-    playNavClick();
+    pong::scoreFlashAt = millis();
+    pong::impact((int)pong::ballX, 107);
+    audio::play(audio::Cue::Pickup);
   }
   if (pong::vy > 0 && pong::ballY >= 243 && pong::ballY <= 256 &&
       pong::ballX >= pong::paddleX - 4 && pong::ballX <= pong::paddleX + 56) {
@@ -598,10 +657,12 @@ void pongLoop() {
     pong::vy = -min(5.0f, 2.5f + pong::score * 0.08f);
     pong::vx = constrain((pong::ballX - (pong::paddleX + 26)) / 10.0f, -3.5f, 3.5f);
     if (abs(pong::vx) < 0.6f) pong::vx = 0.6f;
-    playNavClick();
+    pong::impact((int)pong::ballX, 249);
+    audio::play(audio::Cue::Paddle);
   }
   if (pong::ballY > 264) {
     if (--pong::lives <= 0) { pong::end(); return; }
+    audio::play(audio::Cue::Lose);
     pong::serve();
   }
   pong::drawMotion();
@@ -720,6 +781,8 @@ static void draw() {
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   memset(revealed, 0, sizeof(revealed));
   memset(flagged, 0, sizeof(flagged));
   memset(bomb, 0, sizeof(bomb));
@@ -732,6 +795,8 @@ static void start() {
 }
 
 static void finish(bool won) {
+  audio::pauseMusic(true);
+  audio::play(won ? audio::Cue::Win : audio::Cue::Lose);
   result = won ? 1 : -1;
   mini::phase = mini::FINISH;
   if (won && !recorded) { currentGame.recordScore(max(1, 1000 - flags * 10)); recorded = true; }
@@ -748,6 +813,7 @@ void minesweeperSetup() {
 }
 
 void minesweeperLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   int cmd = mini::input();
   if (mini::commonIntro(cmd, mines::start)) return;
   if (mini::commonPause(cmd, mines::draw, mines::start)) return;
@@ -776,7 +842,7 @@ void minesweeperLoop() {
     bool &flag = mines::flagged[mines::cursor];
     flag = !flag;
     mines::flags += flag ? 1 : -1;
-    playNavClick();
+    audio::play(flag ? audio::Cue::Flag : audio::Cue::Unflag);
     mines::drawTile(mines::cursor);
   } else if (cmd == 4 && !mines::flagged[mines::cursor] && !mines::revealed[mines::cursor]) {
     if (!mines::planted) mines::plant(mines::cursor);
@@ -786,7 +852,7 @@ void minesweeperLoop() {
       mines::finish(false);
     } else {
       mines::uncover(mines::cursor);
-      playSelectTone();
+      audio::play(audio::Cue::Reveal);
       mines::drawDirty();
       if (mines::exposed == mines::COUNT - mines::BOMBS) mines::finish(true);
     }

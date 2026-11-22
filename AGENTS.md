@@ -17,7 +17,7 @@
   pio run
   ```
 
-- Flash only when requested or when the connected console is available. Close the serial monitor before flashing.
+- Flash only when requested or when the connected console is available. Upload directly with `pio run -e esp32-c3-devkitm-1 -t upload --upload-port '/dev/ttyACM*'`; do not run device discovery, `lsof`, or other port checks first. If upload fails because the port is busy, ask the user to close the serial monitor; do not kill it.
 - Do not kill processes, delete files, reset history, or force-push without explicit approval.
 
 ## Git collaboration
