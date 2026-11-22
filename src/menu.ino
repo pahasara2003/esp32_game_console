@@ -4,7 +4,6 @@
 #include "home_wallpaper.h"
 #include "config.h"
 #include "birthday.h"
-#include "birthday_code.h"
 
 // Define apps
 struct App {
@@ -351,7 +350,6 @@ void showAboutScreen() {
   Serial.println("[Info] Open");
   drawAboutInformation();
   buttonsRequireRelease();
-  BirthdayCode secret;
   while (true) {
     int c = findCommand(false);
     if (Serial.available()) {
@@ -363,11 +361,6 @@ void showAboutScreen() {
       else if (key == ' ' || key == 'e' || key == 'E' || key == '\r' || key == '\n') c = 4;
     }
     if (c == 4) break;
-    if (secret.press(c, millis())) {
-      showBirthdayScene();
-      drawAboutInformation();
-      buttonsRequireRelease();
-    }
     delay(2);
   }
   menuSetup();
@@ -587,16 +580,18 @@ static String titleCase(const char *name) {
   return s;
 }
 
-static const ui::List settingsList = {16, 68, 208, 30, 6};
+static const ui::List settingsList = {16, 58, 208, 21, 9};
 void drawSettingsRow(int row, bool selected) {
-  const char *labels[] = {"Theme", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores"};
+  const char *labels[] = {"Theme", "Brightness", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores", "Battery saver", "Show it"};
   String value = row == 0 ? titleCase(themeName(activeTheme)) :
-                 row == 1 ? String(soundEnabled ? "On" : "Off") :
-                 row == 2 ? String(audio::effectsVolume) + "%" :
-                 row == 3 ? String(audio::musicVolume) + "%" :
-                 row == 4 ? String(audio::gameMusic ? "On" : "Off") : String("Reset");
+                 row == 1 ? (batterySaver ? String("10% locked") : String(displayBrightness) + "%") :
+                 row == 2 ? String(soundEnabled ? "On" : "Off") :
+                 row == 3 ? String(audio::effectsVolume) + "%" :
+                 row == 4 ? String(audio::musicVolume) + "%" :
+                 row == 5 ? String(batterySaver ? "Off locked" : (audio::gameMusic ? "On" : "Off")) :
+                 row == 6 ? String("Reset") : row == 7 ? String(batterySaver ? "On" : "Off") : String("Open");
   ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
-               row == 5 ? UI_RED : ui::SECONDARY);
+               row == 6 ? UI_RED : ui::SECONDARY);
 }
 
 static void drawSettingsHeader() {
@@ -626,7 +621,7 @@ static void refreshSettingsTheme(int selectedRow) {
   // stays identical. Updating these regions in place avoids a visible black
   // frame between the old and new themes.
   drawSettingsHeader();
-  for (int row=0; row<6; ++row) drawSettingsRow(row, selectedRow == row);
+  for (int row=0; row<9; ++row) drawSettingsRow(row, selectedRow == row);
   drawSettingsPalette();
   drawSettingsFooter();
 }
@@ -682,7 +677,7 @@ void showSettingsScreen() {
 
     if (cmd == 0 || cmd == 2) {
       int previousRow = selectedRow;
-      selectedRow = (selectedRow + (cmd == 0 ? 5 : 1)) % 6;
+      selectedRow = (selectedRow + (cmd == 0 ? 8 : 1)) % 9;
       playNavClick();
       drawSettingsRow(previousRow, false);
       drawSettingsRow(selectedRow, true);
@@ -692,22 +687,28 @@ void showSettingsScreen() {
         applyThemePreset((activeTheme + direction + THEME_COUNT) % THEME_COUNT, false);
         playNavClick();
         refreshSettingsTheme(selectedRow);
-      } else if (selectedRow == 1) {
+      } else if (selectedRow == 7) {
+        setBatterySaver(!batterySaver);
+        drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 1 && !batterySaver) {
+        setDisplayBrightness(constrain(int(displayBrightness) + (cmd == 1 ? 10 : -10), 10, 100), false);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 2) {
         setSoundEnabled(!soundEnabled, false);
         playNavClick();
         drawSettingsRow(selectedRow, true);
-      } else if (selectedRow == 2 || selectedRow == 3) {
-        uint8_t &volume = selectedRow == 2 ? audio::effectsVolume : audio::musicVolume;
+      } else if (selectedRow == 3 || selectedRow == 4) {
+        uint8_t &volume = selectedRow == 3 ? audio::effectsVolume : audio::musicVolume;
         volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
         audio::play(audio::Cue::Move);
         drawSettingsRow(selectedRow, true);
-      } else if (selectedRow == 4) {
+      } else if (selectedRow == 5 && !batterySaver) {
         audio::gameMusic = !audio::gameMusic;
         playNavClick();
         drawSettingsRow(selectedRow, true);
       }
     } else if (cmd == 4) {
-      if (selectedRow == 5) {
+      if (selectedRow == 6) {
         if (confirmResetScores()) {
           resetAllGameScores();
           audio::play(audio::Cue::Saved);
@@ -716,8 +717,13 @@ void showSettingsScreen() {
           delay(650);
         }
         drawSettingsScreen(selectedRow);
+      } else if (selectedRow == 8) {
+        showBirthdayScene();
+        menuSetup();
+        return;
       } else {
         applyThemePreset(activeTheme, true);
+        setDisplayBrightness(displayBrightness, true);
         setSoundEnabled(soundEnabled, true);
         audio::save();
         audio::play(audio::Cue::Saved);

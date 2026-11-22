@@ -138,6 +138,7 @@ static void enterPause() {
   audio::play(audio::Cue::Pause);
   buttonsRequireRelease();
   pauseChoice = 0;
+  audio::pauseMusic(true);
   phase = PAUSE;
   pause("PAUSED");
 }
@@ -243,6 +244,8 @@ static void draw() {
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   memset(cells, 0, sizeof(cells));
   cursor = 4;
   recorded = false;
@@ -252,9 +255,10 @@ static void start() {
 }
 
 static void finish() {
+  audio::pauseMusic(true);
   outcome = winner();
   if (!outcome) return;
-  audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Death : audio::Cue::Draw);
+  audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Lose : audio::Cue::Draw);
   mini::phase = mini::FINISH;
   if (outcome == 1 && !recorded) {
     currentGame.recordScore(100);
@@ -287,6 +291,7 @@ void ticTacToeSetup() {
 }
 
 void ticTacToeLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   int cmd = mini::input();
   if (mini::commonIntro(cmd, tic::start)) return;
   if (mini::phase == mini::PAUSE) {
@@ -527,6 +532,7 @@ static void enterPause() {
   buttonsRequireRelease();
   mini::resetInput();
   mini::pauseChoice = 0;
+  audio::pauseMusic(true);
   mini::phase = mini::PAUSE;
   drawPongPauseMenu();
 }
@@ -565,6 +571,8 @@ static void drawGameOver() {
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   lives = 3; score = 0; recorded = false;
   scoreFlashAt = 0; drawnScoreFlash = false;
   lastPaddleDir = 0;
@@ -576,7 +584,8 @@ static void start() {
 }
 
 static void end() {
-  audio::play(audio::Cue::Death);
+  audio::pauseMusic(true);
+  audio::play(audio::Cue::GameOver);
   mini::phase = mini::FINISH;
   if (!recorded) { currentGame.recordScore(score); recorded = true; }
   drawGameOver();
@@ -593,6 +602,7 @@ void pongSetup() {
 }
 
 void pongLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   // During play, use cached held controls without menu key-repeat.
   int cmd = mini::phase == mini::PLAY ? -1 : mini::input();
   if (mini::commonIntro(cmd, pong::start)) return;
@@ -652,7 +662,7 @@ void pongLoop() {
   }
   if (pong::ballY > 264) {
     if (--pong::lives <= 0) { pong::end(); return; }
-    audio::play(audio::Cue::Hit);
+    audio::play(audio::Cue::Lose);
     pong::serve();
   }
   pong::drawMotion();
@@ -771,6 +781,8 @@ static void draw() {
 }
 
 static void start() {
+  audio::restartMusic();
+  audio::stopEnding();
   memset(revealed, 0, sizeof(revealed));
   memset(flagged, 0, sizeof(flagged));
   memset(bomb, 0, sizeof(bomb));
@@ -783,7 +795,8 @@ static void start() {
 }
 
 static void finish(bool won) {
-  audio::play(won ? audio::Cue::Win : audio::Cue::Death);
+  audio::pauseMusic(true);
+  audio::play(won ? audio::Cue::Win : audio::Cue::Lose);
   result = won ? 1 : -1;
   mini::phase = mini::FINISH;
   if (won && !recorded) { currentGame.recordScore(max(1, 1000 - flags * 10)); recorded = true; }
@@ -800,6 +813,7 @@ void minesweeperSetup() {
 }
 
 void minesweeperLoop() {
+  audio::pauseMusic(mini::phase != mini::PLAY);
   int cmd = mini::input();
   if (mini::commonIntro(cmd, mines::start)) return;
   if (mini::commonPause(cmd, mines::draw, mines::start)) return;

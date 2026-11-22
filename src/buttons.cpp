@@ -79,15 +79,19 @@ void scan(void *) {
   uint8_t channel = 0, high[4] = {}, low[4] = {}, directions = 0;
   bool settling = true, rightRaw = false, rightStable = false;
   unsigned long rightChanged = millis(), started = 0;  // started is in micros
+  unsigned long rightPressed = millis() - 120;
   bool converting = false;
   for (;;) {
     unsigned long now = millis();
     bool raw = digitalRead(RIGHT_BTN) == LOW;
     if (raw != rightRaw) { rightRaw = raw; rightChanged = now; }
-    // Register a press on the first contact; only a release must be stable for
-    // 20 ms, so contact bounce cannot produce a second press.
-    if (raw && !rightStable) rightStable = true;
-    else if (now - rightChanged >= 20) rightStable = raw;
+    // Qualify both edges and space presses so a noisy contact cannot double-tap.
+    if (raw && !rightStable && now - rightChanged >= 12 && now - rightPressed >= 120) {
+      rightStable = true;
+      rightPressed = now;
+    } else if (!raw && rightStable && now - rightChanged >= 40) {
+      rightStable = false;
+    }
     bool fault = false;
     if (adsConnected) {
       if (!converting) {

@@ -178,6 +178,25 @@ static void animatePuzzleSlide(int fromIndex, int toIndex, uint8_t value) {
   if (buffered) frame.deleteSprite();
 }
 
+static void drawPuzzleMoves() {
+  TFT_eSprite count(&tft);
+  count.setColorDepth(16);
+  if (count.createSprite(62, 16)) {
+    count.fillSprite(ui::CARD);
+    count.setTextDatum(TR_DATUM);
+    count.setTextColor(ui::LABEL, ui::CARD);
+    count.drawString(String(puzzleMoves), 62, 0, 2);
+    count.pushSprite(158, 24);
+    count.deleteSprite();
+    return;
+  }
+  tft.setTextDatum(TR_DATUM);
+  tft.setTextColor(ui::LABEL, ui::CARD);
+  tft.setTextPadding(40);
+  tft.drawString(String(puzzleMoves), 220, 24, 2);
+  tft.setTextPadding(0);
+}
+
 static void drawPuzzleHeader() {
   tft.fillRoundRect(8, 5, 224, 38, 12, ui::CARD);
   tft.setTextDatum(ML_DATUM);
@@ -190,8 +209,8 @@ static void drawPuzzleHeader() {
   tft.setTextColor(ui::LABEL, ui::CARD);
   tft.setTextPadding(40);
   tft.drawString(String(puzzleSize) + "x" + String(puzzleSize), 158, 24, 2);
-  tft.drawString(String(puzzleMoves), 220, 24, 2);
   tft.setTextPadding(0);
+  drawPuzzleMoves();
 }
 
 static void drawPuzzleBottomBar() {
@@ -235,7 +254,7 @@ static bool slidePuzzleGap(int command, bool countMove) {
   if (countMove) {
     if (oldHighlight >= 0 && oldHighlight != oldBlank && oldHighlight != target)
       drawPuzzleTile(oldHighlight);
-    drawPuzzleHeader();
+    drawPuzzleMoves();
   }
   return true;
 }
@@ -338,6 +357,7 @@ static void drawPuzzleComplete() {
 }
 
 static void startPuzzle() {
+  audio::restartMusic();
   gameState = 0;
   menu_drawn = false;
   puzzleCompleteRecorded = false;
@@ -389,7 +409,7 @@ void puzzleLoop() {
       } else audio::play(audio::Cue::Error);
     } else if (command == 4) {
       puzzlePauseSelection = 0;
-      gameState = 1;
+      audio::pauseMusic(true); gameState = 1;
       menu_drawn = false;
     }
   } else if (gameState == 1) {

@@ -17,6 +17,7 @@ Voice effect, background;
 portMUX_TYPE guard = portMUX_INITIALIZER_UNLOCKED;
 bool held = false, paused = false;
 int activeScene = 0;
+uint32_t musicGeneration = 0;
 int lastGameState = -99;
 uint32_t legacyPhase = 0;
 // Original, sparse loops. A low music level leaves room for feedback sounds.
@@ -56,12 +57,25 @@ const int16_t boSine[64] = {0,3212,6393,9512,12539,15446,18204,20787,23170,25329
 uint32_t boClock = 0, boPhase[9] = {}, boMelodyAge = BO_STEP * 8;
 uint16_t boMelodyHz = 587;
 int boDuck = 256;
+uint32_t pianoPhase[3] = {}, pianoAge = RATE;
+uint16_t pianoHz = 0;
 
 int softOscillator(uint32_t &phase, uint16_t hz) {
   phase += uint32_t(hz) * 65536 / RATE;
   unsigned position = phase & 65535;
   unsigned index = position >> 10;
   return boSine[index] + (int(boSine[(index + 1) & 63]) - boSine[index]) * int(position & 1023) / 1024;
+}
+
+int pianoSample() {
+  if (!pianoHz || pianoAge >= RATE) return 0;
+  int attack = min(pianoAge, uint32_t(100));
+  int decay = 256 - int(pianoAge * 256 / RATE);
+  int wave = softOscillator(pianoPhase[0], pianoHz) / 2 +
+             softOscillator(pianoPhase[1], pianoHz * 2) / 4 +
+             softOscillator(pianoPhase[2], pianoHz * 3) / 8;
+  ++pianoAge;
+  return wave * attack / 100 * decay / 256 * decay / 256 * 8 / 7;
 }
 
 int popMusicSample() {
@@ -145,6 +159,58 @@ int puzzlePredictor = 0, puzzleStepIndex = 0, puzzleDuck = 256;
 
 uint32_t readPuzzleLE32(const uint8_t *p) {
   return uint32_t(p[0]) | uint32_t(p[1]) << 8 | uint32_t(p[2]) << 16 | uint32_t(p[3]) << 24;
+}
+
+// Mono 22050 Hz, 1024-byte IMA blocks, decoded directly from embedded flash.
+extern const uint8_t gameOverStart[] asm("_binary_assets_sounds_endings_game_over_embedded_wav_start");
+extern const uint8_t gameOverEnd[] asm("_binary_assets_sounds_endings_game_over_embedded_wav_end");
+extern const uint8_t loseStart[] asm("_binary_assets_sounds_endings_lose_embedded_wav_start");
+extern const uint8_t loseEnd[] asm("_binary_assets_sounds_endings_lose_embedded_wav_end");
+extern const uint8_t winStart[] asm("_binary_assets_sounds_endings_win_embedded_wav_start");
+extern const uint8_t winEnd[] asm("_binary_assets_sounds_endings_win_embedded_wav_end");
+struct Ending {
+  const uint8_t *data = nullptr;
+  uint32_t samples = 0, position = 0;
+  int predictor = 0, stepIndex = 0;
+};
+Ending ending;
+
+void beginEnding(const uint8_t *start, const uint8_t *end) {
+  ending = Ending{};
+  size_t size = end - start;
+  uint32_t bytes = 0;
+  for (size_t pos = 12; pos + 8 <= size;) {
+    const uint8_t *chunk = start + pos;
+    uint32_t length = readPuzzleLE32(chunk + 4);
+    if (length > size - pos - 8) break;
+    if (!memcmp(chunk, "fact", 4) && length >= 4) ending.samples = readPuzzleLE32(chunk + 8);
+    if (!memcmp(chunk, "data", 4)) { ending.data = chunk + 8; bytes = length; }
+    pos += 8 + length + (length & 1);
+  }
+  if (!ending.data || bytes % 1024 || ending.samples > bytes / 1024 * 2041)
+    ending = Ending{};
+}
+
+int endingSample() {
+  uint32_t block = ending.position / 2041;
+  uint32_t sample = ending.position % 2041;
+  const uint8_t *data = ending.data + block * 1024;
+  if (sample == 0) {
+    ending.predictor = int16_t(uint16_t(data[0]) | uint16_t(data[1]) << 8);
+    ending.stepIndex = min(88, int(data[2]));
+  } else {
+    uint32_t nibble = sample - 1;
+    int code = (data[4 + nibble / 2] >> ((nibble & 1) * 4)) & 15;
+    int step = imaSteps[ending.stepIndex];
+    int diff = step >> 3;
+    if (code & 1) diff += step >> 2;
+    if (code & 2) diff += step >> 1;
+    if (code & 4) diff += step;
+    ending.predictor = constrain(ending.predictor + ((code & 8) ? -diff : diff), -32768, 32767);
+    ending.stepIndex = constrain(ending.stepIndex + imaIndex[code], 0, 88);
+  }
+  ++ending.position;
+  return ending.predictor;
 }
 
 void resetPuzzleMusic() {
@@ -234,6 +300,17 @@ void loopMusic() {
 }
 
 void play(Cue cue, uint16_t pitch) {
+  if (cue == Cue::GameOver || cue == Cue::Lose || cue == Cue::Win) {
+    portENTER_CRITICAL(&guard);
+    if (!held) {
+      effect = Voice{};
+      if (cue == Cue::GameOver) beginEnding(gameOverStart, gameOverEnd);
+      else if (cue == Cue::Lose) beginEnding(loseStart, loseEnd);
+      else beginEnding(winStart, winEnd);
+    }
+    portEXIT_CRITICAL(&guard);
+    return;
+  }
   Voice next;
   next.priority = 1;
   auto add = [&](uint16_t hz, uint16_t ms) { next.notes[next.count++] = {hz, ms}; };
@@ -251,7 +328,7 @@ void play(Cue cue, uint16_t pitch) {
       add(784,65); add(988,65); add(1175,65); add(1568,140); next.priority=5; break;
     case Cue::Pickup: add(1175,25); add(1760,45); next.priority=2; break;
     case Cue::Death: add(440,80); add(330,90); add(220,120); add(110,140); next.priority=6; break;
-    case Cue::Win: add(523,90); add(659,90); add(784,90); add(1047,220); next.priority=6; break;
+    case Cue::GameOver: case Cue::Lose: case Cue::Win: break;
     case Cue::Draw: add(440,80); add(440,80); add(330,130); next.priority=5; break;
     case Cue::Record: add(784,65); add(988,65); add(1175,65); add(1568,140); add(0,50); add(1568,180); next.priority=7; break;
     case Cue::Paddle: add(659,16); add(988,22); break;
@@ -282,14 +359,20 @@ void play(Cue cue, uint16_t pitch) {
     case Cue::Firework: add(330,35); add(660,35); add(1320,35); add(1760,65); next.priority=3; break;
   }
   portENTER_CRITICAL(&guard);
-  if (!held && (!effect.count || next.priority >= effect.priority)) {
+  if (!held && ending.position >= ending.samples && (!effect.count || next.priority >= effect.priority)) {
     effect = next; beginNote(effect);
   }
+  portEXIT_CRITICAL(&guard);
+}
+void stopEnding() {
+  portENTER_CRITICAL(&guard);
+  ending = Ending{};
   portEXIT_CRITICAL(&guard);
 }
 void scene(int game) {
   portENTER_CRITICAL(&guard);
   if (activeScene != game) {
+    ending = Ending{};
     activeScene=game; effect=Voice{}; background=Voice{}; paused=false; lastGameState=-99;
     resetBreakoutMusic();
     resetPuzzleMusic();
@@ -300,6 +383,7 @@ void pauseMusic(bool value) { paused=value; }
 void gameState(int state) {
   pauseMusic(state != 0);
   if (state != lastGameState) {
+    if (state == 0) stopEnding();
     if (state == 1) play(Cue::Pause);
     else if (state == 0 && lastGameState == 1) play(Cue::Resume);
     lastGameState=state;
@@ -307,19 +391,62 @@ void gameState(int state) {
 }
 void external(bool value) {
   portENTER_CRITICAL(&guard);
+  ending = Ending{};
   held=value; effect=Voice{}; background=Voice{};
   resetBreakoutMusic();
   resetPuzzleMusic();
   portEXIT_CRITICAL(&guard);
 }
-void render(int16_t *out, size_t count, uint32_t legacy, bool enabled) {
+void birthdayNote(uint16_t frequency) {
+  portENTER_CRITICAL(&guard);
+  pianoHz = frequency;
+  pianoAge = 0;
+  memset(pianoPhase, 0, sizeof(pianoPhase));
+  portEXIT_CRITICAL(&guard);
+}
+void birthdayStop() {
+  portENTER_CRITICAL(&guard);
+  pianoHz = 0;
+  portEXIT_CRITICAL(&guard);
+}
+int musicGame() {
+  portENTER_CRITICAL(&guard);
+  int game = activeScene;
+  portEXIT_CRITICAL(&guard);
+  return game;
+}
+uint32_t musicSession() {
+  portENTER_CRITICAL(&guard);
+  uint32_t session = musicGeneration;
+  portEXIT_CRITICAL(&guard);
+  return session;
+}
+void restartMusic() {
+  portENTER_CRITICAL(&guard);
+  ++musicGeneration; paused = true;
+  portEXIT_CRITICAL(&guard);
+}
+MusicState musicState() {
+  portENTER_CRITICAL(&guard);
+  MusicState state = !activeScene || held ? MusicState::Stopped :
+    (paused || !gameMusic || ending.position < ending.samples ? MusicState::Paused : MusicState::Playing);
+  portEXIT_CRITICAL(&guard);
+  return state;
+}
+void render(int16_t *out, size_t count, uint32_t legacy, bool enabled, const int16_t *sdMusic) {
   portENTER_CRITICAL(&guard);
   for (size_t i=0; i<count; ++i) {
-    if (held || !enabled) { effect=Voice{}; out[i]=0; continue; }
+    if (held || !enabled) { ending=Ending{}; effect=Voice{}; out[i]=0; continue; }
+    if (ending.position < ending.samples) {
+      // Recorded results own the mix, so music, clicks and record jingles cannot mask them.
+      out[i] = int16_t(endingSample() / 3 * effectsVolume / 100);
+      continue;
+    }
     int fx = sample(effect);
     int music = 0;
     if (gameMusic && !paused && !legacy) {
-      if (activeScene == 6) music = puzzleMusicSample();
+      if (sdMusic) music = sdMusic[i];
+      else if (activeScene == 6) music = puzzleMusicSample();
       else if (activeScene == 3 || activeScene == 5) music = popMusicSample();
       else { loopMusic(); music=sample(background); }
     }
@@ -327,8 +454,13 @@ void render(int16_t *out, size_t count, uint32_t legacy, bool enabled) {
     int tone = legacy ? ((legacyPhase & 32768) ? 3000 : -3000) : 0;
     int value = (fx / 8 + tone) * effectsVolume / 100;
     // Duck the background under effects and legacy birthday/jukebox notes.
-    value += (music / (activeScene == 6 ? 2 : ((activeScene == 3 || activeScene == 5) ? 4 : (effect.count ? 32 : 16)))) * musicVolume / 100;
-    out[i] = int16_t(constrain(value, -12000, 12000));
+    value += (music / (sdMusic ? (effect.count ? 4 : 2) : (activeScene == 6 ? 2 : ((activeScene == 3 || activeScene == 5) ? 4 : (effect.count ? 32 : 16))))) * musicVolume / 100;
+    if (pianoHz) {
+      value += pianoSample();
+      out[i] = int16_t(constrain(value, -32768, 32767));
+    } else {
+      out[i] = int16_t(constrain(value, -12000, 12000));
+    }
   }
   portEXIT_CRITICAL(&guard);
 }

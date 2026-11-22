@@ -675,6 +675,7 @@ static void resetBallOnPaddle() {
 // LEVEL INITIALIZATION
 // -----------------------------------------------------------------
 static void initBreakoutLevel(int lvl) {
+  if (lvl == 1) audio::restartMusic();
   breakoutLevel = lvl;
   initBreakoutBackdropGrid();
   paddleWidth = BASE_PADDLE_WIDTH;
@@ -851,10 +852,11 @@ static void updateBallAndPhysics() {
   if (ballY > BO_PLAYFIELD_BOTTOM) {
     soundLostBall();
     lives--;
+    if (lives > 0) audio::play(audio::Cue::Lose);
     updateScoreAndLivesHUD();
 
     if (lives <= 0) {
-      audio::play(audio::Cue::Death);
+      audio::play(audio::Cue::GameOver);
       gameState = 2; // Game Over
       menu_drawn = false;
       return;
@@ -883,7 +885,7 @@ static void handleBreakoutInput() {
   }
 
   if (shootPressed) {
-    gameState = 1;
+    audio::pauseMusic(true); gameState = 1;
     menu_drawn = false;
     pauseSelection = 0;
     pauseReady = false;

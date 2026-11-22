@@ -12,7 +12,7 @@
 //   4. Wish     - "make a wish"; Shoot blows out the candles
 //   5. Notes    - a few wish cards (Left/Right or Shoot to turn)
 //   6. Finale   - balloons, a heart and a closing message
-// Up replays from the start, Down leaves at any time.
+// Only the finale offers replay or a return to the console.
 
 namespace birthday {
 constexpr int WIDTH = 240, HEIGHT = 320, BAND = 80;
@@ -100,7 +100,8 @@ void line(int x, int y, int x2, int y2, uint16_t color) {
   frame.drawLine(x, y-origin, x2, y2-origin, color);
 }
 void circle(int x, int y, int r, uint16_t color) {
-  if (r > 0) frame.fillCircle(x, y-origin, r, color);
+  if (r > 0 && y+r >= origin && y-r < origin+BAND && x+r >= 0 && x-r < WIDTH)
+    frame.fillCircle(x, y-origin, r, color);
 }
 void text(const char *label, int y, int font, uint16_t color, int center=120) {
   frame.setTextFont(font);
@@ -171,6 +172,7 @@ void controller(int cx, int cy) {
   circle(cx+15, cy+3, 3, PINK);
 }
 void balloon(int x, int y, uint16_t color, float t, int i) {
+  if (y + 43 < origin || y - 14 >= origin + BAND) return;
   // String first so the balloon sits on top of it.
   int sx = x, sy = y + 15;
   for (int k = 1; k <= 4; ++k) {
@@ -179,6 +181,7 @@ void balloon(int x, int y, uint16_t color, float t, int i) {
     sx = nx; sy = ny;
   }
   frame.fillEllipse(x, y-origin, 11, 14, color);
+  frame.fillEllipse(x+3, y+3-origin, 7, 10, mix(color, 0x3008, 0.22f));
   frame.fillEllipse(x-4, y-5-origin, 2, 4, mix(color, INK, 0.6f));
   frame.fillTriangle(x-3, y+16-origin, x+3, y+16-origin, x, y+12-origin, color);
 }
@@ -196,6 +199,7 @@ void atmosphere(float t) {
   for (int i = 0; i < 39; ++i) {
     uint32_t h = hash(i+71);
     int x = 8 + h%224, y = 9 + (h>>9)%285;
+    if (y + 2 < origin || y - 2 >= origin + BAND) continue;
     float light = 0.28f + 0.45f*(0.5f+0.5f*sinf(t*1.5f+i*2.13f));
     uint16_t color = mix(background[y], i%3 ? LILAC : GOLD, light);
     frame.drawPixel(x, y-origin, color);
@@ -205,6 +209,11 @@ void atmosphere(float t) {
   frame.drawRoundRect(6, 6-origin, 228, 308, 16, 0x2108);
   line(20, 27, 39, 27, mix(0x2108, GOLD, 0.55f));
   line(201, 27, 220, 27, mix(0x2108, GOLD, 0.55f));
+  for (int i=0; i<3; ++i) {
+    int x=15+i*7;
+    circle(x, 12+i*3, 1, mix(bgAt(12+i*3), GOLD, 0.7f));
+    circle(239-x, 12+i*3, 1, mix(bgAt(12+i*3), GOLD, 0.7f));
+  }
 }
 
 void firework(float t, int index) {
@@ -253,19 +262,30 @@ void cake(float t, float reveal, float flame) {
   frame.fillEllipse(120,Y(248)-origin,int(78*scale),max(1,int(7*scale)),0x0804);
   frame.fillEllipse(120,Y(244)-origin,int(76*scale),max(1,int(6*scale)),0xC55C);
   frame.fillEllipse(120,Y(242)-origin,int(70*scale),max(1,int(4*scale)),0xEF5F);
+  block(64,238,112,5,0x91D2,2);
   block(61,209,118,32,0xD316,6);
   for(int x=64;x<176;++x)
     line(X(x),Y(216),X(x),Y(238),mix(0xFB34,0xB2DA,(x-64)/112.0f));
   block(61,204,118,14,0xFF5B,6);
+  block(66,205,108,3,0xFFFD,1);
   for(int i=0;i<8;++i) block(68+i*14,213,6,6+(i%3)*3,0xFF5B,3);
   block(77,180,86,29,0xC45F,5);
   for(int x=79;x<161;++x)
     line(X(x),Y(189),X(x),Y(204),mix(0xE51F,0xAB5D,(x-79)/82.0f));
   block(75,178,90,13,0xFFBC,5);
+  block(80,179,80,3,0xFFFD,1);
   for(int i=0;i<6;++i) block(82+i*13,187,5,5+(i%2)*5,0xFFBC,2);
   for(int i=0;i<11;++i) {
     int x=68+i*10,y=224+(i%3)*4;
     line(X(x),Y(y),X(x+2),Y(y+2),i%2 ? GOLD:0xF7FF);
+  }
+  // Sugar pearls and little berries decorate the tiers.
+  for (int i=0; i<7; ++i)
+    circle(X(70+i*16), Y(235), max(1,int(2*scale)), 0xFFFD);
+  for (int i=0; i<4; ++i) {
+    int x=87+i*22;
+    circle(X(x), Y(181), max(1,int(3*scale)), CORAL);
+    circle(X(x-1), Y(180), max(1,int(scale)), INK);
   }
   for(int i=0;i<3;++i) {
     int x=96+i*24;
@@ -290,7 +310,7 @@ char greeting[32];
 constexpr float L1_AT = 0.9f, L1_CPS = 15, L2_AT = 2.2f, L3_AT = 3.5f, L23_CPS = 20;
 constexpr const char *INTRO_L2 = "today is all about you.";
 constexpr const char *INTRO_L3 = "I made something for you...";
-constexpr float INTRO_END = 6.1f;
+constexpr float INTRO_END = 5.4f;
 
 int introTyped(float st) {
   auto n = [](float st, float at, float cps, const char *s) {
@@ -301,7 +321,7 @@ int introTyped(float st) {
 }
 
 void intro(float t, float st) {
-  float out = 1 - progress(st, INTRO_END - 0.5f, 0.5f);
+  float out = 1;
   float appear = ease(progress(st, 0, 0.8f)) * out;
   // Heartbeat: two quick pulses, then a rest.
   float beat = fmodf(st, 1.1f);
@@ -316,16 +336,20 @@ void intro(float t, float st) {
     sparkle(120 + int(cosf(a) * 40), 104 + int(sinf(a) * 34), 1 + (i%2),
             mix(bgAt(104), i%2 ? GOLD : AQUA, appear));
   }
+  for (int i=0; i<4; ++i) {
+    int x = i%2 ? 186:54;
+    int y = 65 + (i/2)*68 + int(3*sinf(t*1.5f+i));
+    heart(x, y, 2.5f, mix(bgAt(y), i%2 ? LILAC:PINK, 0.65f*appear));
+  }
   auto shown = [&](float at, float cps, const char *s) { return int((st - at) * cps); };
   uint16_t white = mix(bgAt(180), INK, out), lilac = mix(bgAt(232), LILAC, out);
   typeText(greeting, 180, 4, white, shown(L1_AT, L1_CPS, greeting), t);
   typeText(INTRO_L2, 212, 2, mix(bgAt(212), INK, out * 0.85f), shown(L2_AT, L23_CPS, INTRO_L2), t);
   typeText(INTRO_L3, 236, 2, lilac, shown(L3_AT, L23_CPS, INTRO_L3), t);
-  footer("SHOOT skip     DOWN exit", appear);
+  footer("SHOOT next", appear);
 }
 
 // ---- Scene 2: gift ----------------------------------------------------------
-constexpr float GIFT_AUTO_OPEN = 7.0f;
 void gift(float t, float st, float openAt) {
   float open = openAt < 0 ? 0 : ease(progress(st, openAt, 0.6f));
   float exit = openAt < 0 ? 0 : ease(progress(st, openAt + 0.6f, 0.3f));
@@ -337,26 +361,34 @@ void gift(float t, float st, float openAt) {
   int cx = 120 + shake;
   int cy = 174 + bob + int(exit*240) + int((1-enter)*30);
   float pulse = 0.5f + 0.5f*sinf(t*4);
-  for (int r=47; r>26; r-=3)
-    circle(cx, cy, r, mix(0x1007, LILAC, (48-r)/180.0f*enter));
+  for (int r=62; r>32; r-=3)
+    circle(cx, cy, r, mix(0x1007, LILAC, (63-r)/180.0f*enter));
   for (int i=0; i<10; ++i) {
     float a = t*1.1f + i*2*PI_F/10;
-    int r = 49 + int(5*sinf(t*2+i));
+    int r = 67 + int(5*sinf(t*2+i));
     sparkle(cx+int(cosf(a)*r), cy+int(sinf(a)*r*0.82f),
             i%3==0 ? 2:1, mix(bgAt(cy), i%2 ? AQUA:GOLD, enter));
   }
   // Ribbon, shaded box and an opening lid.
   int lift = int(open*57);
-  rect(cx-31, cy-11, 62, 43, mix(0x81B4, PINK, 0.6f), 5);
-  for (int x=cx-29; x<cx+29; ++x)
-    line(x, cy-8, x, cy+29, mix(PINK, LILAC, (x-cx+29)/75.0f));
-  rect(cx-5, cy-11, 10, 43, GOLD);
-  rect(cx-34-int(open*9), cy-20-lift, 68, 13, CORAL, 3);
-  rect(cx-5-int(open*9), cy-20-lift, 10, 13, 0xFFF2);
-  int bowX=cx-int(open*9), bowY=cy-23-lift;
-  frame.drawEllipse(bowX-8, bowY-origin, 9, 5, GOLD);
-  frame.drawEllipse(bowX+8, bowY-origin, 9, 5, GOLD);
-  circle(bowX, bowY+2, 3, 0xFFF2);
+  frame.fillEllipse(cx,cy+42-origin,53,6,0x0804);
+  rect(cx-43, cy-13, 86, 53, 0x91B5, 7);
+  for (int x=cx-40; x<cx+40; ++x)
+    line(x, cy-9, x, cy+36, mix(PINK, 0xB2DB, (x-cx+40)/105.0f));
+  for (int row=0; row<3; ++row)
+    for (int col=0; col<6; ++col)
+      circle(cx-34+col*14+(row%2)*4, cy-3+row*15, 2, 0xFE9B);
+  rect(cx-6, cy-13, 12, 53, GOLD);
+  rect(cx-3, cy-10, 3, 47, 0xFFF2);
+  rect(cx-47-int(open*9), cy-25-lift, 94, 15, CORAL, 4);
+  rect(cx-45-int(open*9), cy-24-lift, 90, 3, 0xFEF8, 1);
+  rect(cx-6-int(open*9), cy-25-lift, 12, 15, GOLD);
+  int bowX=cx-int(open*9), bowY=cy-29-lift;
+  frame.fillEllipse(bowX-10, bowY-origin, 11, 6, GOLD);
+  frame.fillEllipse(bowX+10, bowY-origin, 11, 6, GOLD);
+  frame.fillEllipse(bowX-10, bowY-origin, 6, 3, 0xFFF2);
+  frame.fillEllipse(bowX+10, bowY-origin, 6, 3, 0xFFF2);
+  circle(bowX, bowY+2, 4, 0xFFF2);
   if (open>0) {
     // Light pours out, then a ring of sparkles bursts away.
     for (int r = 30; r > 4; r -= 5)
@@ -373,7 +405,7 @@ void gift(float t, float st, float openAt) {
   fadeText("A present, just for you", 92, 2, INK, fade);
   if (openAt < 0 && st > 0.8f)
     fadeText("Press SHOOT to open it", 262, 2, GOLD, fade * (0.55f + 0.45f*pulse));
-  footer("SHOOT open     DOWN exit", fade);
+  footer("SHOOT open", fade);
 }
 
 // ---- Scene 3: party ---------------------------------------------------------
@@ -398,11 +430,10 @@ void party(float st) {
   if (reveal>0) cake(st,reveal,1);
   fadeText(WISH[0],271,1,INK,wish);
   fadeText(WISH[1],285,1,LILAC,wish);
-  footer("SHOOT make a wish     DOWN exit", wish);
+  footer("SHOOT make a wish", wish);
 }
 
 // ---- Scene 4: wish ----------------------------------------------------------
-constexpr float WISH_AUTO_BLOW = 14.0f, WISH_AFTER = 3.6f;
 void wishScene(float t, float st, float blowAt) {
   bool blown = blowAt >= 0;
   float since = blown ? st - blowAt : 0;
@@ -425,7 +456,7 @@ void wishScene(float t, float st, float blowAt) {
     fadeText("Press SHOOT to blow", 270, 2, INK, ease(progress(st, 2.0f, 0.5f)) * pulse);
     fadeText("out the candles", 288, 2, INK, ease(progress(st, 2.0f, 0.5f)) * pulse);
   }
-  if (!blown) { footer("UP replay     DOWN exit", ask); return; }
+  if (!blown) return;
 
   // Smoke curls up from each wick.
   for (int c = 0; c < 3; ++c) {
@@ -457,18 +488,27 @@ void wishScene(float t, float st, float blowAt) {
   fadeText("May every bit of it", 80, 2, INK, ease(progress(since, 0.8f, 0.6f)));
   fadeText("come true.", 100, 2, LILAC, ease(progress(since, 1.1f, 0.6f)));
   fadeText("Happy birthday!", 276, 2, GOLD, ease(progress(since, 1.4f, 0.6f)));
-  footer("UP replay     DOWN exit", yay);
+  footer("SHOOT next", ease(progress(since, 1.8f, 0.4f)));
 }
 
 // ---- Scene 5: notes ---------------------------------------------------------
-constexpr float PAGE_TIME = 4.6f;
 void notes(float t, float st, int page, float pageSt, int dir) {
   float in = ease(progress(st, 0, 0.5f));
   fadeText("A few wishes for you", 40, 2, GOLD, in);
   // Card.
   int cardY = 62 + int((1-in)*20);
+  rect(25, cardY+5, 196, 182, mix(bgAt(150), 0x0804, in), 14);
   rect(22, cardY, 196, 182, mix(bgAt(150), CARDC, in), 14);
   frame.drawRoundRect(22, cardY-origin, 196, 182, 14, mix(bgAt(150), LILAC, 0.35f*in));
+  // Gilded corner flourishes frame the handwritten wishes.
+  uint16_t trim = mix(CARDC, GOLD, 0.55f*in);
+  for (int side=0; side<2; ++side) {
+    int x=side ? 203:37, d=side ? -1:1;
+    line(x,cardY+15,x+d*12,cardY+15,trim);
+    line(x,cardY+15,x,cardY+27,trim);
+    sparkle(x+d*5,cardY+20,2,trim);
+  }
+  line(46, cardY+77, 194, cardY+77, mix(CARDC, GOLD, 0.35f*in));
   // Content slides in from the side it came from.
   float s = ease(progress(pageSt, 0, 0.4f)) * in;
   int dx = int((1 - s) * 28 * dir);
@@ -494,7 +534,7 @@ void notes(float t, float st, int page, float pageSt, int dir) {
     if (i == page) rect(x - 6, 262, 12, 5, mix(bgAt(262), GOLD, in), 2);
     else circle(x, 264, 2, mix(bgAt(264), FOOT, in * 0.7f));
   }
-  footer("LEFT/RIGHT turn   SHOOT next   DOWN exit", in);
+  footer("SHOOT next", in * ease(progress(pageSt, 0.8f, 0.3f)));
 }
 
 // ---- Scene 6: finale --------------------------------------------------------
@@ -525,7 +565,7 @@ void finale(float t, float st) {
   if (h > 0.02f) heart(120, 178, (8 + 1.6f*pulse) * h, mix(bgAt(178), PINK, h));
   fadeText("With love, always.", 226, 2, PINK, ease(progress(st, 1.5f, 0.6f)));
   fadeText("Have the best year yet!", 248, 2, LILAC, ease(progress(st, 1.9f, 0.6f)));
-  footer("UP replay     SHOOT exit", ease(progress(st, 2.4f, 0.6f)));
+  footer("UP replay    SHOOT start console", ease(progress(st, 2.4f, 0.6f)));
 }
 
 // ---- Sound ------------------------------------------------------------------
@@ -537,28 +577,29 @@ const Note SONG[] = {
   {466,1},{466,1},{440,2},{349,2},{392,2},{349,4}
 };
 const Note TICK[]   = {{2093,1}};
-const Note CHIME[]  = {{1047,1},{1319,1},{1568,1},{2093,3}};
-const Note PAGE[]   = {{1568,1},{2093,1}};
-const Note BLOW[]   = {{1200,1},{1000,1},{820,1},{660,1},{520,1},{0,2},{1568,1},{1976,1},{2349,1},{3136,4}};
-const Note TADA[]   = {{1047,1},{1319,1},{1568,1},{2093,2},{1568,1},{2093,4}};
+const Note CHIME[]  = {{523,1},{659,1},{784,1},{1047,3}};
+const Note PAGE[]   = {{784,1},{1047,1}};
+const Note BLOW[]   = {{392,2},{523,2},{659,2},{784,4}};
+const Note TADA[]   = {{523,1},{659,1},{784,1},{1047,2},{784,1},{1047,4}};
 
 class Player {
  public:
   void play(const Note *s, int n, uint16_t beatMs, uint8_t mult, unsigned long now) {
     seq = s; count = n; beat = beatMs; mul = mult; index = 0; ringing = false; at = now; active = true;
-    setBuzzerTone(0);
+    audio::birthdayStop();
   }
-  void stop() { active = false; setBuzzerTone(0); }
+  void stop() { active = false; audio::birthdayStop(); setBuzzerTone(0); }
   bool busy() const { return active; }
   void update(unsigned long now) {
     if (!active) return;
     if (index >= count) { stop(); return; }
     if (!ringing) {
-      setBuzzerTone(seq[index].frequency ? seq[index].frequency * mul : 0);
+      if (seq == TICK) setBuzzerTone(seq[index].frequency * mul);
+      else audio::birthdayNote(seq[index].frequency * mul);
       at = now; ringing = true;
     }
     unsigned long d = seq[index].beats * beat;
-    if (now - at >= d * 8 / 10) setBuzzerTone(0);
+    if (seq == TICK && now - at >= d * 8 / 10) setBuzzerTone(0);
     if (now - at >= d) { ringing = false; ++index; }
   }
  private:
@@ -590,6 +631,7 @@ const char *const SCENE_NAMES[] = {"intro", "gift", "party", "wish", "notes", "f
 
 void showBirthdayScene() {
   using namespace birthday;
+  cacheValid = false;
   // The 38 KB band buffer avoids a 154 KB framebuffer allocation on the C3.
   // Each band is fully composed before transfer: no erase/redraw flicker.
   frame.setColorDepth(16);
@@ -599,7 +641,7 @@ void showBirthdayScene() {
     tft.setTextFont(4);tft.setTextColor(INK);
     tft.drawString("Happy Birthday",120,123);
     tft.setTextColor(GOLD);tft.drawString(RECIPIENT,120,158);
-    tft.setTextFont(1);tft.drawString("SHOOT TO RETURN",120,277);
+    tft.setTextFont(2);tft.drawString("SHOOT start console",120,277);
     buttonsRequireRelease();
     while(command()!=4) delay(5);
     return;
@@ -630,51 +672,48 @@ void showBirthdayScene() {
     unsigned long now = millis();
     float st = (now - sceneAt) / 1000.0f;
     int c = command();
-    if (c == 2) break;
-    if (c == 0 && now - started > 500) {
+    if (scene == FINALE && c == 0 && st > 3.0f) {
       started = now; go(INTRO, now); buttonsRequireRelease();
       Serial.println("[Birthday] Replay");
       continue;
     }
 
-    // Input and automatic progress for each scene.
+    // Each scene waits for the viewer's next press.
     switch (scene) {
       case INTRO: {
         int n = introTyped(st);
         if (n > typed) { typed = n; if (!player.busy()) PLAY(player, TICK, 18, 1, now); }
-        if (c == 4 || st >= INTRO_END) go(GIFT, now);
+        if (c == 4 && st >= INTRO_END) go(GIFT, now);
         break;
       }
       case GIFT:
-        if (openAt < 0 && (c == 4 || st >= GIFT_AUTO_OPEN)) {
-          openAt = st; audio::play(audio::Cue::Sparkle);
+        if (openAt < 0 && c == 4) {
+          openAt = st;
           PLAY(player, CHIME, 90, 1, now);
         }
         if (openAt >= 0 && st >= openAt + 0.95f) go(PARTY, now);
         break;
       case PARTY:
-        if (!songStarted && st >= 0.55f) { audio::play(audio::Cue::Firework); PLAY(player, SONG, 155, 2, now); songStarted = true; }
-        if (c == 4 || (songStarted && !player.busy() && st > 9.0f)) {
-          if (c == 4) audio::play(audio::Cue::Pop);
+        if (!songStarted && st >= 0.55f) { PLAY(player, SONG, 155, 1, now); songStarted = true; }
+        if (c == 4 && st >= 2.5f) {
           go(WISH_S, now);
         }
         break;
       case WISH_S:
-        if (blowAt < 0 && st > 1.0f && (c == 4 || st >= WISH_AUTO_BLOW)) { blowAt = st; PLAY(player, BLOW, 70, 1, now); }
-        if (blowAt >= 0 && (st >= blowAt + WISH_AFTER || (c == 4 && st > blowAt + 1.0f))) go(NOTES, now);
+        if (blowAt < 0 && st > 1.0f && c == 4) { blowAt = st; PLAY(player, BLOW, 70, 1, now); }
+        else if (blowAt >= 0 && c == 4 && st > blowAt + 2.0f) go(NOTES, now);
         break;
       case NOTES: {
         float pt = st - pageAt;
-        bool next = c == 1 || c == 4 || pt >= PAGE_TIME;
-        if (c == 3 && page > 0) { --page; dir = -1; pageAt = st; PLAY(player, PAGE, 45, 1, now); }
-        else if (next) {
+        bool next = c == 4 && pt > 1.1f;
+        if (next) {
           if (page + 1 >= PAGE_COUNT) go(FINALE, now);
           else { ++page; dir = 1; pageAt = st; PLAY(player, PAGE, 45, 1, now); }
         }
         break;
       }
       case FINALE:
-        if (c == 4 && st > 0.8f) goto done;
+        if (c == 4 && st > 3.0f) goto done;
         break;
     }
     player.update(now);
@@ -710,8 +749,8 @@ void showBirthdayScene() {
     delay(1);
   }
 done:
-  setBuzzerTone(0);
+  player.stop();
   frame.deleteSprite();
   buttonsRequireRelease();
-  Serial.println("[Birthday] Returned to Info");
+  Serial.println("[Birthday] Start game console");
 }

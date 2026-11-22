@@ -174,19 +174,20 @@ void pauseItem(const char *const *items, int count, int item, int selected, uint
 }
 
 void gameOverSheet(const char *game, int score, int best, uint16_t accent, const char *title,
-                   const char *unit) {
+                   const char *unit, const char *distance, const char *distanceLabel) {
   tft.setTextSize(1);
-  card(24, 62, 192, 210);
+  card(24, 62, 192, distance ? 214 : 210);
   heading(40, 76, game, title);
   // Keep the badge below the title, independent of either text's width.
   if (score > 0 && score >= best) chip(40, 126, "New best", accent);
   String s = String(score), b = String(best);
   if (unit) { s += unit; b += unit; }
-  const List scores = {32, 154, 176, 24, 2};
+  const List scores = {32, distance ? 148 : 154, 176, distance ? 20 : 24, distance ? 3 : 2};
   infoRow(scores, 0, "Score", s.c_str());
   infoRow(scores, 1, "Best", b.c_str());
-  gradientPill(40, 210, 160, 30, "Play again", accent, accentTo(accent));
-  hint(254, "Up for home screen", CARD);
+  if (distance) infoRow(scores, 2, distanceLabel, distance);
+  gradientPill(40, distance ? 220 : 210, 160, 30, "Play again", accent, accentTo(accent));
+  hint(distance ? 262 : 254, "Up for home screen", CARD);
 }
 
 void startCard(int y, const char *name, const char *tagline, const Control *controls,

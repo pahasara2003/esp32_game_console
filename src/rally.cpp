@@ -27,7 +27,12 @@ constexpr float CHECKPOINT_GAP = 3000.f, START_TIME = 25.f;
 constexpr int RIVALS = 5, COINS = 6;
 // Car footprint in road units (sprite is ~22 x 46 px at mapScale .24).
 constexpr float CAR_W = 90.f, CAR_L = 188.f;
-struct Rival { float z, lat, speed, laneTarget; uint32_t hitCooldown; uint16_t paint, dark; };
+constexpr float PLAYER_TOP_SPEED = 235.f / .3f;
+struct Rival {
+  float z, lat, speed, laneTarget, pace, acceleration, cornerPenalty;
+  uint32_t hitCooldown;
+  uint16_t paint, dark;
+};
 Rival rivals[RIVALS];
 struct Coin { float z, lat; };
 Coin coinList[COINS];
@@ -120,6 +125,8 @@ int place() {
   for (const Rival &r : rivals) if (r.z > distance) ++p;
   return p;
 }
+int metersToNextLap() { return int(ceilf((length - position) / 10.f)); }
+bool isLapLine(float z) { return fmodf(z, length) == 0.f; }
 void placeCoin(Coin &c, float from) {
   c.z = from + 600 + random(0, 1400);
   c.lat = random(-140, 141);
@@ -263,9 +270,10 @@ void render() {
     quad(x1,y1,x2,y2,45,0x4A49);
     if(i&1) quad(x1,y1,x2,y2,1,0xD69A);
   }
-  // Checkered checkpoint line across the road.
-  float cpZ = ceilf(position / CHECKPOINT_GAP) * CHECKPOINT_GAP;
+  // Keep a crossed line visible behind the car; lap boundaries are solid yellow.
+  float cpZ = ceilf((position - 320.f) / CHECKPOINT_GAP) * CHECKPOINT_GAP;
   for (float z = cpZ; z < position + 1000; z += CHECKPOINT_GAP) {
+    bool lapLine = isLapLine(z);
     float sy = carY - (z - position) * mapScale;
     float cx = 120 + (center(z) - cameraX) * mapScale;
     // Lay the checks perpendicular to the road direction at this point.
@@ -281,7 +289,7 @@ void render() {
         int x1 = int(cx + px * u1 + dx * v0), y1 = int(sy + py * u1 + dy * v0);
         int x2 = int(cx + px * u1 + dx * v1), y2 = int(sy + py * u1 + dy * v1);
         int x3 = int(cx + px * u0 + dx * v1), y3 = int(sy + py * u0 + dy * v1);
-        uint16_t c = ((k + r) & 1) ? TFT_WHITE : TFT_BLACK;
+        uint16_t c = lapLine ? TFT_YELLOW : (((k + r) & 1) ? TFT_WHITE : TFT_BLACK);
         frame.fillTriangle(x0, y0, x1, y1, x2, y2, c);
         frame.fillTriangle(x0, y0, x2, y2, x3, y3, c);
       }
@@ -343,9 +351,9 @@ void render() {
   for (int i = 1; i <= RIVALS; ++i)
     for (int j = i; j > 0 && zOf(order[j]) > zOf(order[j - 1]); --j)
       std::swap(order[j], order[j - 1]);
-  frame.fillRoundRect(202, 32, 34, (RIVALS + 1) * 18 + 6, 6, ui::CARD);
+  frame.fillRoundRect(202, 56, 34, (RIVALS + 1) * 18 + 6, 6, ui::CARD);
   for (int i = 0; i <= RIVALS; ++i) {
-    int y = 35 + i * 18;
+    int y = 59 + i * 18;
     bool me = order[i] == RIVALS;
     uint16_t c = me ? 0xE8E4 : rivals[order[i]].paint;
     if (me) frame.fillRoundRect(204, y, 30, 17, 4, ui::LABEL);
@@ -356,11 +364,16 @@ void render() {
     if (me) frame.drawRoundRect(218, y + 3, 13, 11, 3, ui::INK_DARK);
   }
   if (millis() < flashUntil) {
-    frame.fillRoundRect(60, 36, 120, 22, 11, ACCENT);
+    frame.fillRoundRect(60, 60, 120, 22, 11, ACCENT);
     frame.setTextDatum(MC_DATUM);
     frame.setTextColor(ui::inkOn(ACCENT), ACCENT);
-    frame.drawString(flashText, 120, 47);
+    frame.drawString(flashText, 120, 71);
   }
+  frame.setTextDatum(TL_DATUM);
+  frame.setTextColor(TFT_CYAN);
+  frame.drawString(String("Lap ") + lap, 8, 31);
+  frame.setTextDatum(TR_DATUM);
+  frame.drawString(String("Next lap ") + metersToNextLap() + " m", 232, 31);
   frame.setTextDatum(TL_DATUM);
   frame.pushSprite(0, 0);
 }
@@ -384,12 +397,17 @@ void resetRace() {
     r.lat = (i & 1) ? 75.f : -75.f;
     r.laneTarget = r.lat;
     r.speed = 0;
+    r.pace = random(540, 691);
+    r.acceleration = random(240, 381);
+    r.cornerPenalty = random(80, 221);
     r.hitCooldown = 0;
     r.paint = paints[i][0]; r.dark = paints[i][1];
   }
   for (int i = 0; i < COINS; ++i) placeCoin(coinList[i], i * 400.f);
 }
 void startRace() {
+  audio::restartMusic();
+  audio::stopEnding();
   resetRace();
   tft.fillScreen(TFT_BLACK);
   render();
@@ -415,7 +433,7 @@ void drawStartPage() {
       {"Checkpoint", "Adds time"}, {"Timer", "Race ends at 0"},
       {"Grass", "Slows you down"}, {"Bump rival", "+3 coins"}};
     static const ui::Control scoring[] = {
-      {"Distance", "1 pt / 10 m"}, {"Coin", "20 pts"},
+      {"Distance", "1 pt / m"}, {"Coin", "20 pts"},
       {"Place", "Pass rivals"}, {"Best", "Saved score"}};
     const ui::Control *rows = startPage == 1 ? howTo : scoring;
     ui::card(18, 60, 204, 200);
@@ -436,17 +454,64 @@ void showStart() {
   drawStartPage();
   buttonsRequireRelease();
 }
+void drawPodium(int rank, int points) {
+  const uint16_t medals[] = {0xFE60, 0xC618, 0xC3E8};
+  const char *places[] = {"1st place", "2nd place", "3rd place"};
+  const char *names[] = {"Gold medal", "Silver medal", "Bronze medal"};
+  uint16_t medal = medals[rank - 1];
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextSize(1);
+  ui::card(10, 8, 220, 304);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(ui::SECONDARY, ui::CARD);
+  tft.drawString("Rally podium", 120, 25, 2);
+  tft.setTextColor(medal, ui::CARD);
+  tft.drawString(places[rank - 1], 120, 52, 4);
+
+  // Ribbon, raised rim and oversized place number form the winner's medal.
+  tft.fillTriangle(86, 78, 111, 78, 127, 129, 0xE8E4);
+  tft.fillTriangle(129, 78, 154, 78, 113, 129, 0xA882);
+  tft.fillCircle(122, 142, 44, 0x0841);
+  tft.fillCircle(120, 138, 44, medal);
+  tft.drawCircle(120, 138, 39, ui::INK_DARK);
+  tft.drawCircle(120, 138, 36, ui::LABEL);
+  tft.setTextSize(2);
+  tft.setTextColor(ui::INK_DARK, medal);
+  tft.drawString(String(rank), 120, 139, 4);
+  tft.setTextSize(1);
+  for (int side : {-1, 1}) {
+    int x = 120 + side * 77;
+    tft.drawLine(x - 5, 118, x + 5, 118, medal);
+    tft.drawLine(x, 113, x, 123, medal);
+    tft.fillCircle(x + side * 9, 158, 3, medal);
+    tft.fillCircle(x - side * 7, 91, 2, ui::LABEL);
+  }
+  tft.setTextColor(medal, ui::CARD);
+  tft.drawString(names[rank - 1], 120, 195, 2);
+  const ui::List scores = {28, 204, 184, 18, 3};
+  ui::infoRow(scores, 0, "Score", String(points).c_str());
+  ui::infoRow(scores, 1, "Best", String(best).c_str());
+  ui::infoRow(scores, 2, "Distance", (String(distance / 10000.f, 2) + " km").c_str());
+  ui::gradientPill(36, 262, 168, 22, "Play again", medal, medal);
+  ui::hint(296, "Up for home screen", ui::CARD);
+}
 void gameOver() {
+  int rank = place();
+  audio::play(rank <= 3 ? audio::Cue::Win : audio::Cue::GameOver);
   state = 3;
   int s = score();
   if (s > best) {
     best = s;
     Preferences p; p.begin("Rally", false); p.putInt("best", best); p.end();
   }
-  render();
-  static char title[20];
-  snprintf(title, sizeof(title), "Place %d of %d", place(), RIVALS + 1);
-  ui::gameOverSheet(title, s, best, ACCENT, "Time up");
+  if (rank <= 3) drawPodium(rank, s);
+  else {
+    render();
+    char title[20];
+    snprintf(title, sizeof(title), "Place %d of %d", rank, RIVALS + 1);
+    String travelled = String(distance / 10000.f, 2) + " km";
+    ui::gameOverSheet(title, s, best, ACCENT, "Time up", nullptr, travelled.c_str());
+  }
   buttonsRequireRelease();
 }
 }
@@ -459,6 +524,7 @@ void rallySetup() {
   showStart();
 }
 void rallyLoop() {
+  audio::pauseMusic(state != 1);
   if (!ready) { delay(20); return; }
   int key;
   while ((key = buttonsNextPress()) >= 0) {
@@ -471,6 +537,7 @@ void rallyLoop() {
       }
     } else if (state == 1) {
       if (key == 4) {
+        audio::pauseMusic(true);
         state = 2; pauseSelection = 0;
         ui::pauseSheet("Rally", PAUSE_ITEMS, 3, pauseSelection, ACCENT);
       }
@@ -515,37 +582,28 @@ void rallyLoop() {
   bool onRoad = edge <= 180.f;
   // Auto throttle: always accelerating toward top speed; Down brakes.
   // Off road: speed is capped low so the car can still crawl back.
-  float topSpeed = onRoad ? 750.f : 190.f;
+  float topSpeed = onRoad ? PLAYER_TOP_SPEED : 190.f;
   float accel;
   // Always on the throttle; Down brakes.
   if (held & 4) accel = -650.f;
   else accel = onRoad ? 600.f - speed * .35f : 240.f;
   speed += accel * dt;
   if (speed > topSpeed) speed = max(topSpeed, speed - 520.f * dt);
-  speed = constrain(speed, 0.f, 750.f);
+  speed = constrain(speed, 0.f, PLAYER_TOP_SPEED);
   // Steering is quicker at low speed and slightly damped at top speed.
-  float steerRate = 2.6f - 0.9f * speed / 750.f;
+  float steerRate = 2.6f - 0.9f * speed / PLAYER_TOP_SPEED;
   heading += steer * steerRate * dt;
-  // Without input the car straightens toward the road direction; off road it
-  // also steers gently back toward the tarmac so nobody gets stranded.
-  float target = roadHeading(position);
-  if (!onRoad) target += constrain(-lateral / 400.f, -.6f, .6f);
-  if (!steer) heading += (target - heading) * min(1.f, (onRoad ? 3.f : 1.5f) * dt);
+  // Releasing the steering keeps the current world heading, even off road.
   heading = constrain(heading, -1.25f, 1.25f);
   float oldCenter = center(position);
   float forward = cosf(heading) * speed * dt;
   float newPosition = position + forward;
   lateral += sinf(heading) * speed * dt - (center(newPosition) - oldCenter);
-  // Soft barrier: hitting the outer limit scrubs speed instead of sticking.
-  if (fabsf(lateral) > 420.f) {
-    lateral = constrain(lateral, -420.f, 420.f);
-    speed *= .9f;
-  }
   position = newPosition;
   distance += forward;
   // Off-road water: wading through a river is slow.
   if (!onRoad && inRiver(distance, center(position) + lateral) && speed > 70.f) speed = max(70.f, speed - 900.f * dt);
-  if (position >= length) { position -= length; ++lap; }
+  if (position >= length) { position -= length; ++lap; audio::play(audio::Cue::Milestone); }
   if (distance >= nextCheckpoint) {
     nextCheckpoint += CHECKPOINT_GAP;
     // Bonus shrinks each checkpoint, so the clock eventually wins.
@@ -556,12 +614,13 @@ void rallyLoop() {
     flash(msg);
     playSelectTone();
   }
-  // Rivals: each has its own pace with mild rubber-banding toward the player.
+  // Skills are rolled each race, independent of paint and starting position.
   for (int i = 0; i < RIVALS; ++i) {
     Rival &r = rivals[i];
     float gap = r.z - distance;
-    float target = 570.f + i * 35.f + constrain(-gap * .1f, -120.f, 140.f);
-    r.speed += constrain(target - r.speed, -300.f * dt, 300.f * dt);
+    float bend = fabsf(roadHeading(r.z + 220.f) - roadHeading(r.z));
+    float target = r.pace - bend * r.cornerPenalty + constrain(-gap * .1f, -120.f, 140.f);
+    r.speed += constrain(target - r.speed, -300.f * dt, r.acceleration * dt);
     r.z += r.speed * dt;
     if (random(0, 400) == 0) r.laneTarget = random(-110, 111);
     r.lat += constrain(r.laneTarget - r.lat, -120.f * dt, 120.f * dt);

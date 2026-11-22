@@ -93,6 +93,7 @@ void cameraViewerSetup() {
   Serial.begin(115200);
   Serial.println("[VIEW] setup start");
   tft.init();
+  setDisplayBrightness(displayBrightness, false);
   Serial.println("[VIEW] display ready");
   tft.setRotation(2);
   tft.fillScreen(TFT_BLACK);
