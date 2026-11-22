@@ -22,7 +22,7 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 
 - 🕹️ **10 games**, each with its own music, sound effects, pause menu and saved high scores
 - 🧬 **Simulations**: Conway's Game of Life and an interactive Mandelbrot explorer
-- 🎵 **Media**: music player and video player straight from the SD card, plus a camera viewer
+- 🎵 **Media**: music player and video player straight from the SD card
 - 🎨 **Polished UI**: phone-style launcher, 8 colour themes, light and dark mode, one shared UI kit for every screen
 - 🔊 **Game music built in**: tracks are embedded in flash, no SD card needed to play
 - ⚡ **Fast display**: 40 MHz SPI, about 29 full-screen frames per second
@@ -35,8 +35,63 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 | **Arcade** | Snake · Tetris · Breakout · Run · Galaga · Rally |
 | **Puzzle & classic** | Sliding Puzzle · Tic-tac-toe · Pong · Minesweeper |
 | **Simulations** | Conway's Game of Life · Mandelbrot explorer |
-| **Media** | Music player · Video player · Camera viewer |
-| **System** | Launcher · Settings · Info |
+| **Media** | Music player · Video player |
+| **System** | Launcher · Settings · About |
+
+## 👾 The arcade
+
+> Insert coin. Or just press Shoot.
+
+### 🏁 Rally
+**Race the clock, not the road.** Hurtle down a drone-view track, steer a rotating car and chase checkpoints before the timer hits zero. Every checkpoint adds time, the grass slows you down, and nudging a rival earns bonus coins.
+`Left / Right` steer · `Down` brake · `Shoot` pause · score: 1 point per metre, 20 per coin.
+
+### 🧛 Run
+**Sprint, jump, survive.** A caped vampire runner dashes through a moody scene, grabbing coins to build a combo multiplier. Snatch a shield for 8 seconds of invincibility and strike back with an attack animation.
+
+### 🚀 Galaga
+**A little cosmic joy.** Wave after wave of alien invaders. Steer your ship, fire away and protect your three lives.
+`Left / Right` steer · `Up` fire · `Shoot` pause.
+
+### 🧱 Tetris
+**The classic, tuned for a tiny screen.** A centred board with solid square blocks, a next-piece preview, lines, level and time cards, and smooth held-button repeat so pieces glide exactly where you want them.
+
+### 🐍 Snake
+**Nokia nostalgia, now in colour.** Eat, grow, don't crash. Pick a wall layout (no walls, twin bars, four corners or a cross) and see how long you last.
+
+### 🏓 Breakout
+**Clear every brick.** Launch the ball, bounce it off your bat and smash through six rows of bricks.
+`Left / Right` move · `Up` launch · `Shoot` pause.
+
+### 🧩 Sliding Puzzle
+**Slide, think, repeat.** Put the tiles back in order on a 4×4, 5×5 or 6×6 grid, and keep an eye on your move counter.
+
+### ⭕ Tic-tac-toe
+**Get three in a row.** You are X, the console plays O. `D-pad` moves, `Shoot` places your mark.
+
+### 🏓 Pong
+**Keep the ball in play.** Slide your paddle and survive before you rack up three misses.
+`Left / Right` move · `Shoot` pause.
+
+### 💣 Minesweeper
+**Reveal every safe tile.** An 8×8 board hides ten mines, numbers count the danger nearby, and your first tap is always safe. Flag the mines you've found and clear the rest.
+
+## 🔬 The lab
+
+### 🧬 Conway's Game of Life
+**Watch a tiny universe come alive.** Starts straight into a random 112×96 world that runs on the classic B3/S23 rules with wrap-around edges. Speed it up to 30 generations per second, pause, or open the built-in field guide with animated gliders, blinkers and pulsars.
+
+### 🌀 Mandelbrot Explorer
+**Dive into infinity.** Pan with the D-pad and zoom from 1x to over a million times into the famous fractal. It refines the picture progressively, 8 pixels down to 1, so you can keep moving while it paints.
+
+## 🎧 Media & system
+
+| | |
+| :--- | :--- |
+| 🎵 **Music** | A jukebox for the tracks on your SD card, with transport controls and a playlist. |
+| 🎬 **Videos** | Plays video and audio from `/videos/<name>/` on the SD card. |
+| ⚙️ **Settings** | Make it yours: 8 colour themes, brightness, sound, effects and music volume, game music, battery saver and score reset. |
+| ℹ️ **About** | Console info screen. |
 
 **Settings** cover theme, brightness, sound, effects volume, music volume, game music, battery saver and score reset.
 
@@ -110,14 +165,14 @@ Every game's start card lists its exact controls.
 src/
 ├── gameConsoleNew.ino     entry point
 ├── game.h / game.ino      engine, input, high scores, countdown, tone task
-├── menu.ino               launcher, Settings, Info
+├── menu.ino               launcher, Settings, About
 ├── ui_kit.h / .cpp        shared ui:: helpers (cards, rows, pause sheets)
 ├── buttons.cpp            ADS1115 button scanning
 ├── audio_kit.*            sound effects and music helpers
 ├── sd_game_music.*        embedded game music
 ├── snake / tetris / breakout / run / galaga / sliding_puzzle / mini_games
 ├── rally.cpp  life.cpp  mandelbrot.cpp
-└── music_player.cpp  video_player.cpp  camera_viewer.cpp
+└── music_player.cpp  video_player.cpp
 lib/TFT_eSPI/              customised display driver
 assets/                    graphics, audio, generated data
 tools/                     asset converters, flasher, music selector
