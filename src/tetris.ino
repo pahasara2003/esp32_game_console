@@ -430,7 +430,7 @@ void updatePosition(int dx = 0, int dy = 1) {
     addToDead();
     playTetrisDropSound();
     if (!newTetro()) {
-      audio::play(audio::Cue::Death);
+      audio::play(audio::Cue::GameOver);
       gameState = 2;
       menu_drawn = false;
       tetrisInputRequireRelease();
@@ -443,7 +443,7 @@ void updatePosition(int dx = 0, int dy = 1) {
 
 void getCommand() {
   if (tetrisPressed & 16) {
-    gameState = 1;
+    audio::pauseMusic(true); gameState = 1;
     menu_drawn = false;
     tetrisPauseSelection = 0;
     tetrisInputRequireRelease();
@@ -561,6 +561,7 @@ void handleTetrisGameOver() {
 
 
 void tetrisSetup() {
+  audio::restartMusic();
   tetrisInputBegin();
   tetrisSideHeld = 0;
   TETRIS_GRID_DARK = tetrisMix(UI_BG, UI_PURPLE, 22);

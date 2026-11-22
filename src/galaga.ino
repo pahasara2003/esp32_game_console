@@ -143,7 +143,7 @@ static void soundAlienHit() {
 }
 
 static void soundPlayerExplode() {
-  startGalagaSound(3);
+  audio::play(galaLives <= 1 ? audio::Cue::GameOver : audio::Cue::Lose);
 }
 
 // -----------------------------------------------------------------
@@ -493,6 +493,7 @@ static void updateBullets() {
 // FLEET MOVEMENT & DIVING AI
 // -----------------------------------------------------------------
 static void initGalagaWave(int wave) {
+  if (wave == 1) audio::restartMusic();
   audio::play(audio::Cue::Wave);
   galaWave = wave;
   for (auto &p : galaPops) p.active = false;
@@ -652,7 +653,7 @@ static void handleGalagaInput() {
     else if (command == 4) pausePressed = true;
   }
   if (pausePressed) {
-    gameState = 1;
+    audio::pauseMusic(true); gameState = 1;
     menu_drawn = false;
     galaPauseSelection = 0;
     galaPauseReady = false;

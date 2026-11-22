@@ -104,14 +104,19 @@ void fmtTime(char *buf, uint32_t s) { sprintf(buf, "%u:%02u", s / 60, s % 60); }
 
 int readKey() {
   int k = buttonsNextPress();
-  if (k >= 0) return k;
-  if (!Serial.available()) return -1;
-  switch (tolower(Serial.read())) {
-    case 'w': return K_UP;    case 'd': return K_RIGHT;
-    case 's': return K_DOWN;  case 'a': return K_LEFT;
-    case 'e': case ' ': return K_SHOOT;
+  if (k < 0 && Serial.available()) {
+    switch (tolower(Serial.read())) {
+      case 'w': k = K_UP;    break; case 'd': k = K_RIGHT; break;
+      case 's': k = K_DOWN;  break; case 'a': k = K_LEFT;  break;
+      case 'e': case ' ': k = K_SHOOT; break;
+    }
   }
-  return -1;
+  // Playback and its controls are rotated 90 degrees relative to the buttons.
+  if (k == K_UP) return K_LEFT;
+  if (k == K_LEFT) return K_DOWN;
+  if (k == K_DOWN) return K_RIGHT;
+  if (k == K_RIGHT) return K_UP;
+  return k;
 }
 
 // Bytes of PCM data after the WAV header; leaves the file at the data start.

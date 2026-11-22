@@ -19,6 +19,7 @@ extern uint16_t uiHeaderStart;
 extern uint16_t uiHeaderEnd;
 extern bool lightThemeEnabled;
 extern uint8_t activeTheme;
+extern uint8_t displayBrightness;
 extern bool soundEnabled;
 constexpr uint8_t THEME_COUNT = 8;
 

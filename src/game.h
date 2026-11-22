@@ -116,6 +116,9 @@ void playTetrisDropSound();
 void applyThemePreset(uint8_t index, bool persist);
 void loadThemePreference();
 const char* themeName(uint8_t index);
+void setDisplayBrightness(uint8_t brightness, bool persist);
+extern bool batterySaver;
+void setBatterySaver(bool enabled);
 void setSoundEnabled(bool enabled, bool persist);
 void setBuzzerTone(unsigned int frequency);
 

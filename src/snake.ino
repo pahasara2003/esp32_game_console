@@ -125,7 +125,7 @@ static void playBiteSound() {
 }
 
 static void playDeathSound() {
-  audio::play(audio::Cue::Death);
+  audio::play(audio::Cue::GameOver);
 }
 
 // -----------------------------------------------------------------
@@ -533,7 +533,7 @@ void generateFood() {
       if (!occupied && random(++available) == 0) foodPos = {x, y};
     }
   }
-  if (!available) { gameState = 2; menu_drawn = false; }
+  if (!available) { audio::play(audio::Cue::Win); gameState = 2; menu_drawn = false; }
 }
 
 bool checkSelfCollision(Vec2 head) {
@@ -554,7 +554,7 @@ void handleInput() {
   int cmd;
   while ((cmd = buttonsNextPress()) >= 0) {
     if (cmd == 4 && snakeShootReady) {
-      gameState = 1; // Pause
+      audio::pauseMusic(true); gameState = 1; // Pause
       menu_drawn = false;
       snakePauseSelection = 0;
       snakePauseReady = false;
@@ -765,6 +765,7 @@ void showSnakeMenu() {
 }
 
 void initGame() {
+  audio::restartMusic();
   gameState = 0;
   snakeLength = 4;
   currentDirection = 1;

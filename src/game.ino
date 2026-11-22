@@ -1,4 +1,5 @@
 #include "rally.h"
+#include "sd_game_music.h"
 #include <Arduino.h>
 #include <Preferences.h>
 #include "game.h"
@@ -34,7 +35,11 @@ uint16_t uiHeaderStart = 0xB7FF;
 uint16_t uiHeaderEnd = 0xD65F;
 bool lightThemeEnabled = false;
 uint8_t activeTheme = 0;
+uint8_t displayBrightness = 100;
 bool soundEnabled = true;
+bool batterySaver = false;
+static uint8_t savedBrightness = 100;
+static bool savedGameMusic = true;
 
 const char* themeName(uint8_t index) {
   static const char* names[] = {"AURORA", "OCEAN", "ORCHID", "ROSE",
@@ -74,10 +79,50 @@ void applyThemePreset(uint8_t index, bool persist) {
 void loadThemePreference() {
   prefs.begin("console", true);
   uint8_t savedTheme = prefs.getUChar("theme", 0);
+  displayBrightness = prefs.getUChar("brightness", 100);
   soundEnabled = prefs.getBool("sound", true);
+  batterySaver = prefs.getBool("saver", false);
+  savedBrightness = prefs.getUChar("saverbright", 100);
+  savedGameMusic = prefs.getBool("savermusic", true);
   prefs.end();
   audio::load();
+  if (batterySaver) { displayBrightness = 10; audio::gameMusic = false; }
   applyThemePreset(savedTheme, false);
+}
+
+void setDisplayBrightness(uint8_t brightness, bool persist) {
+  static bool backlightPwmReady = false;
+  displayBrightness = constrain(int(brightness), 10, 100);
+  if (!backlightPwmReady && !ledcSetup(0, 5000, 8)) {
+    Serial.println("[Display] Backlight PWM setup failed");
+    return;
+  }
+  backlightPwmReady = true;
+  // Display initialization can restore GPIO output mode, disconnecting PWM.
+  ledcAttachPin(TFT_BL, 0);
+  ledcWrite(0, (uint16_t(displayBrightness) * 255) / 100);
+  if (persist) {
+    prefs.begin("console", false);
+    prefs.putUChar("brightness", displayBrightness);
+    prefs.end();
+  }
+}
+
+void setBatterySaver(bool enabled) {
+  if (enabled == batterySaver) return;
+  if (enabled) {
+    savedBrightness = displayBrightness;
+    savedGameMusic = audio::gameMusic;
+  }
+  batterySaver = enabled;
+  setDisplayBrightness(enabled ? 10 : savedBrightness, true);
+  audio::gameMusic = enabled ? false : savedGameMusic;
+  audio::save();
+  prefs.begin("console", false);
+  prefs.putBool("saver", batterySaver);
+  prefs.putUChar("saverbright", savedBrightness);
+  prefs.putBool("savermusic", savedGameMusic);
+  prefs.end();
 }
 
 Game::Game(int i) {
@@ -290,6 +335,7 @@ extern Game currentGame;
 
 void switchGame(int gameIndex) {
   audio::scene(gameIndex);
+  audio::pauseMusic(true);
   audio::play(gameIndex == 0 ? audio::Cue::Back : audio::Cue::Open);
   lifeInputEnd();
   lifeRelease();
@@ -344,6 +390,7 @@ const unsigned long debounce_delay = 180;
 // currently requested frequency (0 = silence).
 #include <driver/i2s.h>
 static volatile uint32_t i2sToneFreq = 0;
+static TaskHandle_t i2sTask = nullptr;
 static volatile bool i2sHoldReq = false, i2sHeld = false;  // music player owns I2S while held
 static constexpr int I2S_RATE = 22050;
 
@@ -355,11 +402,12 @@ static AudioOutputI2S *nokiaOutput = nullptr;
 static bool nokiaAudioHeld = false;
 
 static void i2sToneTask(void *) {
-  int16_t buf[256];
+  int16_t buf[256], music[256];
   while (true) {
-    if (i2sHoldReq) { i2sHeld = true; vTaskDelay(pdMS_TO_TICKS(10)); continue; }
+    if (i2sHoldReq) { sd_music::stop(); i2sHeld = true; vTaskDelay(pdMS_TO_TICKS(10)); continue; }
     i2sHeld = false;
-    audio::render(buf, 256, i2sToneFreq, soundEnabled);
+    bool embeddedTrack = sd_music::fill(music, 256, soundEnabled && !i2sToneFreq);
+    audio::render(buf, 256, i2sToneFreq, soundEnabled, embeddedTrack ? music : nullptr);
     size_t written;
     i2s_write(I2S_NUM_0, buf, sizeof(buf), &written, portMAX_DELAY);
   }
@@ -367,7 +415,7 @@ static void i2sToneTask(void *) {
 
 static bool installI2S();
 static void initI2SAudio() {
-  if (installI2S()) xTaskCreate(i2sToneTask, "i2sTone", 2048, nullptr, 3, nullptr);
+  if (installI2S()) xTaskCreate(i2sToneTask, "i2sTone", 8192, nullptr, 3, &i2sTask);
 }
 
 // Hand I2S to the MP3 player: park the tone task, then free the driver.
@@ -375,7 +423,7 @@ void audioReleaseForMusic() {
   audio::external(true);
   i2sToneFreq = 0;
   i2sHoldReq = true;
-  for (int i = 0; i < 50 && !i2sHeld; ++i) delay(5);
+  while (i2sTask && !i2sHeld) delay(5);
   i2s_driver_uninstall(I2S_NUM_0);
 }
 
@@ -383,6 +431,8 @@ void audioReleaseForMusic() {
 void audioReclaimFromMusic() {
   i2s_driver_uninstall(I2S_NUM_0);
   installI2S();
+  // ESP8266Audio routes its unused MCLK to GPIO0, taking over the backlight.
+  setDisplayBrightness(displayBrightness, false);
   audio::external(false);
   i2sHoldReq = false;
 }
@@ -394,7 +444,7 @@ static bool installI2S() {
   cfg.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
   cfg.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;
   cfg.communication_format = I2S_COMM_FORMAT_STAND_I2S;
-  cfg.dma_buf_count = 4;
+  cfg.dma_buf_count = 8;  // cover a full shared-SPI display transfer during SD playback
   cfg.dma_buf_len = 128;  // short buffers keep tone changes snappy
   cfg.tx_desc_auto_clear = true;
   i2s_pin_config_t pins = {};
@@ -477,6 +527,7 @@ void playNokiaSweepSound() {
     return;
   }
   Serial.println("[Audio] Playing embedded Nokia welcome tune (no SD required)");
+  setDisplayBrightness(displayBrightness, false);
 }
 
 static void serviceNokiaMusic() {
@@ -668,14 +719,18 @@ void init_interface() {
   tft.init();
   tft.setRotation(2);
   loadThemePreference();
+  setDisplayBrightness(displayBrightness, false);
   tft.fillScreen(TFT_BLACK);
   Serial.println("[Game] Starting interface initialization...");
 
   pinMode(SD_CS_PIN, OUTPUT);
   digitalWrite(SD_CS_PIN, HIGH);  // keep SD card off the shared SPI bus
+  sd_music::begin();
   initI2SAudio();
   setBuzzerTone(0);
+#ifndef BIRTHDAY_DEV
   playBootAnimation();
+#endif
 
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
   Wire.setClock(400000);  // ADS1115 supports 400 kHz fast mode
@@ -729,7 +784,7 @@ void PauseMenuControls() {
 
   if (pressed == 5) {
     if (gameState == 0) {
-      gameState = 1;
+      audio::pauseMusic(true); gameState = 1;
       menu_drawn = false;
     } else if (gameState == 1) {
       switch (selected_menu_item) {
