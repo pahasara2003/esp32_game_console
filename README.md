@@ -64,6 +64,14 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 
 > The Shoot button is active-low with a 10k pull-up. Backlight is HIGH = on. Display pins live in `lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`, the rest in `src/config.h`.
 
+### 📐 Schematic
+
+Drawn in EasyEDA (`gameConsoleDIY`, V1.0, updated 2026-11-09): ESP32-C3 Super Mini, ILI9341 display with SD slot, ADS1115 button reader, MAX98357A amplifier, TP4056 battery charger and six tactile switches.
+
+[![Schematic](docs/hardware/schematic.png)](docs/hardware/schematic.pdf)
+
+Full-size files: [`schematic.png`](docs/hardware/schematic.png) · [`schematic.pdf`](docs/hardware/schematic.pdf)
+
 ## 🚀 Quick start
 
 You need [PlatformIO](https://platformio.org/).
