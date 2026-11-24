@@ -145,6 +145,18 @@ To make soldering easier, some changes had to be made from the original schemati
 
 Full-size files: [`schematic.png`](docs/hardware/schematic.png) · [`schematic.pdf`](docs/hardware/schematic.pdf)
 
+## 📸 Photos
+
+![The finished handheld showing the games launcher.](docs/photos/handheld-banner.jpg)
+
+<div align="center">
+
+![Rally racing game running on the console.](docs/photos/racing-game.jpg) ![Tetris running on the console.](docs/photos/tetris-game.jpg)
+
+</div>
+
+![Internal wiring of the build on perfboard.](docs/photos/wiring.jpg)
+
 ## 🚀 Quick start
 
 You need [PlatformIO](https://platformio.org/).
