@@ -18,6 +18,20 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 
 ---
 
+## 📸 Photos
+
+![The finished handheld showing the games launcher.](docs/photos/handheld-banner.jpg)
+
+<div align="center">
+
+![Rally racing game running on the console.](docs/photos/racing-game.jpg) ![Tetris running on the console.](docs/photos/tetris-game.jpg)
+
+</div>
+
+![Internal wiring of the build on perfboard.](docs/photos/wiring.jpg)
+
+---
+
 ## ✨ Highlights
 
 - 🕹️ **10 games**, each with its own music, sound effects, pause menu and saved high scores
@@ -144,18 +158,6 @@ To make soldering easier, some changes had to be made from the original schemati
 [![Schematic](docs/hardware/schematic.png)](docs/hardware/schematic.pdf)
 
 Full-size files: [`schematic.png`](docs/hardware/schematic.png) · [`schematic.pdf`](docs/hardware/schematic.pdf)
-
-## 📸 Photos
-
-![The finished handheld showing the games launcher.](docs/photos/handheld-banner.jpg)
-
-<div align="center">
-
-![Rally racing game running on the console.](docs/photos/racing-game.jpg) ![Tetris running on the console.](docs/photos/tetris-game.jpg)
-
-</div>
-
-![Internal wiring of the build on perfboard.](docs/photos/wiring.jpg)
 
 ## 🚀 Quick start
 
