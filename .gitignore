@@ -4,3 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 __pycache__/
+
+# Private birthday scene (kept local only)
+src/birthday.cpp
+src/birthday_code.h
