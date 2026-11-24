@@ -430,7 +430,11 @@ void updatePosition(int dx = 0, int dy = 1) {
     addToDead();
     playTetrisDropSound();
     if (!newTetro()) {
+<<<<<<< HEAD
+      audio::play(audio::Cue::Death);
+=======
       audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
       gameState = 2;
       menu_drawn = false;
       tetrisInputRequireRelease();

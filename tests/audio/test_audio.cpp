@@ -9,15 +9,23 @@ static bool silent(const std::vector<int16_t> &s) {
 }
 static void reset() { audio::external(true); audio::external(false); audio::scene(0); }
 int main() {
+<<<<<<< HEAD
+  std::vector<int16_t> out(44100), reference(2205), actual(2205);
+  audio::effectsVolume=100; audio::musicVolume=100;
+  for (int cue=0; cue<=int(audio::Cue::Firework); ++cue) {
+=======
   std::vector<int16_t> out(22050 * 12), reference(2205), actual(2205);
   audio::effectsVolume=100; audio::musicVolume=100;
   for (int cue=0; cue<=int(audio::Cue::Lose); ++cue) {
+>>>>>>> codex/rally-3d
     reset(); audio::play(static_cast<audio::Cue>(cue));
     audio::render(out.data(),out.size(),0,true);
     assert(!silent(out));
     assert(std::all_of(out.end()-2205,out.end(),[](int16_t v){return v==0;}));
     for (int16_t v:out) assert(v>=-12000 && v<=12000);
   }
+<<<<<<< HEAD
+=======
   // SD music uses the same volume/mute path and cannot play through pauses.
   std::vector<int16_t> sdTrack(out.size(), 8000);
   reset(); assert(audio::musicState() == audio::MusicState::Stopped);
@@ -54,6 +62,7 @@ int main() {
     reset(); audio::play(cue); audio::render(out.data(),out.size(),0,false);
     audio::render(out.data(),out.size(),0,true); assert(silent(out));
   }
+>>>>>>> codex/rally-3d
   reset(); audio::play(audio::Cue::Death);
   audio::render(reference.data(),reference.size(),0,true);
   reset(); audio::play(audio::Cue::Death); audio::play(audio::Cue::Move);
@@ -70,6 +79,8 @@ int main() {
   audio::render(out.data(),out.size(),0,true); assert(silent(out));
   audio::external(false); audio::render(out.data(),out.size(),440,false); assert(silent(out));
   reset(); audio::render(out.data(),out.size(),440,true); assert(!silent(out));
+<<<<<<< HEAD
+=======
   reset(); audio::birthdayNote(440);
   audio::render(out.data(),out.size(),0,true);
   assert(!silent(out));
@@ -110,5 +121,6 @@ int main() {
   audio::render(actual.data()+1000,actual.size()-1000,0,true);
   assert(actual==reference);
   std::cout << "Breakout levels, envelopes, looping, pause and callback continuity passed\n";
+>>>>>>> codex/rally-3d
   std::cout << "All cues, termination, priority, mute, music pause and I2S ownership passed\n";
 }

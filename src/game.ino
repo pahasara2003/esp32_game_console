@@ -86,7 +86,10 @@ void loadThemePreference() {
   savedGameMusic = prefs.getBool("savermusic", true);
   prefs.end();
   audio::load();
+<<<<<<< HEAD
+=======
   if (batterySaver) { displayBrightness = 10; audio::gameMusic = false; }
+>>>>>>> codex/rally-3d
   applyThemePreset(savedTheme, false);
 }
 
@@ -335,7 +338,10 @@ extern Game currentGame;
 
 void switchGame(int gameIndex) {
   audio::scene(gameIndex);
+<<<<<<< HEAD
+=======
   audio::pauseMusic(true);
+>>>>>>> codex/rally-3d
   audio::play(gameIndex == 0 ? audio::Cue::Back : audio::Cue::Open);
   lifeInputEnd();
   lifeRelease();
@@ -402,12 +408,20 @@ static AudioOutputI2S *nokiaOutput = nullptr;
 static bool nokiaAudioHeld = false;
 
 static void i2sToneTask(void *) {
+<<<<<<< HEAD
+  int16_t buf[256];
+=======
   int16_t buf[256], music[256];
+>>>>>>> codex/rally-3d
   while (true) {
     if (i2sHoldReq) { sd_music::stop(); i2sHeld = true; vTaskDelay(pdMS_TO_TICKS(10)); continue; }
     i2sHeld = false;
+<<<<<<< HEAD
+    audio::render(buf, 256, i2sToneFreq, soundEnabled);
+=======
     bool embeddedTrack = sd_music::fill(music, 256, soundEnabled && !i2sToneFreq);
     audio::render(buf, 256, i2sToneFreq, soundEnabled, embeddedTrack ? music : nullptr);
+>>>>>>> codex/rally-3d
     size_t written;
     i2s_write(I2S_NUM_0, buf, sizeof(buf), &written, portMAX_DELAY);
   }
@@ -431,8 +445,11 @@ void audioReleaseForMusic() {
 void audioReclaimFromMusic() {
   i2s_driver_uninstall(I2S_NUM_0);
   installI2S();
+<<<<<<< HEAD
+=======
   // ESP8266Audio routes its unused MCLK to GPIO0, taking over the backlight.
   setDisplayBrightness(displayBrightness, false);
+>>>>>>> codex/rally-3d
   audio::external(false);
   i2sHoldReq = false;
 }
@@ -527,7 +544,10 @@ void playNokiaSweepSound() {
     return;
   }
   Serial.println("[Audio] Playing embedded Nokia welcome tune (no SD required)");
+<<<<<<< HEAD
+=======
   setDisplayBrightness(displayBrightness, false);
+>>>>>>> codex/rally-3d
 }
 
 static void serviceNokiaMusic() {

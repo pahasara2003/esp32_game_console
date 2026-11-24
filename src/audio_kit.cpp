@@ -17,6 +17,18 @@ Voice effect, background;
 portMUX_TYPE guard = portMUX_INITIALIZER_UNLOCKED;
 bool held = false, paused = false;
 int activeScene = 0;
+<<<<<<< HEAD
+int lastGameState = -99;
+uint32_t legacyPhase = 0;
+// Original, sparse loops. A low music level leaves room for feedback sounds.
+const Note calm[] = {{262,280},{330,280},{392,420},{0,420},{330,280},{294,280},{262,560},{0,560}};
+const Note arcade[] = {{262,150},{392,150},{523,150},{392,150},{330,150},{440,150},{587,150},{0,300}};
+const Note blocks[] = {{330,200},{392,200},{440,200},{330,200},{294,200},{349,200},{392,300},{0,300}};
+const Note bounce[] = {{262,180},{0,180},{392,180},{330,180},{0,180},{440,180},{392,180},{0,360}};
+const Note space[] = {{220,180},{330,180},{440,180},{659,180},{587,180},{440,180},{330,180},{0,360}};
+const Note ambient[] = {{131,650},{196,650},{262,650},{0,650},{165,650},{247,650},{330,650},{0,900}};
+
+=======
 uint32_t musicGeneration = 0;
 int lastGameState = -99;
 uint32_t legacyPhase = 0;
@@ -264,6 +276,7 @@ void resetBreakoutMusic() {
   boDuck = 256;
 }
 
+>>>>>>> codex/rally-3d
 void beginNote(Voice &v) {
   v.length = uint32_t(v.notes[v.index].ms) * RATE / 1000;
   v.left = v.length;
@@ -288,7 +301,14 @@ void loopMusic() {
   if (background.count || !activeScene) return;
   const Note *notes = nullptr;
   if (activeScene == 1) notes = blocks;
+<<<<<<< HEAD
+  else if (activeScene == 3) notes = bounce;
   else if (activeScene == 4) notes = arcade;
+  else if (activeScene == 5) notes = space;
+  else if (activeScene == 6) notes = calm;
+=======
+  else if (activeScene == 4) notes = arcade;
+>>>>>>> codex/rally-3d
   else if (activeScene == 10 || activeScene == 11) notes = ambient;
   if (!notes) return;
   memcpy(background.notes, notes, sizeof(background.notes));
@@ -300,6 +320,8 @@ void loopMusic() {
 }
 
 void play(Cue cue, uint16_t pitch) {
+<<<<<<< HEAD
+=======
   if (cue == Cue::GameOver || cue == Cue::Lose || cue == Cue::Win) {
     portENTER_CRITICAL(&guard);
     if (!held) {
@@ -311,6 +333,7 @@ void play(Cue cue, uint16_t pitch) {
     portEXIT_CRITICAL(&guard);
     return;
   }
+>>>>>>> codex/rally-3d
   Voice next;
   next.priority = 1;
   auto add = [&](uint16_t hz, uint16_t ms) { next.notes[next.count++] = {hz, ms}; };
@@ -328,6 +351,14 @@ void play(Cue cue, uint16_t pitch) {
       add(784,65); add(988,65); add(1175,65); add(1568,140); next.priority=5; break;
     case Cue::Pickup: add(1175,25); add(1760,45); next.priority=2; break;
     case Cue::Death: add(440,80); add(330,90); add(220,120); add(110,140); next.priority=6; break;
+<<<<<<< HEAD
+    case Cue::Win: add(523,90); add(659,90); add(784,90); add(1047,220); next.priority=6; break;
+    case Cue::Draw: add(440,80); add(440,80); add(330,130); next.priority=5; break;
+    case Cue::Record: add(784,65); add(988,65); add(1175,65); add(1568,140); add(0,50); add(1568,180); next.priority=7; break;
+    case Cue::Paddle: add(880,20); break;
+    case Cue::Wall: add(440,15); break;
+    case Cue::Brick: add(pitch ? pitch : 1320,25); next.priority=2; break;
+=======
     case Cue::GameOver: case Cue::Lose: case Cue::Win: break;
     case Cue::Draw: add(440,80); add(440,80); add(330,130); next.priority=5; break;
     case Cue::Record: add(784,65); add(988,65); add(1175,65); add(1568,140); add(0,50); add(1568,180); next.priority=7; break;
@@ -338,6 +369,7 @@ void play(Cue cue, uint16_t pitch) {
       add(f, 18); add(min(uint16_t(3136), uint16_t(f * 5 / 4)), 24);
       next.priority=2; break;
     }
+>>>>>>> codex/rally-3d
     case Cue::Powerup: case Cue::Sparkle: add(1047,35); add(1568,35); add(2093,60); next.priority=3; break;
     case Cue::Jump: add(659,20); add(880,30); next.priority=2; break;
     case Cue::Laser: add(2093,12); add(1568,18); break;
@@ -354,16 +386,29 @@ void play(Cue cue, uint16_t pitch) {
     case Cue::ZoomOut: add(660,25); add(440,25); add(330,40); break;
     case Cue::Pause: add(660,35); add(440,50); next.priority=3; break;
     case Cue::Resume: add(440,35); add(660,50); next.priority=3; break;
+<<<<<<< HEAD
+=======
     case Cue::Countdown: add(880,45); break;
+>>>>>>> codex/rally-3d
     case Cue::Pop: add(1800,8); add(240,24); next.priority=2; break;
     case Cue::Firework: add(330,35); add(660,35); add(1320,35); add(1760,65); next.priority=3; break;
   }
   portENTER_CRITICAL(&guard);
+<<<<<<< HEAD
+  if (!held && (!effect.count || next.priority >= effect.priority)) {
+=======
   if (!held && ending.position >= ending.samples && (!effect.count || next.priority >= effect.priority)) {
+>>>>>>> codex/rally-3d
     effect = next; beginNote(effect);
   }
   portEXIT_CRITICAL(&guard);
 }
+<<<<<<< HEAD
+void scene(int game) {
+  portENTER_CRITICAL(&guard);
+  if (activeScene != game) {
+    activeScene=game; effect=Voice{}; background=Voice{}; paused=false; lastGameState=-99;
+=======
 void stopEnding() {
   portENTER_CRITICAL(&guard);
   ending = Ending{};
@@ -376,6 +421,7 @@ void scene(int game) {
     activeScene=game; effect=Voice{}; background=Voice{}; paused=false; lastGameState=-99;
     resetBreakoutMusic();
     resetPuzzleMusic();
+>>>>>>> codex/rally-3d
   }
   portEXIT_CRITICAL(&guard);
 }
@@ -383,7 +429,10 @@ void pauseMusic(bool value) { paused=value; }
 void gameState(int state) {
   pauseMusic(state != 0);
   if (state != lastGameState) {
+<<<<<<< HEAD
+=======
     if (state == 0) stopEnding();
+>>>>>>> codex/rally-3d
     if (state == 1) play(Cue::Pause);
     else if (state == 0 && lastGameState == 1) play(Cue::Resume);
     lastGameState=state;
@@ -391,6 +440,18 @@ void gameState(int state) {
 }
 void external(bool value) {
   portENTER_CRITICAL(&guard);
+<<<<<<< HEAD
+  held=value; effect=Voice{}; background=Voice{};
+  portEXIT_CRITICAL(&guard);
+}
+void render(int16_t *out, size_t count, uint32_t legacy, bool enabled) {
+  portENTER_CRITICAL(&guard);
+  for (size_t i=0; i<count; ++i) {
+    if (held || !enabled) { effect=Voice{}; out[i]=0; continue; }
+    int fx = sample(effect);
+    int music = 0;
+    if (gameMusic && !paused && !legacy) { loopMusic(); music=sample(background); }
+=======
   ending = Ending{};
   held=value; effect=Voice{}; background=Voice{};
   resetBreakoutMusic();
@@ -450,10 +511,15 @@ void render(int16_t *out, size_t count, uint32_t legacy, bool enabled, const int
       else if (activeScene == 3 || activeScene == 5) music = popMusicSample();
       else { loopMusic(); music=sample(background); }
     }
+>>>>>>> codex/rally-3d
     legacyPhase += legacy * 65536 / RATE;
     int tone = legacy ? ((legacyPhase & 32768) ? 3000 : -3000) : 0;
     int value = (fx / 8 + tone) * effectsVolume / 100;
     // Duck the background under effects and legacy birthday/jukebox notes.
+<<<<<<< HEAD
+    value += (music / (effect.count ? 64 : 32)) * musicVolume / 100;
+    out[i] = int16_t(constrain(value, -12000, 12000));
+=======
     value += (music / (sdMusic ? (effect.count ? 4 : 2) : (activeScene == 6 ? 2 : ((activeScene == 3 || activeScene == 5) ? 4 : (effect.count ? 32 : 16))))) * musicVolume / 100;
     if (pianoHz) {
       value += pianoSample();
@@ -461,6 +527,7 @@ void render(int16_t *out, size_t count, uint32_t legacy, bool enabled, const int
     } else {
       out[i] = int16_t(constrain(value, -12000, 12000));
     }
+>>>>>>> codex/rally-3d
   }
   portEXIT_CRITICAL(&guard);
 }

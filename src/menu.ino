@@ -28,7 +28,10 @@ App Apps[] = {
   {"Conway's", 0, 0, life_home_icon,    10},
   {"Mandel",   0, 0, mandelbrot_home_icon,11},
   {"Music",    0, 0, sound_home_icon,   -1},
+<<<<<<< HEAD
+=======
   {"Videos",   0, 0, videos_home_icon,  -1},
+>>>>>>> codex/rally-3d
   {"Settings", 0, 0, settings_home_icon,-1},
   {"Info",     0, 0, about_home_icon,   -1}
 };
@@ -580,6 +583,18 @@ static String titleCase(const char *name) {
   return s;
 }
 
+<<<<<<< HEAD
+static const ui::List settingsList = {16, 68, 208, 30, 6};
+void drawSettingsRow(int row, bool selected) {
+  const char *labels[] = {"Theme", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores"};
+  String value = row == 0 ? titleCase(themeName(activeTheme)) :
+                 row == 1 ? String(soundEnabled ? "On" : "Off") :
+                 row == 2 ? String(audio::effectsVolume) + "%" :
+                 row == 3 ? String(audio::musicVolume) + "%" :
+                 row == 4 ? String(audio::gameMusic ? "On" : "Off") : String("Reset");
+  ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
+               row == 5 ? UI_RED : ui::SECONDARY);
+=======
 static const ui::List settingsList = {16, 58, 208, 21, 9};
 void drawSettingsRow(int row, bool selected) {
   const char *labels[] = {"Theme", "Brightness", "Sound", "Effects volume", "Music volume", "Game music", "Reset scores", "Battery saver", "Show it"};
@@ -592,6 +607,7 @@ void drawSettingsRow(int row, bool selected) {
                  row == 6 ? String("Reset") : row == 7 ? String(batterySaver ? "On" : "Off") : String("Open");
   ui::valueRow(settingsList, row, labels[row], value.c_str(), selected, MENU_ACCENT,
                row == 6 ? UI_RED : ui::SECONDARY);
+>>>>>>> codex/rally-3d
 }
 
 static void drawSettingsHeader() {
@@ -621,7 +637,11 @@ static void refreshSettingsTheme(int selectedRow) {
   // stays identical. Updating these regions in place avoids a visible black
   // frame between the old and new themes.
   drawSettingsHeader();
+<<<<<<< HEAD
+  for (int row=0; row<6; ++row) drawSettingsRow(row, selectedRow == row);
+=======
   for (int row=0; row<9; ++row) drawSettingsRow(row, selectedRow == row);
+>>>>>>> codex/rally-3d
   drawSettingsPalette();
   drawSettingsFooter();
 }
@@ -677,7 +697,11 @@ void showSettingsScreen() {
 
     if (cmd == 0 || cmd == 2) {
       int previousRow = selectedRow;
+<<<<<<< HEAD
+      selectedRow = (selectedRow + (cmd == 0 ? 5 : 1)) % 6;
+=======
       selectedRow = (selectedRow + (cmd == 0 ? 8 : 1)) % 9;
+>>>>>>> codex/rally-3d
       playNavClick();
       drawSettingsRow(previousRow, false);
       drawSettingsRow(selectedRow, true);
@@ -697,18 +721,31 @@ void showSettingsScreen() {
         setSoundEnabled(!soundEnabled, false);
         playNavClick();
         drawSettingsRow(selectedRow, true);
+<<<<<<< HEAD
+      } else if (selectedRow == 2 || selectedRow == 3) {
+        uint8_t &volume = selectedRow == 2 ? audio::effectsVolume : audio::musicVolume;
+        volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
+        audio::play(audio::Cue::Move);
+        drawSettingsRow(selectedRow, true);
+      } else if (selectedRow == 4) {
+=======
       } else if (selectedRow == 3 || selectedRow == 4) {
         uint8_t &volume = selectedRow == 3 ? audio::effectsVolume : audio::musicVolume;
         volume = constrain(int(volume) + (cmd == 1 ? 10 : -10), 0, 100);
         audio::play(audio::Cue::Move);
         drawSettingsRow(selectedRow, true);
       } else if (selectedRow == 5 && !batterySaver) {
+>>>>>>> codex/rally-3d
         audio::gameMusic = !audio::gameMusic;
         playNavClick();
         drawSettingsRow(selectedRow, true);
       }
     } else if (cmd == 4) {
+<<<<<<< HEAD
+      if (selectedRow == 5) {
+=======
       if (selectedRow == 6) {
+>>>>>>> codex/rally-3d
         if (confirmResetScores()) {
           resetAllGameScores();
           audio::play(audio::Cue::Saved);

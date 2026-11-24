@@ -493,7 +493,10 @@ static void updateBullets() {
 // FLEET MOVEMENT & DIVING AI
 // -----------------------------------------------------------------
 static void initGalagaWave(int wave) {
+<<<<<<< HEAD
+=======
   if (wave == 1) audio::restartMusic();
+>>>>>>> codex/rally-3d
   audio::play(audio::Cue::Wave);
   galaWave = wave;
   for (auto &p : galaPops) p.active = false;

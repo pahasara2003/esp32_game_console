@@ -358,7 +358,11 @@ static void soundJump() {
 }
 
 static void soundCrash() {
+<<<<<<< HEAD
+  audio::play(audio::Cue::Death);
+=======
   audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
 }
 
 static void soundMilestone() {
@@ -483,9 +487,15 @@ static void playRunnerDeathAnimation(int py) {
   // Remove the last live pose once, then replace each death frame atomically.
   eraseRunner(RUNNER_X, (int)prevRunnerY);
   restoreRunnerBackdropRect(RUNNER_DEATH_X, py,
+<<<<<<< HEAD
+                            VAMPIRE_DEAD_FRAME_W, RUNNER_H);
+  audio::play(audio::Cue::Death);
+  for (int frame = 0; frame < VAMPIRE_DEAD_FRAME_COUNT; ++frame) {
+=======
                             RUNNER_DEATH_W, RUNNER_H);
   audio::play(audio::Cue::GameOver);
   for (int frame = 0; frame < runner_characters[runCharacter].actions[2].count; ++frame) {
+>>>>>>> codex/rally-3d
     drawRunnerDeathFrame(py, frame);
     delay(95);
   }

@@ -258,7 +258,11 @@ static void finish() {
   audio::pauseMusic(true);
   outcome = winner();
   if (!outcome) return;
+<<<<<<< HEAD
+  audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Death : audio::Cue::Draw);
+=======
   audio::play(outcome == 1 ? audio::Cue::Win : outcome == 2 ? audio::Cue::Lose : audio::Cue::Draw);
+>>>>>>> codex/rally-3d
   mini::phase = mini::FINISH;
   if (outcome == 1 && !recorded) {
     currentGame.recordScore(100);
@@ -584,8 +588,12 @@ static void start() {
 }
 
 static void end() {
+<<<<<<< HEAD
+  audio::play(audio::Cue::Death);
+=======
   audio::pauseMusic(true);
   audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
   mini::phase = mini::FINISH;
   if (!recorded) { currentGame.recordScore(score); recorded = true; }
   drawGameOver();
@@ -640,15 +648,21 @@ void pongLoop() {
   if (pong::ballX <= 20 || pong::ballX >= 220) {
     pong::vx = -pong::vx;
     pong::ballX = constrain(pong::ballX, 20.0f, 220.0f);
+<<<<<<< HEAD
+=======
     pong::impact((int)pong::ballX, (int)pong::ballY);
+>>>>>>> codex/rally-3d
     audio::play(audio::Cue::Wall);
   }
   if (pong::ballY <= 112) {
     pong::ballY = 112;
     pong::vy = abs(pong::vy);
     ++pong::score;
+<<<<<<< HEAD
+=======
     pong::scoreFlashAt = millis();
     pong::impact((int)pong::ballX, 107);
+>>>>>>> codex/rally-3d
     audio::play(audio::Cue::Pickup);
   }
   if (pong::vy > 0 && pong::ballY >= 243 && pong::ballY <= 256 &&
@@ -657,12 +671,19 @@ void pongLoop() {
     pong::vy = -min(5.0f, 2.5f + pong::score * 0.08f);
     pong::vx = constrain((pong::ballX - (pong::paddleX + 26)) / 10.0f, -3.5f, 3.5f);
     if (abs(pong::vx) < 0.6f) pong::vx = 0.6f;
+<<<<<<< HEAD
+=======
     pong::impact((int)pong::ballX, 249);
+>>>>>>> codex/rally-3d
     audio::play(audio::Cue::Paddle);
   }
   if (pong::ballY > 264) {
     if (--pong::lives <= 0) { pong::end(); return; }
+<<<<<<< HEAD
+    audio::play(audio::Cue::Hit);
+=======
     audio::play(audio::Cue::Lose);
+>>>>>>> codex/rally-3d
     pong::serve();
   }
   pong::drawMotion();
@@ -795,8 +816,12 @@ static void start() {
 }
 
 static void finish(bool won) {
+<<<<<<< HEAD
+  audio::play(won ? audio::Cue::Win : audio::Cue::Death);
+=======
   audio::pauseMusic(true);
   audio::play(won ? audio::Cue::Win : audio::Cue::Lose);
+>>>>>>> codex/rally-3d
   result = won ? 1 : -1;
   mini::phase = mini::FINISH;
   if (won && !recorded) { currentGame.recordScore(max(1, 1000 - flags * 10)); recorded = true; }

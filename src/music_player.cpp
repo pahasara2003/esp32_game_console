@@ -16,7 +16,10 @@
 // Music player app, adapted from display_test/src/main.cpp.
 #include "config.h"
 #include "audio_kit.h"
+<<<<<<< HEAD
+=======
 extern void setDisplayBrightness(uint8_t brightness, bool persist);
+>>>>>>> codex/rally-3d
 constexpr int SD_CS = SD_CS_PIN, LRCLK = I2S_LRCLK_PIN, BCLK = I2S_BCLK_PIN, DIN = I2S_DOUT_PIN;
 constexpr int SHOOT_PIN = 8, I2C_SDA = 10, I2C_SCL = 20;
 constexpr int ART_X = 40, ART_Y = 29, ART_SIZE = 160;

@@ -12,6 +12,9 @@ video audio. Sound off mutes synthesized system/game audio and the welcome tune;
 the media apps have their separate music volume. Game music is quieter than
 effects and pauses on game menus. Snake, Pong, Tic-tac-toe and Mines stay quiet
 between effects. Tetris, Breakout, Run, Galaga, Puzzle, Life and Mandelbrot have
+<<<<<<< HEAD
+background loops. No downloaded tracks are required for these loops.
+=======
 background loops. Breakout uses an original 116 BPM modern happy synth-pop groove (warm major
 chords, bouncy pop bass, soft kick pulse and sunlit marimba pluck melody) rather
 than a retro sequence. Its music has more presence, with smooth effect ducking;
@@ -19,6 +22,7 @@ the existing Music volume still applies.
 No downloaded tracks are required for these loops. Optional per-game SD MP3s
 replace the built-in loop during active gameplay; see [SD game music](game-music.md)
 for filenames and playback rules.
+>>>>>>> codex/rally-3d
 
 The Nokia welcome MP3 is embedded in firmware from `assets/nokia_welcome.mp3`
 using PlatformIO's binary embedding. Playback reads directly from flash and
@@ -30,6 +34,13 @@ The media apps retain exclusive I2S ownership during playback. Game sound
 requests are discarded while media owns the output, so clicks cannot interrupt
 a song or a video. Synthesized effects do not run in a second competing writer.
 
+<<<<<<< HEAD
+Host synthesis checks (NVS and hardware are stubbed):
+
+```
+g++ -std=c++11 -Itests/audio -Isrc src/audio_kit.cpp tests/audio/test_audio.cpp -o /tmp/console-audio-test
+/tmp/console-audio-test
+=======
 The selected game result recordings are embedded in flash as mono 22050 Hz
 IMA ADPCM, decoded incrementally by the same I2S task. No SD card is required.
 Effects volume and Sound off apply; Music volume and Game music do not mute
@@ -90,6 +101,7 @@ the existing synthesis/music checks (NVS and hardware are stubbed):
 ```
 python3 tests/audio/test_puzzle.py
 pio run
+>>>>>>> codex/rally-3d
 ```
 
 Hardware checks: compare effect/music levels; verify no missed controls during

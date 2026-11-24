@@ -198,6 +198,11 @@ constexpr int BO_SIDE_FLASH_HALF = 20;
 // SOUND EFFECTS
 // -----------------------------------------------------------------
 static uint8_t audioBrickCombo = 0;
+<<<<<<< HEAD
+static void soundPaddleHit() {
+  audioBrickCombo = 0;
+  audio::play(audio::Cue::Paddle);
+=======
 
 static void soundPaddleHit() {
   audioBrickCombo = 0;
@@ -206,16 +211,22 @@ static void soundPaddleHit() {
 
 static void soundWallHit() {
   audio::play(audio::Cue::Wall);
+>>>>>>> codex/rally-3d
 }
 
 static void soundBrickHit(uint16_t freq = 1319) {
   audioBrickCombo = min(12, int(audioBrickCombo) + 1);
+<<<<<<< HEAD
+  audio::play(audio::Cue::Brick, freq + audioBrickCombo * 35);
+  if (audioBrickCombo % 5 == 0) audio::play(audio::Cue::Milestone);
+=======
   audio::play(audio::Cue::Brick, freq + audioBrickCombo * 45);
   if (audioBrickCombo % 4 == 0) audio::play(audio::Cue::Sparkle);
 }
 
 static void soundBrickCrack() {
   audio::play(audio::Cue::Lock);
+>>>>>>> codex/rally-3d
 }
 
 static void soundLostBall() {
@@ -794,7 +805,11 @@ static void checkBrickCollisions() {
 
   if (remaining == 0) {
     audio::play(audio::Cue::Win);
+<<<<<<< HEAD
+    gameState = 3; // Level clear state
+=======
     gameState = 3;
+>>>>>>> codex/rally-3d
     menu_drawn = false;
   }
 }
@@ -856,7 +871,11 @@ static void updateBallAndPhysics() {
     updateScoreAndLivesHUD();
 
     if (lives <= 0) {
+<<<<<<< HEAD
+      audio::play(audio::Cue::Death);
+=======
       audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
       gameState = 2; // Game Over
       menu_drawn = false;
       return;

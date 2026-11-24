@@ -125,7 +125,11 @@ static void playBiteSound() {
 }
 
 static void playDeathSound() {
+<<<<<<< HEAD
+  audio::play(audio::Cue::Death);
+=======
   audio::play(audio::Cue::GameOver);
+>>>>>>> codex/rally-3d
 }
 
 // -----------------------------------------------------------------
@@ -633,7 +637,11 @@ void moveSnake() {
 
     createAppleParticles(eatenX, eatenY);
     playBiteSound();
+<<<<<<< HEAD
+    if (score % 10 == 0) audio::play(audio::Cue::Milestone);
+=======
     if ((snakeLength - 4) % 10 == 0) audio::play(audio::Cue::Milestone);
+>>>>>>> codex/rally-3d
     drawGrassyCell(newHead.x, newHead.y);
 
     if (gameSpeed_ms > 90) {
