@@ -151,7 +151,7 @@ Taken from the firmware: the display pins from `lib/TFT_eSPI/User_Setups/Setup70
 
 ### 📐 Schematic
 
-Drawn in EasyEDA (`gameConsoleDIY`, V1.0, updated 2026-11-09): ESP32-C3 Super Mini, ILI9341 display with SD slot, ADS1115 button reader, MAX98357A amplifier, TP4056 battery charger and six tactile switches.
+Drawn in EasyEDA  ESP32-C3 Super Mini, ILI9341 display with SD slot, ADS1115 button reader, MAX98357A amplifier, TP4056 battery charger and six tactile switches.
 
 To make soldering easier, some changes had to be made from the original schematic, so the pinout above is the reference for the build.
 
