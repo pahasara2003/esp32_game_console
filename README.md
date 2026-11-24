@@ -25,7 +25,7 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 - 🎵 **Media**: music player and video player straight from the SD card
 - 🎨 **Polished UI**: phone-style launcher, 8 colour themes, light and dark mode, one shared UI kit for every screen
 - 🔊 **Game music built in**: tracks are embedded in flash, no SD card needed to play
-- ⚡ **Fast display**: 40 MHz SPI, about 29 full-screen frames per second
+- ⚡ **Fast display**: 80 MHz SPI writes (about 29 full-screen frames per second measured at 40 MHz)
 - 🧠 **RAM-smart**: big buffers exist only while their app is running
 
 ## 🕹️ What's inside
@@ -100,32 +100,44 @@ Ten games, a music and video player, and a polished pixel UI, all on an ESP32-C3
 | Part | Details |
 | :--- | :--- |
 | 🧠 MCU | ESP32-C3 (`esp32-c3-devkitm-1`) |
-| 🖥️ Display | ILI9341, 240×320 portrait, SPI at 40 MHz |
-| 🎛️ Controls | D-pad through an ADS1115 ADC (I2C `0x48`) plus a Shoot button on a GPIO |
+| 🖥️ Display | ILI9341, 240×320 portrait, SPI at 80 MHz writes / 6 MHz reads |
+| 🎛️ Controls | Up, Shoot, Down and Left through an ADS1115 ADC (I2C `0x48`); Right on GPIO 8 |
 | 💾 Storage | SD card for music and video |
 | 🔈 Audio | MAX98357A I2S amplifier and speaker |
 
 ### 🔌 Pinout
 
-| Signal | GPIO | | Signal | GPIO |
-| :--- | :---: | :---: | :--- | :---: |
-| Display CS | 4 | | Shoot button | 8 |
-| Display DC | 3 | | SD card CS | 9 |
-| Display MOSI | 2 | | I2S BCLK | 6 |
-| Display SCK | 1 | | I2S LRCLK | 7 |
-| Display MISO | 21 | | I2S DOUT | 5 |
-| Backlight | 0 | | I2C SDA | 10 |
-| Display RST | 3V3 | | I2C SCL | 20 |
+Taken from the firmware: the display pins from `lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`, everything else from `src/config.h` and `src/buttons.cpp`.
 
-> The Shoot button is active-low with a 10k pull-up. Backlight is HIGH = on. Display pins live in `lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h`, the rest in `src/config.h`.
+| Signal | ESP32-C3 GPIO | Notes |
+| :--- | :---: | :--- |
+| Display CS | 4 | SPI display |
+| Display DC | 3 | Data / command |
+| Display MOSI | 2 | SPI display |
+| Display SCK | 1 | SPI display |
+| Display MISO | 21 | SPI display |
+| Display RST | 3V3 | `TFT_RST -1`, tied to 3V3 |
+| Backlight | 0 | Active HIGH |
+| SD card CS | 9 | Shares the SPI bus with the display |
+| I2S BCLK | 6 | MAX98357A |
+| I2S LRCLK | 7 | MAX98357A |
+| I2S DOUT | 5 | MAX98357A DIN |
+| I2C SDA | 10 | ADS1115 bus |
+| I2C SCL | 20 | ADS1115 bus |
+| Right button | 8 | Input with pull-up, active LOW (10k pull-up) |
+
+| Button | ADS1115 input |
+| :--- | :---: |
+| Up | A0 |
+| Shoot | A1 |
+| Down | A2 |
+| Left | A3 |
+
+> Backlight is HIGH = on. The Shoot button is read from ADS1115 channel A1, not from a GPIO.
 
 ### 📐 Schematic
 
 Drawn in EasyEDA (`gameConsoleDIY`, V1.0, updated 2026-11-09): ESP32-C3 Super Mini, ILI9341 display with SD slot, ADS1115 button reader, MAX98357A amplifier, TP4056 battery charger and six tactile switches.
-
-[![Schematic](docs/hardware/schematic.png)](docs/hardware/schematic.pdf)
-
-Full-size files: [`schematic.png`](docs/hardware/schematic.png) · [`schematic.pdf`](docs/hardware/schematic.pdf)
 
 ## 🚀 Quick start
 
@@ -203,4 +215,4 @@ python3 tools/check_tetris_controls.py
 
 - Keep new large buffers off static RAM; allocate them while the app runs.
 - UI text uses TFT_eSPI fonts 2 and 4 only, so avoid characters they can't draw.
-- Raising the SPI clock from 4 to 40 MHz took full-screen transfers from 3.2 to about 28.8 per second.
+- SPI clock is set in `lib/TFT_eSPI/User_Setups/Setup70c_ESP32_C3_ILI9341.h` (`SPI_FREQUENCY` 80 MHz, `SPI_READ_FREQUENCY` 6 MHz). Measured at 40 MHz, raising the clock from 4 to 40 MHz took full-screen transfers from 3.2 to about 28.8 per second.
